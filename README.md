@@ -67,3 +67,6 @@
 
 ## 🛠️ ဖန်တီးသူ (Developed By)
 Crafted with elegance by **Thiha Aung (Yone Man)**.  
+
+## 📄 License
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software, provided that the original copyright and permission notice are included.
