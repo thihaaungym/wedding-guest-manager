@@ -57,19 +57,26 @@
 ## 🆘 အရေးပေါ် ဖြေရှင်းနည်း (Troubleshooting)
 
 **မေးခွန်း - ကိုယ်ပြောင်းထားတဲ့ Password ကို မေ့သွားလို့ App ထဲ ဝင်မရတော့ရင် ဘယ်လိုလုပ်ရမလဲ?** **အဖြေ -** စိုးရိမ်စရာ မလိုပါ။ Cloudflare ထဲမှနေ၍ မူလအကောင့်အဖြစ် အောက်ပါအတိုင်း Reset ပြန်ချနိုင်ပါသည်-
+
 ၁။ Cloudflare ၏ ဘေးဘက် Menu မှ `Storage & Databases` > `D1 SQL Database` သို့ သွားပါ။
 ၂။ မိမိဆောက်ထားသော `wedding_db` ကို နှိပ်ဝင်ပါ။
 ၃။ အပေါ် တက်ဘ်များထဲမှ `Console` ဆိုသည်ကို နှိပ်ပါ။
 ၄။ အောက်ခြေရှိ စာရိုက်ရသော အကွက် (Query) ထဲတွင် အောက်ပါစာကြောင်းကို အတိအကျ ကူးထည့်ပြီး `Execute` (သို့) `Run` ကို နှိပ်ပါ-
-   ```sql
-   DELETE FROM users WHERE id = 1;
+
+```sql
+DELETE FROM users WHERE id = 1;
+```
+
+၅။ ထို့နောက် သင့် App လင့်ခ်အနောက်တွင် `/api/setup` ဟုရိုက်ထည့်၍ Browser တွင် တစ်ခေါက် ပြန်ဖွင့်ပါ။ 
+၆။ ပြီးလျှင် မူလအကောင့် (`admin` / `admin123`) ဖြင့် ပြန်လည် ဝင်ရောက်နိုင်ပြီ ဖြစ်သည်။
 
 ---
-၅။ ထို့နောက် သင့် App လင့်ခ်အနောက်တွင် /api/setup ဟုရိုက်ထည့်၍ Browser တွင် တစ်ခေါက် ပြန်ဖွင့်ပါ။
-၆။ ပြီးလျှင် မူလအကောင့် (admin / admin123) ဖြင့် ပြန်လည် ဝင်ရောက်နိုင်ပြီ ဖြစ်သည်။
 
-👨‍💻 ဖန်တီးသူ (Developed By)
-Developed By Thiha Aung (Yone Man) ဤပရောဂျက်အား မြန်မာနိုင်ငံရှိ မင်္ဂလာမောင်နှံများ လွယ်ကူသက်သာစွာ အသုံးပြုနိုင်ရန် ရည်ရွယ်၍ အခမဲ့ (Open-Source) ရေးသားဖန်တီးထားခြင်း ဖြစ်ပါသည်။
+## 👨‍💻 ဖန်တီးသူ (Developed By)
 
-📄 License 
-This project is licensed under the MIT License - see the LICENSE file for details.
+**Developed By Thiha Aung (Yone Man)** ဤပရောဂျက်အား မြန်မာနိုင်ငံရှိ မင်္ဂလာမောင်နှံများ လွယ်ကူသက်သာစွာ အသုံးပြုနိုင်ရန် ရည်ရွယ်၍ အခမဲ့ (Open-Source) ရေးသားဖန်တီးထားခြင်း ဖြစ်ပါသည်။
+
+---
+
+## 📄 License (မူပိုင်ခွင့် လိုင်စင်)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
