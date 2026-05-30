@@ -80,7 +80,6 @@ const UI_HTML = `<!DOCTYPE html>
             letter-spacing: -0.01em;
         }
 
-        /* [PERFECTED] Playfair Display (Italic) ကို အတိအကျ အသုံးပြုထားပါသည် */
         .luxury-wedding-font, .luxury-wedding-font span {
             font-family: 'Playfair Display', serif !important;
             font-style: italic !important;
@@ -144,9 +143,10 @@ const UI_HTML = `<!DOCTYPE html>
             return str.toString().replace(/[\u1040-\u1049]/g, m => myNumbers[m]);
         };
 
+        // [UX PERFECTED] Search Normalize now completely removes spaces for exact matching
         const normalizeMyanmarText = (str) => {
             if (!str) return '';
-            return str.trim().replace(/\u1040/g, 'ဝ').toLowerCase();
+            return str.trim().replace(/\\u1040/g, 'ဝ').replace(/\\s+/g, '').toLowerCase();
         };
 
         const apiCall = async (url, options = {}) => {
@@ -225,7 +225,7 @@ const UI_HTML = `<!DOCTYPE html>
             const themeColors = THEMES[appSettings.theme_color || 'gold'];
             const cssVars = \`:root { --w-50: \${themeColors[50]}; --w-100: \${themeColors[100]}; --w-500: \${themeColors[500]}; --w-800: \${themeColors[800]}; --w-900: \${themeColors[900]}; }\`;
             
-            if (isInitialLoad) return null; // Pre-loader works here
+            if (isInitialLoad) return null; 
             if (!isAuth && view === 'login') return <React.Fragment><style>{cssVars}</style><Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} /></React.Fragment>;
             if (!isAuth) return <div className="flex h-screen items-center justify-center bg-[#f8f7f5] dark:bg-zinc-950"><div className="w-12 h-12 border-4 border-wedding-100 border-t-wedding-500 rounded-full animate-spin"></div></div>;
 
@@ -242,8 +242,8 @@ const UI_HTML = `<!DOCTYPE html>
                                     <img src={appSettings.logo_url} className="w-full h-full rounded-full object-cover border-[1.5px] border-white dark:border-gray-900" />
                                 </div>
                             ) : (
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center text-white shadow-md border-2 border-white dark:border-gray-800 flex-shrink-0">
-                                    <i className="ph-fill ph-rings text-xl sm:text-2xl"></i>
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center shadow-md border-2 border-white dark:border-gray-800 flex-shrink-0">
+                                    <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg>
                                 </div>
                             )}
                         </div>
@@ -273,7 +273,6 @@ const UI_HTML = `<!DOCTYPE html>
                         {view === 'settings' && <Settings showToast={showToast} appSettings={appSettings} setAppSettings={setAppSettings} />}
                     </main>
 
-                    {/* Footer configured perfectly with Playfair Display Italic */}
                     <footer className="mt-auto py-8 text-center no-print relative z-10 border-t border-gray-200/50 dark:border-gray-800/50">
                         <p className="font-serif italic text-sm sm:text-base tracking-wider text-gray-400 flex items-center justify-center flex-wrap gap-2">
                             Crafted with elegance by <span className="luxury-wedding-font text-wedding-500 text-lg sm:text-xl drop-shadow-sm ml-1" style={{transform: 'translateY(-1px)'}}>Thiha Aung (Yone Man)</span>
@@ -309,8 +308,8 @@ const UI_HTML = `<!DOCTYPE html>
                                 <img src={appSettings.logo_url} className="w-full h-full rounded-full object-cover border-2 border-white dark:border-gray-900" />
                             </div>
                         ) : (
-                            <div className="w-24 h-24 mx-auto bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center text-white mb-6 shadow-luxury border-4 border-white">
-                                <i className="ph-fill ph-rings text-5xl"></i>
+                            <div className="w-24 h-24 mx-auto bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center shadow-luxury border-4 border-white">
+                                <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg>
                             </div>
                         )}
                         <h1 className="text-4xl font-serif text-gray-900 dark:text-white mb-2 font-bold tracking-tight">Welcome Back</h1>
@@ -359,7 +358,7 @@ const UI_HTML = `<!DOCTYPE html>
                 } catch (e) {}
             }, []);
 
-            useEffect(() => { loadData(); apiCall('/api/settings').then(data => setSettings(data.settings || {})); const interval = setInterval(() => { loadData(); }, 15000); return () => clearInterval(interval); }, [loadData]);
+            useEffect(() => { loadData(); apiCall('/api/settings').then(data => setSettings(data.settings || {})); const interval = setInterval(() => { loadData(); }, 60000); return () => clearInterval(interval); }, [loadData]);
 
             const total = stats.total || 1; 
             const invitedPercent = Math.min(Math.round((stats.invited / total) * 100) || 0, 100);
@@ -571,7 +570,7 @@ const UI_HTML = `<!DOCTYPE html>
                 finally { if(showLoad) setLoading(false); }
             }, []);
 
-            useEffect(() => { fetchGuests(true); apiCall('/api/settings').then(data => { if(data && data.settings) setSettings(data.settings); }).catch(e=>console.log(e)); const interval = setInterval(() => { fetchGuests(false); }, 15000); return () => clearInterval(interval); }, [fetchGuests]);
+            useEffect(() => { fetchGuests(true); apiCall('/api/settings').then(data => { if(data && data.settings) setSettings(data.settings); }).catch(e=>console.log(e)); const interval = setInterval(() => { fetchGuests(false); }, 60000); return () => clearInterval(interval); }, [fetchGuests]);
 
             const formatDateTime = (isoString) => {
                 if (!isoString) return '-'; const date = new Date(isoString); return date.toLocaleString('en-US', { timeZone: 'Asia/Yangon', hour12: true, year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -587,16 +586,28 @@ const UI_HTML = `<!DOCTYPE html>
                 reader.onload = async (evt) => {
                     setLoading(true); const bstr = evt.target.result; const wb = XLSX.read(bstr, {type:'binary'}); const wsname = wb.SheetNames[0]; const ws = wb.Sheets[wsname]; const data = XLSX.utils.sheet_to_json(ws);
                     const newGuests = [];
+                    const existingSet = new Set(guests.map(g => g.name.trim().toLowerCase() + '|' + g.address.trim().toLowerCase()));
+
                     for (let row of data) {
                         const guestName = row['Name'] || row['Guest Name'] || row['Guest'] || ''; if (!guestName) continue;
                         const sideStr = (row['Side'] || row['Category'] || '').toString(); let parsedSide = 'Groom'; if (sideStr.includes('သမီး')) parsedSide = 'Bride'; else if (sideStr.includes('နှစ်')) parsedSide = 'Both';
                         const guest = { name: guestName.toString().trim(), address: (row['Address'] || row['Group City'] || row['City'] || 'General').toString().trim(), side: parsedSide, note: (row['Note'] || row['Remark'] || '').toString().trim(), status: row['Status'] || 'Pending', attended: 0, gift_amount: '', gift_item: '' };
-                        if (!guests.some(g => g.name.trim().toLowerCase() === guest.name.toLowerCase() && g.address.trim().toLowerCase() === guest.address.toLowerCase())) { newGuests.push(guest); }
+                        
+                        const key = guest.name.toLowerCase() + '|' + guest.address.toLowerCase();
+                        if (!existingSet.has(key)) { newGuests.push(guest); existingSet.add(key); }
                     }
                     if (newGuests.length > 0) {
-                        try { await apiCall('/api/guests/bulk', { method: 'POST', body: JSON.stringify({ guests: newGuests }) }); showToast("Excel မှ ဧည့်သည် (" + newGuests.length + ") ဦး အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။", 'success'); } 
-                        catch (err) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ", 'error'); }
-                    } else { showToast("အသစ်ထည့်သွင်းရန် ဧည့်သည် မရှိပါ", 'warn'); }
+                        showToast("ဧည့်သည် (" + newGuests.length + ") ဦး စတင်ထည့်သွင်းနေပါသည်...", 'warn');
+                        try { 
+                            const chunkSize = 500;
+                            for (let i = 0; i < newGuests.length; i += chunkSize) {
+                                const chunk = newGuests.slice(i, i + chunkSize);
+                                await apiCall('/api/guests/bulk', { method: 'POST', body: JSON.stringify({ guests: chunk }) });
+                            }
+                            showToast("Excel မှ ဧည့်သည် အားလုံး အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။", 'success'); 
+                        } 
+                        catch (err) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ၊ ပြန်စမ်းကြည့်ပါ", 'error'); }
+                    } else { showToast("အသစ်ထည့်သွင်းရန် ဧည့်သည် မရှိပါ (သို့) ထပ်နေပါသည်", 'warn'); }
                     fetchGuests(true);
                 }; reader.readAsBinaryString(file); e.target.value = null; 
             };
@@ -646,6 +657,9 @@ const UI_HTML = `<!DOCTYPE html>
                             <button onClick={() => window.print()} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm">
                                 <i className="ph-bold ph-printer text-purple-600 text-lg"></i> Print
                             </button>
+                            <button onClick={() => fetchGuests(true)} title="Refresh Data" className="glass-luxury px-4 py-2.5 rounded-xl font-bold flex justify-center items-center hover:bg-white/50 transition-all text-gray-700 dark:text-gray-300">
+                                <i className={"ph-bold ph-arrows-clockwise text-xl " + (loading ? "animate-spin text-wedding-500" : "")}></i>
+                            </button>
                         </div>
                     </div>
 
@@ -680,14 +694,16 @@ const UI_HTML = `<!DOCTYPE html>
                         </div>
                     )}
 
-                    {loading && filteredGuests.length === 0 ? (
+                    {loading && filteredGuests.length === 0 && search === '' ? (
                         <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-20 bg-gray-200/50 dark:bg-gray-800/50 rounded-2xl animate-pulse"></div>)}</div>
                     ) : Object.keys(grouped).length === 0 ? (
                         <div className="text-center py-20 glass-luxury rounded-[2rem]">
                             <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
                                 <i className="ph-fill ph-users text-3xl text-gray-400"></i>
                             </div>
-                            <p className="text-gray-500 dark:text-gray-400 font-bold">No guests found.</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-bold">
+                                {search !== '' ? 'ဧည့်သည်စာရင်း မတွေ့ပါ၊ နာမည် သို့မဟုတ် လိပ်စာကို ပြန်လည်စစ်ဆေးပေးပါ။' : 'No guests found.'}
+                            </p>
                         </div>
                     ) : (
                         <div className="space-y-6">
@@ -879,7 +895,7 @@ const UI_HTML = `<!DOCTYPE html>
             const handleApplyCrop = async () => {
                 if (!canvasRef.current) return; const base64Data = canvasRef.current.toDataURL('image/png').split(',')[1];
                 const res = await fetch('/api/uploads', { method: 'POST', body: JSON.stringify({ mime_type: 'image/png', base64_data: base64Data }), headers: { 'Content-Type': 'application/json' } });
-                const data = await res.json(); setSettings({ ...settings, logo_url: data.url }); setSrcImage(null); showToast('Logo ပုံရိပ်အား စိတ်ကြိုက်အဝိုင်းပုံစံ ဖြတ်ညှပ်ပြီးပါပြီ', 'success');
+                const data = await res.json(); setSettings({ ...settings, logo_url: data.url }); setSrcImage(null); showToast('Monogram အား စိတ်ကြိုက်အဝိုင်းပုံစံ ဖြတ်ညှပ်ပြီးပါပြီ', 'success');
             };
 
             return (
@@ -957,7 +973,7 @@ const UI_HTML = `<!DOCTYPE html>
 
                                 {srcImage ? (
                                     <div className="space-y-6 my-2 p-6 bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-luxury relative z-10">
-                                        <h4 className="font-serif font-bold text-gray-800 dark:text-white text-xl">Adjust Logo Position</h4>
+                                        <h4 className="font-serif font-bold text-gray-800 dark:text-white text-xl">Adjust Monogram Position</h4>
                                         <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
                                             <img ref={imageRef} src={srcImage} className="hidden" />
                                             <div className="relative h-[200px] w-[200px] rounded-full overflow-hidden border-4 border-wedding-500 shadow-inner bg-gray-100 flex-shrink-0">
@@ -971,17 +987,17 @@ const UI_HTML = `<!DOCTYPE html>
                                         </div>
                                         <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
                                             <button type="button" onClick={() => setSrcImage(null)} className="px-6 py-3 text-sm font-bold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
-                                            <button type="button" onClick={handleApplyCrop} className="px-6 py-3 text-sm font-bold bg-gradient-to-r from-wedding-900 to-wedding-800 text-white rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">Apply Logo</button>
+                                            <button type="button" onClick={handleApplyCrop} className="px-6 py-3 text-sm font-bold bg-gradient-to-r from-wedding-900 to-wedding-800 text-white rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">Apply Monogram</button>
                                         </div>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
                                         <label className="cursor-pointer bg-white dark:bg-gray-800 px-8 py-4 rounded-2xl text-sm font-bold shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all flex items-center gap-3">
-                                            <i className="ph-bold ph-upload-simple text-wedding-500 text-xl"></i> Upload High-Res Logo
+                                            <svg className="w-6 h-6 mr-2 text-wedding-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg> Upload Couple's Monogram
                                             <input type="file" accept="image/*,image/svg+xml" className="hidden" onChange={handleFileSelect} />
                                         </label>
                                         {settings.logo_url && (
-                                            <button type="button" onClick={() => setSettings({...settings, logo_url: ''})} className="px-8 py-4 rounded-2xl text-sm font-bold transition-all text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100">Remove Logo</button>
+                                            <button type="button" onClick={() => setSettings({...settings, logo_url: ''})} className="px-8 py-4 rounded-2xl text-sm font-bold transition-all text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100">Remove Monogram</button>
                                         )}
                                     </div>
                                 )}
@@ -1044,6 +1060,16 @@ async function runMigrations(env) {
     // [FIXED] Database table required if R2 Storage is not attached
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS uploads (id TEXT PRIMARY KEY, mime_type TEXT, base64_data TEXT)").run();
     
+    // [PERFORMANCE UPDATE] Indexing for blazing fast search and sorting
+    await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_guests_address_name ON guests(address, name)").run();
+
+    // [DATA INTEGRITY UPDATE] Ensure exact uniqueness to prevent duplicates at the database level
+    try {
+        await env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_guest ON guests(name, address)").run();
+    } catch(e) {
+        // Ignores if index already exists or if there's conflicting data during dev
+    }
+
     // Insert default setting if empty
     const s = await env.DB.prepare("SELECT id FROM settings WHERE id = 1").first();
     if(!s) await env.DB.prepare("INSERT INTO settings (id, theme_color, effect_on) VALUES (1, 'gold', 1)").run();
@@ -1055,7 +1081,7 @@ async function runMigrations(env) {
         await env.DB.prepare("INSERT INTO users (id, username, password_hash) VALUES (1, 'admin', ?)").bind(h).run();
     }
 
-    return "Database Schema Updated Successfully! You can now log in.";
+    return "Database Schema & Indexes Updated Successfully! You can now log in.";
 }
 
 export default {
@@ -1197,9 +1223,14 @@ export default {
 			}
 			if (method === 'POST') {
 				const data = await request.json();
-				await env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-					.bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
-				return Response.json({ success: true });
+                try {
+				    await env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+					    .bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
+				    return Response.json({ success: true });
+                } catch (e) {
+                    // [DATA INTEGRITY] Catch UNIQUE constraint failure from DB
+                    return Response.json({ success: false, error: 'Duplicate entry' }, { status: 400 });
+                }
 			}
 		}
 
@@ -1223,8 +1254,9 @@ export default {
             const { guests } = await request.json();
             if (!guests || !Array.isArray(guests)) return Response.json({ success: false, error: 'Invalid data' }, { status: 400 });
 
+            // Using OR IGNORE to prevent bulk import crash if a duplicate sneaks in
             const statements = guests.map(g => {
-                return env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                return env.DB.prepare('INSERT OR IGNORE INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
                     .bind(g.name, g.address, g.note || '', g.status, g.side, g.attended || 0, g.gift_amount || '', g.gift_item || '', new Date().toISOString());
             });
 
