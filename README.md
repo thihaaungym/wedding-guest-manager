@@ -72,11 +72,11 @@ DELETE FROM users WHERE id = 1;
 
 ---
 
-## 👨‍💻 ဖန်တီးသူ (Developed By)
+## 👨‍💻 Developed By
 
 **Developed By Thiha Aung (Yone Man)** ဤပရောဂျက်အား မြန်မာနိုင်ငံရှိ မင်္ဂလာမောင်နှံများ လွယ်ကူသက်သာစွာ အသုံးပြုနိုင်ရန် ရည်ရွယ်၍ အခမဲ့ (Open-Source) ရေးသားဖန်တီးထားခြင်း ဖြစ်ပါသည်။
 
 ---
 
-## 📄 License (မူပိုင်ခွင့် လိုင်စင်)
+## 📄 License 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
