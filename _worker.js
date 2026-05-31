@@ -143,10 +143,9 @@ const UI_HTML = `<!DOCTYPE html>
             return str.toString().replace(/[\u1040-\u1049]/g, m => myNumbers[m]);
         };
 
-        // [UX PERFECTED] Search Normalize now completely removes spaces for exact matching
         const normalizeMyanmarText = (str) => {
             if (!str) return '';
-            return str.trim().replace(/\\u1040/g, 'ဝ').replace(/\\s+/g, '').toLowerCase();
+            return str.trim().replace(/\u1040/g, 'ဝ').replace(/\s+/g, '').toLowerCase();
         };
 
         const apiCall = async (url, options = {}) => {
@@ -591,7 +590,18 @@ const UI_HTML = `<!DOCTYPE html>
                     for (let row of data) {
                         const guestName = row['Name'] || row['Guest Name'] || row['Guest'] || ''; if (!guestName) continue;
                         const sideStr = (row['Side'] || row['Category'] || '').toString(); let parsedSide = 'Groom'; if (sideStr.includes('သမီး')) parsedSide = 'Bride'; else if (sideStr.includes('နှစ်')) parsedSide = 'Both';
-                        const guest = { name: guestName.toString().trim(), address: (row['Address'] || row['Group City'] || row['City'] || 'General').toString().trim(), side: parsedSide, note: (row['Note'] || row['Remark'] || '').toString().trim(), status: row['Status'] || 'Pending', attended: 0, gift_amount: '', gift_item: '' };
+                        
+                        // [UPDATE] Attended and Gift handling for the Demo Import
+                        const guest = { 
+                            name: guestName.toString().trim(), 
+                            address: (row['Address'] || row['Group City'] || row['City'] || 'General').toString().trim(), 
+                            side: parsedSide, 
+                            note: (row['Note'] || row['Remark'] || '').toString().trim(), 
+                            status: row['Status'] || 'Pending', 
+                            attended: (row['Attended'] === 'Yes' || row['Attended'] === 'yes' || row['Attended'] === 1 || row['Attended'] === 'TRUE' || row['Attended'] === true) ? 1 : 0, 
+                            gift_amount: row['Gift Amount'] ? row['Gift Amount'].toString().trim() : '', 
+                            gift_item: row['Gift Item'] ? row['Gift Item'].toString().trim() : '' 
+                        };
                         
                         const key = guest.name.toLowerCase() + '|' + guest.address.toLowerCase();
                         if (!existingSet.has(key)) { newGuests.push(guest); existingSet.add(key); }
@@ -619,8 +629,6 @@ const UI_HTML = `<!DOCTYPE html>
                 try { const method = formData.id ? 'PUT' : 'POST'; const url = formData.id ? "/api/guests/" + formData.id : '/api/guests'; await apiCall(url, { method, body: JSON.stringify(formData) }); showToast("Guest saved successfully"); setModalOpen(false); fetchGuests(false); } 
                 catch (error) { showToast("ချိတ်ဆက်မှု အဆင်မပြေပါ၊ အင်တာနက်ကို စစ်ဆေးပါ", "error"); } finally { setIsSaving(false); }
             };
-
-            const deleteGuest = async (id) => { if(!confirm("ဖျက်မှာ သေချာပြီလား?")) return; try { await apiCall("/api/guests/" + id, { method: 'DELETE' }); showToast('Guest deleted'); fetchGuests(false); } catch (error) { showToast("ဖျက်၍မရပါ၊ အင်တာနက်ကို စစ်ဆေးပါ", "error"); } };
 
             const confirmBulkDelete = async (e) => {
                 e.preventDefault(); setIsDeleting(true);
@@ -651,7 +659,7 @@ const UI_HTML = `<!DOCTYPE html>
                             </button>
                             <label className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold cursor-pointer transition-all hover:bg-white/50 text-sm">
                                 <i className="ph-bold ph-upload-simple text-blue-600 text-lg"></i> Import
-                                <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleImportExcel} />
+                                <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={handleImportExcel} />
                             </label>
                             <button onClick={exportExcel} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm"><i className="ph-bold ph-download-simple text-emerald-600 text-lg"></i> Export</button>
                             <button onClick={() => window.print()} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm">
@@ -746,7 +754,8 @@ const UI_HTML = `<!DOCTYPE html>
                                                     </span>
                                                     <div className="flex gap-2 no-print ml-auto">
                                                         <button onClick={() => { setFormData(g); setModalOpen(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-blue-600 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-pencil-simple text-lg"></i></button>
-                                                        <button onClick={() => deleteGuest(g.id)} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-red-500 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-red-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-trash text-lg"></i></button>
+                                                        {/* [UPDATE] Password prompt added for single delete via Modal */}
+                                                        <button onClick={() => { setSelectedIds([g.id]); setShowBulkDeleteModal(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-red-500 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-red-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-trash text-lg"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
