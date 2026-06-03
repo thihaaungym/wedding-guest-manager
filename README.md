@@ -1,82 +1,111 @@
-# 💍 Ever After - မင်္ဂလာဧည့်သည်စာရင်း စီမံခန့်ခွဲမှုစနစ် (Wedding Guest List Manager)
+# 💍 Ever After - Wedding Guest Management System
 
-ဤစနစ်သည် **Cloudflare Workers** (ဖိုင်တစ်ခုတည်း) ပေါ်တွင် အပြည့်အဝ တည်ဆောက်ထားသော လုပ်ငန်းသုံးအဆင့် (Enterprise-grade) မင်္ဂလာဧည့်သည်စာရင်း မှတ်သားသည့် Application ဖြစ်ပါသည်။ **React** (Frontend), **D1** (SQL Database) နှင့် **R2** (Object Storage) တို့ကို အသုံးပြု၍ လုံခြုံ၊ မြန်ဆန်၊ ခမ်းနားစွာ ဖန်တီးထားပါသည်။
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020?style=for-the-badge&logo=cloudflare)
+![React](https://img.shields.io/badge/Frontend-React-61dafb?style=for-the-badge&logo=react)
+![SQLite](https://img.shields.io/badge/Database-D1_SQLite-003B57?style=for-the-badge&logo=sqlite)
+![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)
 
----
-
-## ✨ ပင်မလုပ်ဆောင်ချက်များ (Core Features)
-
-* 📊 **Smart Dashboard (အခြေအနေပြဘုတ်ပြား):** ဧည့်သည်စုစုပေါင်း၊ ရောက်ရှိသူ၊ ဖိတ်စာဝေပြီးသူ ရာခိုင်နှုန်းများနှင့် မည်သည့်ဖက်မှ ဧည့်သည်မည်မျှလာသည်ကို အချိန်နှင့်တပြေးညီ ကြည့်ရှုနိုင်ခြင်း။
-* 👥 **Guest Roster (ဧည့်သည်စာရင်း စီမံခြင်း):** ဧည့်သည်အသစ်ထည့်ခြင်း၊ ပြင်ဆင်ခြင်း၊ အုပ်စုလိုက် ဖျက်ခြင်းများအပြင် နာမည်နှင့် လိပ်စာ (Space ခြားသည်ဖြစ်စေ၊ မခြားသည်ဖြစ်စေ) အလွယ်တကူ ရှာဖွေနိုင်ခြင်း။
-* 💰 **Gift Tracking (လက်ဖွဲ့မှတ်တမ်း):** လက်ဖွဲ့ငွေနှင့် လက်ဖွဲ့ပစ္စည်းများကို စနစ်တကျ မှတ်သားထားနိုင်ပြီး စုစုပေါင်း လက်ဖွဲ့ငွေပမာဏကို အလိုအလျောက် တွက်ချက်ပေးခြင်း။
-* 📥 **Excel Integration (Excel ဖြင့် သွင်း/ထုတ်ခြင်း):** ဧည့်သည် (၁၀,၀၀၀) အထိ Excel ဖိုင်ဖြင့် အလွယ်တကူ သွင်း/ထုတ် ပြုလုပ်နိုင်ခြင်း။ (ဖုန်းများ Not Responding မဖြစ်စေရန် Smart Chunking စနစ်ဖြင့် အပိုင်းလိုက် ခွဲသွင်းပေးပါသည်)။
-* 🎨 **Luxury UI (ခမ်းနားသော ဒီဇိုင်း):** နိုင်ငံတကာစံမီ *Playfair Display* ဖောင့်၊ Glassmorphism ဖန်သားပြင်ဒီဇိုင်း နှင့် လှပသော SVG သင်္ကေတများဖြင့် တော်ဝင်ဆန်စွာ ဖန်တီးထားခြင်း။ Theme အရောင်များကိုလည်း စိတ်ကြိုက်ပြောင်းလဲနိုင်ခြင်း။
-* 🔒 **High Security (အဆင့်မြင့် လုံခြုံရေး):** အချက်အလက်များ လုံခြုံစေရန် အဆင့်မြင့် Session-based Authentication နှင့် Password Salt စနစ်များ ပါဝင်ခြင်း။ အမည်နှင့် လိပ်စာ ထပ်နေပါက Database မှ အလိုအလျောက် တားဆီးပေးခြင်း။
+**Ever After** သည် Cloudflare Workers နှင့် D1 Database (SQLite) ကို အသုံးပြု၍ Serverless Architecture ဖြင့် ရေးသားထားသော **မင်္ဂလာပွဲ ဧည့်သည်စာရင်း စီမံခန့်ခွဲမှုစနစ်** ဖြစ်ပါသည်။ Hosting / Server ဖိုး လုံးဝပေးစရာမလိုဘဲ Free Tier ဖြင့် အလွယ်တကူ အသုံးပြုနိုင်ရန် ဖန်တီးထားပါသည်။
 
 ---
 
-## 🚀 အပိုင်း (၁) - Cloudflare တွင် အခမဲ့ တည်ဆောက်ရန် လမ်းညွှန် (Setup Guide)
+## ✨ အဓိက လုပ်ဆောင်ချက်များ (Key Features)
 
-သင့်ကိုယ်ပိုင် မင်္ဂလာဧည့်သည်စာရင်း App ကို Cloudflare တွင် အလွယ်တကူ တည်ဆောက်နိုင်ရန် အောက်ပါဇယားပါ အဆင့်များအတိုင်း အတိအကျ လိုက်လုပ်ပါ-
-
-| အဆင့် | လုပ်ဆောင်ရမည့် အမည် | နှိပ်ရမည့် နေရာ နှင့် အသေးစိတ် ရှင်းလင်းချက် |
-| :---: | :--- | :--- |
-| **၁** | **Worker (ဆာဗာ) ဆောက်ခြင်း** | Cloudflare သို့ဝင်ပါ။ ဘေးဘက် Menu မှ `Workers & Pages` ကိုနှိပ်ပါ။ `Create application` > `Create Worker` ကိုနှိပ်ပါ။ နာမည်တစ်ခုခုပေး၍ `Deploy` နှိပ်ပါ။ ထို့နောက် `Edit Code` ထဲဝင်၍ မူလကုဒ်များကို အကုန်ဖျက်ကာ ဤပရောဂျက်မှ `worker.js` ကုဒ်အပြည့်အစုံကို Paste ချပြီး ညာဘက်အပေါ်ထောင့်မှ `Save and deploy` နှိပ်ပါ။ |
-| **၂** | **D1 Database (ဒေတာဘေ့စ်) ချိတ်ခြင်း** | ဘေးဘက် Menu အောက်နားရှိ `Storage & Databases` > `D1 SQL Database` ကိုနှိပ်ပါ။ `Create database` နှိပ်၍ `wedding_db` ဟု နာမည်ပေးကာ ဆောက်ပါ။ ပြီးလျှင် ခုနက Worker ၏ `Settings` > `Bindings` သို့သွားပါ။ `Add` > `D1 database` ကိုရွေးပါ။<br>• **Variable name:** တွင် `DB` ဟု အတိအကျရိုက်ပါ။<br>• **Database:** တွင် `wedding_db` ကိုရွေးပြီး `Deploy` (သို့) `Save` နှိပ်ပါ။ |
-| **၃** | **R2 Storage (ဓာတ်ပုံသိမ်းရန်) ချိတ်ခြင်း** | ဘေးဘက် Menu မှ `Storage & Databases` > `R2 Object Storage` ကိုနှိပ်ပါ။ `Create bucket` နှိပ်၍ `wedding-logos` ဟု နာမည်ပေးကာ ဆောက်ပါ။ ပြီးလျှင် Worker ၏ `Settings` > `Bindings` သို့ပြန်သွားပါ။ `Add` > `R2 bucket` ကိုရွေးပါ။<br>• **Variable name:** တွင် `BUCKET` ဟု အတိအကျရိုက်ပါ။<br>• **R2 bucket:** တွင် `wedding-logos` ကိုရွေးပြီး `Deploy` (သို့) `Save` နှိပ်ပါ။ |
-| **၄** | **Database အသက်သွင်းခြင်း ⚠️<br>(အလွန် အရေးကြီးသည်)** | သင့် Worker ၏ လင့်ခ်အနောက်၌ `/api/setup` ဟု ရိုက်ထည့်၍ Browser တွင် ဖွင့်ပါ။ <br>*(ဥပမာ - `https://my-wedding.yours.workers.dev/api/setup`)* <br>မျက်နှာပြင်ပေါ်တွင် **"Database Schema & Indexes Updated Successfully!"** ဟု ပေါ်လာပါက စနစ်အားလုံး အောင်မြင်စွာ ချိတ်ဆက်မိသွားပါပြီ။ |
-| **၅** | **စတင် လော့ဂ်အင် ဝင်ခြင်း** | မိမိ၏ ပင်မ Web Link သို့ ပြန်သွားပါ။ <br>• **Username:** `admin` <br>• **Password:** `admin123` ဖြင့် ဝင်ရောက်ပါ။ <br>*(မှတ်ချက် - ဝင်ပြီးသည်နှင့် Settings ထဲတွင် စကားဝှက်ကို ချက်ချင်း ပြောင်းပါ)* |
-
----
-
-## 📱 အပိုင်း (၂) - အက်ပ် အသုံးပြုနည်း အသေးစိတ် လမ်းညွှန် (User Manual)
-
-### ၁။ မင်္ဂလာပွဲ အချက်အလက်များ ထည့်သွင်းခြင်း (Settings)
-- ညာဘက်အပေါ်ထောင့်ရှိ **Settings (ဂီယာပုံ)** သို့သွားပါ။
-- **Wedding Details:** သတို့သားနာမည်၊ သတို့သမီးနာမည်၊ မင်္ဂလာရက်စွဲ နှင့် နေရာ (Venue) တို့ကို ဖြည့်စွက်ပြီး Save လုပ်ပါ။
-- **Monogram တင်ခြင်း:** ဓာတ်ပုံတင်ရန် နေရာတွင် မိမိတို့ ဇနီးမောင်နှံ၏ အမှတ်တံဆိပ် (Monogram/Logo) ကို တင်ပါ။ ပုံကို စိတ်ကြိုက် အကြီးအသေး ချိန်ညှိ (Crop) ပြီး `Apply Monogram` ကို နှိပ်ပါ။ (ပုံများသည် R2 Storage တွင် Quality အပြည့်ဖြင့် သိမ်းဆည်းပေးပါမည်)။
-- **App Customization:** အက်ပ်၏ အရောင် Theme (Gold, Rose, Emerald, Blue) များနှင့် Background အလှဆင် Effect များကို မိမိစိတ်ကြိုက် ရွေးချယ်နိုင်ပါသည်။
-
-### ၂။ ဧည့်သည်စာရင်းများ စီမံခြင်း (Guests)
-အလယ်ရှိ **Guests (လူပုံစံ)** စာမျက်နှာတွင် ဧည့်သည်များကို ထည့်သွင်းစီမံနိုင်သည်-
-
-* **Excel ဖြင့် အများအပြားသွင်းရန် (Import):**
-  သင့် Excel ဖိုင် (`.xlsx` သို့မဟုတ် `.xls`) ၏ ထိပ်ဆုံးခေါင်းစဉ် (Row 1) များကို အောက်ပါအတိုင်း ပေးထားရန် လိုအပ်ပါသည်-
-  - `Name` (ဧည့်သည်အမည်)
-  - `Address` သို့မဟုတ် `City` (လိပ်စာ/မြို့)
-  - `Side` (သတို့သားဖက် / သတို့သမီးဖက် / နှစ်ဖက်)
-  - `Status` (Pending / Written / Invited)
-  - `Note` (မှတ်ချက် - လိုအပ်မှသာ)
-  ထို့နောက် `Import` ခလုတ်ကိုနှိပ်၍ ဖိုင်ကိုရွေးချယ်လိုက်ပါက အလိုအလျောက် သွင်းပေးပါမည်။
-* **တစ်ယောက်ချင်း ထည့်ရန် (Add):** `Add` ခလုတ်ကိုနှိပ်၍ နာမည်၊ လိပ်စာ၊ လက်ဖွဲ့ငွေ၊ ပစ္စည်း အစရှိသည်တို့ကို အသေးစိတ် မှတ်သားနိုင်ပါသည်။ ပွဲနေ့တွင် ရောက်လာပါက **Attended (ရောက်ရှိ)** ကို အမှန်ခြစ် ပေးရပါမည်။
-* **Excel ဖြင့် ပြန်ထုတ်ရန် (Export):** `Export` ခလုတ်ကို နှိပ်လိုက်သည်နှင့် လက်ရှိဧည့်သည်စာရင်း အားလုံး Excel ဖိုင်အနေဖြင့် ဒေါင်းလုဒ် ကျလာပါမည်။
-* **အများအပြား ဖျက်ရန် (Bulk Delete):** `Select` ခလုတ်ကိုနှိပ်ပါ။ ဖျက်လိုသော ဧည့်သည်များကို အမှန်ခြစ် ရွေးချယ်ပြီး `ဖျက်မည်` ခလုတ်ကိုနှိပ်ပါ။ လုံခြုံရေးအတွက် Admin Password ပြန်တောင်းပါမည်။
+* **⚡ Single File Architecture:** Frontend (React) နှင့် Backend (API & DB) အားလုံးကို `worker.js` ဖိုင်တစ်ခုတည်းတွင် ပေါင်းစပ်ရေးသားထားသဖြင့် Deploy လုပ်ရန် အလွန်လွယ်ကူသည်။
+* **📊 Real-time Dashboard:** ဧည့်သည်စုစုပေါင်း၊ ဖိတ်စာဝေပြီးသူ၊ တက်ရောက်သူ၊ လက်ဖွဲ့ငွေနှင့် လက်ဖွဲ့ပစ္စည်း စုစုပေါင်းတို့ကို အချိန်နှင့်တစ်ပြေးညီ တွက်ချက်ပြသပေးခြင်း။
+* **🔐 Role-Based Access Control (RBAC):** `Admin` နှင့် `Staff` ဟူ၍ အကောင့် (၂) မျိုးခွဲခြားထားပြီး ငွေစာရင်းလုံခြုံရေးကို အထူးကာကွယ်ပေးထားသည်။
+* **🚀 High Performance Search:** ဧည့်သည်စာရင်း ထောင်ဂဏန်းရှိနေလျှင်ပင် ဖုန်းဟန်းခြင်းမရှိစေရန် **Search Debouncing** နှင့် **Server-side Pagination** စနစ်ကို အသုံးပြုထားသည်။
+* **☁️ Smart Storage Fallback:** ပုံများ (Monogram) တင်ရန်အတွက် Cloudflare R2 Storage အား ချိတ်ဆက်နိုင်ပြီး၊ မချိတ်ဆက်ထားပါကလည်း D1 Database အတွင်း အလိုအလျောက် ပြောင်းလဲသိမ်းဆည်းပေးမည့် စနစ်ပါဝင်သည်။
+* **📥 Excel Import / Export:** ဧည့်သည်စာရင်းများကို Excel (`.xlsx`, `.csv`) မှတစ်ဆင့် အလွယ်တကူ အစုလိုက် သွင်းနိုင်/ထုတ်နိုင်ခြင်း။
+* **📝 Activity Audit Logs:** မည်သူက မည်သည့်အချိန်တွင် ဧည့်သည်စာရင်းကို အတိုး/အလျော့ လုပ်သွားသည်ကို နောက်ကွယ်မှ မှတ်တမ်းတင်ပေးထားသော စနစ်။
+* **🔑 Master Recovery Key:** Password မေ့သွားပါက အလွယ်တကူ ပြန်လည်ရယူနိုင်မည့် ကိုယ်ပိုင် လျှို့ဝှက် Key စနစ်။
+* **🇲🇲 Perfect Typography:** မြန်မာစာအတွက် အထူးသီးသန့် `Padauk` ဖောင့်စနစ်ကို အသုံးပြုထားသဖြင့် ဖတ်ရလွယ်ကူပြီး သပ်ရပ်ကျစ်လစ်သော အမြင်ကို ရရှိစေသည်။
 
 ---
 
-## 🆘 အရေးပေါ် ဖြေရှင်းနည်း (Troubleshooting)
+## 🔒 အကောင့်ခွဲစနစ် (Role-Based Access)
 
-**မေးခွန်း - ကိုယ်ပြောင်းထားတဲ့ Password ကို မေ့သွားလို့ App ထဲ ဝင်မရတော့ရင် ဘယ်လိုလုပ်ရမလဲ?** **အဖြေ -** စိုးရိမ်စရာ မလိုပါ။ Cloudflare ထဲမှနေ၍ မူလအကောင့်အဖြစ် အောက်ပါအတိုင်း Reset ပြန်ချနိုင်ပါသည်-
+လုံခြုံရေးနှင့် ပွဲနေ့တွင် ဧည့်ခံမည့်သူများအတွက် အထူးရည်ရွယ်၍ အကောင့် (၂) မျိုး ခွဲခြားပေးထားပါသည်။
 
-၁။ Cloudflare ၏ ဘေးဘက် Menu မှ `Storage & Databases` > `D1 SQL Database` သို့ သွားပါ။
-၂။ မိမိဆောက်ထားသော `wedding_db` ကို နှိပ်ဝင်ပါ။
-၃။ အပေါ် တက်ဘ်များထဲမှ `Console` ဆိုသည်ကို နှိပ်ပါ။
-၄။ အောက်ခြေရှိ စာရိုက်ရသော အကွက် (Query) ထဲတွင် အောက်ပါစာကြောင်းကို အတိအကျ ကူးထည့်ပြီး `Execute` (သို့) `Run` ကို နှိပ်ပါ-
-
-```sql
-DELETE FROM users WHERE id = 1;
-```
-
-၅။ ထို့နောက် သင့် App လင့်ခ်အနောက်တွင် `/api/setup` ဟုရိုက်ထည့်၍ Browser တွင် တစ်ခေါက် ပြန်ဖွင့်ပါ။ 
-၆။ ပြီးလျှင် မူလအကောင့် (`admin` / `admin123`) ဖြင့် ပြန်လည် ဝင်ရောက်နိုင်ပြီ ဖြစ်သည်။
+| Role (အခန်းကဏ္ဍ) | Default Username | Default Password | လုပ်ဆောင်နိုင်ခွင့်များ (Permissions) |
+| :--- | :--- | :--- | :--- |
+| 👑 **Admin** | `admin` | `admin123` | **အပြည့်အဝ ထိန်းချုပ်ခွင့်ရှိသည်။** <br> • လက်ဖွဲ့ငွေများအားလုံး မြင်တွေ့နိုင်စစ်ဆေးနိုင်သည်။<br> • ဧည့်သည်များအား အစုလိုက်ဖျက်သိမ်းနိုင်သည်။<br> • မှတ်တမ်း (Logs) နှင့် Settings ပြင်ဆင်နိုင်သည်။ |
+| 💁‍♀️ **Staff** | `staff` | `staff123` | **ဧည့်ခံရေးအဖွဲ့အတွက်သာ။** <br> • ဧည့်သည်ရှာဖွေခြင်း၊ အသစ်ထည့်ခြင်းနှင့် `Attended` မှတ်ခြင်းများ လုပ်နိုင်သည်။<br> • 🚫 *လက်ဖွဲ့ငွေပမာဏများကို `*** Ks` အဖြစ် ဖုံးကွယ်ထားမည်။* <br> • 🚫 *ဧည့်သည်အား ဖျက်ပစ်ခွင့်မရှိပါ။ Logs နှင့် Settings ဝင်ခွင့်မရှိပါ။* |
 
 ---
 
-## 👨‍💻 Developed By
+## 🛠️ တပ်ဆင်နည်း အဆင့်ဆင့် (Setup Guide)
 
-**Developed By Thiha Aung (Yone Man)** ဤပရောဂျက်အား မြန်မာနိုင်ငံရှိ မင်္ဂလာမောင်နှံများ လွယ်ကူသက်သာစွာ အသုံးပြုနိုင်ရန် ရည်ရွယ်၍ အခမဲ့ (Open-Source) ရေးသားဖန်တီးထားခြင်း ဖြစ်ပါသည်။
+### အဆင့် (၁): Database ဖန်တီးခြင်း
+1. သင်၏ Cloudflare Dashboard သို့ ဝင်ပါ။
+2. ဘယ်ဘက် Menu မှ **Storage & Databases > D1 SQL** သို့ သွားပြီး `Create Database` ကို နှိပ်ပါ။
+3. Database နာမည်ကို `wedding-db` (သို့မဟုတ် မိမိနှစ်သက်ရာ) ပေးပါ။
+
+### အဆင့် (၂): R2 Storage ဖန်တီးခြင်း (Optional) *[အကြံပြုပါသည်]*
+1. ဘယ်ဘက် Menu မှ **Storage & Databases > R2** သို့ သွားပြီး `Create bucket` ကို နှိပ်ပါ။
+2. Bucket နာမည်ကို `wedding-assets` ဟု ပေးပါ။
+
+### အဆင့် (၃): Cloudflare Worker တည်ဆောက်ခြင်း
+1. **Workers & Pages** သို့ သွားပြီး `Create application` > `Create Worker` ကို နှိပ်ပါ။
+2. Worker အား နာမည်ပေးပြီး (ဥပမာ - `ever-after-wedding`) `Deploy` ကို နှိပ်ပါ။
+3. ပြီးလျှင် ထို Worker ၏ **Settings > Variables and Secrets > Bindings** သို့ သွားပါ။
+    * **D1 Database ချိတ်ဆက်ရန်:** `Add` > `D1 Database` ကိုရွေးပါ။ Variable name တွင် **`DB`** ဟုပေးပြီး ခုနကဆောက်ခဲ့သော Database ကို ရွေးပါ။
+    * **R2 Bucket ချိတ်ဆက်ရန် (ရှိပါက):** `Add` > `R2 Bucket` ကိုရွေးပါ။ Variable name တွင် **`BUCKET`** ဟုပေးပြီး ခုနကဆောက်ခဲ့သော Bucket ကို ရွေးပါ။
+4. `Save and deploy` ကိုနှိပ်ပါ။
+
+### အဆင့် (၄): ကုဒ်ထည့်သွင်းခြင်း (Deployment)
+1. Worker ၏ ညာဘက်အပေါ်ထောင့်ရှိ **Edit Code** ကို နှိပ်ပါ။
+2. Code Editor ထဲတွင် မူလရှိနေသော ကုဒ်ဟောင်းများအားလုံးကို **ဖျက်ပစ်ပါ (Ctrl+A -> Delete)**။
+3. ဤ Repository မှ `worker.js` ဖိုင်ထဲရှိ ကုဒ်အပြည့်အစုံကို Copy ကူး၍ Paste ချပါ။
+4. ညာဘက်အပေါ်ထောင့်မှ **Save and deploy** ကို နှိပ်ပါ။
+   > ⚠️ *(မှတ်ချက်: "Unexpected token export" error တက်ပါက ကုဒ်အလွတ် `export default { fetch() { return new Response("OK") } }` ကို အရင် Deploy လုပ်ပြီးမှ ကုဒ်အရှည်ကြီးကို ပြန်ထည့်ပါ)*။
+
+### အဆင့် (၅): Database အား အသက်သွင်းခြင်း (Initialization) - ⚠️ အရေးကြီး
+Code ကို Deploy လုပ်ပြီးပါက Database အတွင်း လိုအပ်သော Table များတည်ဆောက်ရန်နှင့် Default အကောင့်များ ဖန်တီးရန်အတွက် အောက်ပါအဆင့်ကို **မဖြစ်မနေ (၁) ကြိမ်** လုပ်ဆောင်ပေးရပါမည်-
+1. သင်၏ Browser တွင် Worker ၏ URL အနောက်၌ `/api/setup` ဟု ရိုက်ထည့်ပြီး ဖွင့်ပါ။ 
+   *(ဥပမာ - `https://ever-after.yourname.workers.dev/api/setup`)*
+2. မျက်နှာပြင်တွင် `"Database Schema & Indexes Updated Successfully!"` ဟု ပေါ်လာပါက တပ်ဆင်ခြင်း ရာနှုန်းပြည့် အောင်မြင်ပါပြီ။ App ပင်မလင့်ခ်သို့ ပြန်သွား၍ စတင်အသုံးပြုနိုင်ပါပြီ။
 
 ---
 
-## 📄 License 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📖 အသုံးပြုနည်း လမ်းညွှန် (Usage Manual)
+
+### ၁။ Settings ပြင်ဆင်ခြင်းနှင့် လုံခြုံရေး (Admin Only)
+- Admin အကောင့် (`admin` / `admin123`) ဖြင့် စတင် Login ဝင်ပါ။
+- **Settings** (ဂီယာပုံ) သို့ သွားပါ။
+- **Account Security:** နေရာတွင် `admin` နှင့် `staff` အကောင့် နှစ်ခုလုံးအတွက် မိမိကိုယ်ပိုင် Password အသစ်များကို ချက်ချင်း ပြောင်းလဲပါ။
+- **Master Recovery Key:** Password မေ့သွားပါက ပြန်ယူရန် (Default: `EverAfter2026`) အား မိမိလျှို့ဝှက်ချက်အဖြစ် ပြောင်းလဲသတ်မှတ်ပါ။
+- ကျန်ရှိသော သတို့သား/သတို့သမီး အမည်၊ ရက်စွဲ၊ နေရာ၊ Monogram ပုံ နှင့် Theme အရောင်များကို စိတ်ကြိုက် ပြင်ဆင်ပါ။
+
+### ၂။ ဧည့်သည်စာရင်းသွင်းခြင်း (Guest Management)
+- **Guests** (လူပုံစံ) မျက်နှာပြင်သို့ သွားပါ။
+- **+ Add** ကိုနှိပ်၍ ဧည့်သည်တစ်ဦးချင်းစီ၏ အမည်၊ လိပ်စာ၊ ဖက် (သတို့သား/သတို့သမီး/နှစ်ဖက်) ကို ထည့်သွင်းနိုင်ပါသည်။
+- **Import** ကိုနှိပ်၍ `Name, Address, Side, Status, Attended, Gift Amount, Gift Item, Note` စသည့် ခေါင်းစဉ်များပါဝင်သော Excel (သို့) CSV ဖိုင်ဖြင့် ဧည့်သည် ထောင်ဂဏန်းကို အစုလိုက် လွယ်ကူစွာ သွင်းနိုင်ပါသည်။
+
+### ၃။ ပွဲနေ့တွင် ဧည့်ခံခြင်း (Staff Reception)
+- ပွဲနေ့တွင် ဧည့်ခံရေးကောင်တာရှိ ဖုန်း/Tablet များ၌ `staff` အကောင့်ဖြင့် Login ဝင်ပေးထားပါ။
+- ဧည့်သည်ရောက်လာပါက အမည် သို့မဟုတ် လိပ်စာဖြင့် ရှာဖွေပြီး ခဲတံပုံ (Edit) ကို နှိပ်ကာ **"ရောက်ရှိ (Attended)"** အား အမှန်ခြစ်ပေးပါ။ ပါလာသော လက်ဖွဲ့ပစ္စည်းနှင့် ငွေများကို စာရင်းသွင်းနိုင်ပါသည်။ သို့သော် လုံခြုံရေးအရ ငွေပမာဏများကို `***` ဖြင့် ဖုံးကွယ်ပေးထားမည် ဖြစ်သည်။
+
+### ၄။ Password ပြန်လည်ရယူခြင်း (Forgot Password)
+- လုံခြုံရေးအရ Email/OTP များကို အသုံးမပြုပါ။
+- Login မျက်နှာပြင်ရှိ **"Forgot Password?"** ကို နှိပ်ပါ။
+- မိမိ၏ Username နှင့် Settings တွင် သိမ်းဆည်းထားခဲ့သော **Master Recovery Key** ကို ရိုက်ထည့်၍ Password အသစ်ကို ချက်ချင်း ပြောင်းလဲနိုင်ပါသည်။
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details. You are free to use, modify, and distribute this software for personal or commercial purposes.
+
+---
+
+## 👨‍💻 Developer & Contact
+
+Developed with ❤️ by **Thiha Aung (Yone Man)** Open-source Contributor & Web Developer based in Myanmar.
+
+- 📧 Email: [audiobar.ym@gmail.com](mailto:audiobar.ym@gmail.com)
+- ✈️ Telegram: [@thihaaung44](https://t.me/thihaaung44)
+- 🌐 GitHub: [audiobar](https://github.com/audiobar)
+
+*If you encounter any issues during setup or have feature requests, feel free to reach out or open an issue in this repository!*
