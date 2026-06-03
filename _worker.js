@@ -8,7 +8,7 @@ const UI_HTML = `<!DOCTYPE html>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#5c4e3c">
     
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"><\/script>
     <script src="https://cdn.tailwindcss.com"><\/script>
     <script>
@@ -33,6 +33,7 @@ const UI_HTML = `<!DOCTYPE html>
                         'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'spin-slow': 'spin 1.5s linear infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
                     },
                     keyframes: {
                         pulseGlow: { 
@@ -42,6 +43,10 @@ const UI_HTML = `<!DOCTYPE html>
                         float: { 
                             '0%, 100%': { transform: 'translateY(0)' }, 
                             '50%': { transform: 'translateY(-10px)' } 
+                        },
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' }
                         }
                     }
                 }
@@ -69,14 +74,20 @@ const UI_HTML = `<!DOCTYPE html>
         }
         
         body, input, textarea, select, button { 
-            font-family: 'Montserrat', 'MiSans Myanmar', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif; 
-            line-height: 1.7; 
+            font-family: 'Montserrat', 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif; 
+            line-height: 1.8; 
+        }
+
+        .font-mm {
+            font-family: 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif !important;
+            letter-spacing: 0px !important;
+            word-spacing: normal !important;
         }
         
         p, span, div, a, th, td { font-family: inherit; }
         
-        h1, h2, h3, h4, .font-serif {
-            font-family: 'Playfair Display', 'MiSans Myanmar', serif;
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
             letter-spacing: -0.01em;
         }
 
@@ -139,18 +150,18 @@ const UI_HTML = `<!DOCTYPE html>
 
         const convertToEnglishDigits = (str) => {
             if(!str) return '';
-            const myNumbers = { '\u1040':'0', '\u1041':'1', '\u1042':'2', '\u1043':'3', '\u1044':'4', '\u1045':'5', '\u1046':'6', '\u1047':'7', '\u1048':'8', '\u1049':'9' };
-            return str.toString().replace(/[\u1040-\u1049]/g, m => myNumbers[m]);
+            const myNumbers = { '၀':'0', '၁':'1', '၂':'2', '၃':'3', '၄':'4', '၅':'5', '၆':'6', '၇':'7', '၈':'8', '၉':'9' };
+            return str.toString().replace(/[၀-၉]/g, m => myNumbers[m]);
         };
 
         const normalizeMyanmarText = (str) => {
             if (!str) return '';
-            return str.trim().replace(/\u1040/g, 'ဝ').replace(/\s+/g, '').toLowerCase();
+            return str.trim().replace(/၀/g, 'ဝ').replace(/\\s+/g, '').toLowerCase();
         };
 
         const apiCall = async (url, options = {}) => {
             if (!navigator.onLine) throw new Error("Offline");
-            const res = await fetch(url, { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
+            const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
             if (res.status === 401) window.location.hash = '#login';
             return res.json();
         };
@@ -165,7 +176,7 @@ const UI_HTML = `<!DOCTYPE html>
                     {effect_on === 1 && (
                         <div className="fixed inset-0 overflow-hidden pointer-events-none z-40">
                             {[...Array(25)].map((_, i) => (
-                                <div key={i} className="luxury-particle" style={{ left: Math.random() * 100 + '%', width: Math.random() * 5 + 3 + 'px', height: Math.random() * 5 + 3 + 'px', animationDelay: Math.random() * 10 + 's', animationDuration: Math.random() * 10 + 15 + 's' }}></div>
+                                <div key={i} className="luxury-particle" style={{ left: (Math.random() * 100) + '%', width: (Math.random() * 5 + 3) + 'px', height: (Math.random() * 5 + 3) + 'px', animationDelay: (Math.random() * 10) + 's', animationDuration: (Math.random() * 10 + 15) + 's' }}></div>
                             ))}
                         </div>
                     )}
@@ -176,9 +187,11 @@ const UI_HTML = `<!DOCTYPE html>
         function App() {
             const [view, setView] = useState('dashboard');
             const [isAuth, setIsAuth] = useState(false);
+            const [userRole, setUserRole] = useState('admin');
+            const [userName, setUserName] = useState('');
             const [darkMode, setDarkMode] = useState(false);
             const [toast, setToast] = useState(null);
-            const [appSettings, setAppSettings] = useState({ theme_color: 'gold', bg_pattern: 'floral', effect_on: 1 });
+            const [appSettings, setAppSettings] = useState({ theme_color: 'gold', bg_pattern: 'floral', effect_on: 1, recovery_key: '' });
             const [isInitialLoad, setIsInitialLoad] = useState(true);
 
             useEffect(() => {
@@ -201,7 +214,13 @@ const UI_HTML = `<!DOCTYPE html>
 
                     try {
                         const res = await apiCall('/api/auth/check');
-                        if (res.auth) setIsAuth(true); else window.location.hash = '#login';
+                        if (res.auth) {
+                            setIsAuth(true);
+                            setUserRole(res.role || 'admin');
+                            setUserName(res.username || '');
+                        } else {
+                            window.location.hash = '#login';
+                        }
                     } catch (error) { window.location.hash = '#login'; }
                     
                     setIsInitialLoad(false);
@@ -210,7 +229,10 @@ const UI_HTML = `<!DOCTYPE html>
 
                 const hash = window.location.hash.replace('#', '') || 'dashboard';
                 setView(hash);
-                window.addEventListener('hashchange', () => setView(window.location.hash.replace('#', '') || 'dashboard'));
+                window.addEventListener('hashchange', () => {
+                    const newHash = window.location.hash.replace('#', '') || 'dashboard';
+                    setView(newHash);
+                });
 
                 if (localStorage.getItem('weddingDarkMode') === 'true') { setDarkMode(true); document.documentElement.classList.add('dark'); }
             }, []);
@@ -222,16 +244,22 @@ const UI_HTML = `<!DOCTYPE html>
             };
 
             const themeColors = THEMES[appSettings.theme_color || 'gold'];
-            const cssVars = \`:root { --w-50: \${themeColors[50]}; --w-100: \${themeColors[100]}; --w-500: \${themeColors[500]}; --w-800: \${themeColors[800]}; --w-900: \${themeColors[900]}; }\`;
+            const cssVars = ':root { --w-50: ' + themeColors[50] + '; --w-100: ' + themeColors[100] + '; --w-500: ' + themeColors[500] + '; --w-800: ' + themeColors[800] + '; --w-900: ' + themeColors[900] + '; }';
             
             if (isInitialLoad) return null; 
             if (!isAuth && view === 'login') return <React.Fragment><style>{cssVars}</style><Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} /></React.Fragment>;
             if (!isAuth) return <div className="flex h-screen items-center justify-center bg-[#f8f7f5] dark:bg-zinc-950"><div className="w-12 h-12 border-4 border-wedding-100 border-t-wedding-500 rounded-full animate-spin"></div></div>;
 
+            let currentView = view;
+            if (userRole === 'staff' && (view === 'settings' || view === 'logs')) {
+                currentView = 'dashboard';
+                window.location.hash = '#dashboard';
+            }
+
             return (
-                <div className="min-h-screen flex flex-col relative">
+                <div className="min-h-screen flex flex-col relative font-mm">
                     <style>{cssVars}</style>
-                    {PATTERNS[appSettings.bg_pattern] && <div className="site-bg-pattern no-print" style={{ backgroundImage: \`url('\${PATTERNS[appSettings.bg_pattern]}')\` }}></div>}
+                    {PATTERNS[appSettings.bg_pattern] && <div className="site-bg-pattern no-print" style={{ backgroundImage: "url('" + PATTERNS[appSettings.bg_pattern] + "')" }}></div>}
                     <AmbientBackground effect_on={appSettings.effect_on} />
                     
                     <nav className="glass-luxury sticky top-0 z-50 px-4 sm:px-8 py-3 sm:py-4 mb-8 flex justify-between items-center no-print mx-0 sm:mx-6 sm:mt-6 rounded-b-3xl sm:rounded-[2rem]">
@@ -245,11 +273,20 @@ const UI_HTML = `<!DOCTYPE html>
                                     <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg>
                                 </div>
                             )}
+                            <div className="hidden sm:flex flex-col ml-1">
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-tight font-sans">{userName}</span>
+                                <span className={"text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mt-0.5 w-max font-sans " + (userRole === 'admin' ? 'bg-wedding-100 text-wedding-800' : 'bg-blue-100 text-blue-800')}>{userRole === 'admin' ? 'Admin' : 'Staff'}</span>
+                            </div>
                         </div>
 
                         <div className="hidden md:flex gap-2 sm:gap-6 items-center p-1.5 bg-gray-100/50 dark:bg-gray-800/50 rounded-2xl border border-gray-200/50 dark:border-gray-700/50">
-                            {['dashboard', 'guests', 'settings'].map(tab => (
-                                <a key={tab} href={\`#\${tab}\`} className={\`px-4 py-2 rounded-xl text-sm sm:text-base font-bold capitalize transition-all duration-300 \${view === tab ? 'bg-white dark:bg-gray-700 text-wedding-500 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-wedding-500'}\`}>
+                            {['dashboard', 'guests'].map(tab => (
+                                <a key={tab} href={'#' + tab} className={'px-4 py-2 rounded-xl text-sm sm:text-base font-bold capitalize transition-all duration-300 font-sans ' + (currentView === tab ? 'bg-white dark:bg-gray-700 text-wedding-500 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-wedding-500')}>
+                                    {tab}
+                                </a>
+                            ))}
+                            {userRole === 'admin' && ['logs', 'settings'].map(tab => (
+                                <a key={tab} href={'#' + tab} className={'px-4 py-2 rounded-xl text-sm sm:text-base font-bold capitalize transition-all duration-300 font-sans ' + (currentView === tab ? 'bg-white dark:bg-gray-700 text-wedding-500 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-wedding-500')}>
                                     {tab}
                                 </a>
                             ))}
@@ -257,19 +294,21 @@ const UI_HTML = `<!DOCTYPE html>
                         
                         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                             <div className="flex md:hidden gap-1 mr-2">
-                                <a href="#dashboard" className={\`p-2 rounded-lg \${view === 'dashboard' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400'}\`}><i className="ph-fill ph-squares-four text-xl"></i></a>
-                                <a href="#guests" className={\`p-2 rounded-lg \${view === 'guests' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400'}\`}><i className="ph-fill ph-users text-xl"></i></a>
-                                <a href="#settings" className={\`p-2 rounded-lg \${view === 'settings' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400'}\`}><i className="ph-fill ph-gear text-xl"></i></a>
+                                <a href="#dashboard" className={"p-2 rounded-lg " + (currentView === 'dashboard' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-squares-four text-xl"></i></a>
+                                <a href="#guests" className={"p-2 rounded-lg " + (currentView === 'guests' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-users text-xl"></i></a>
+                                {userRole === 'admin' && <a href="#logs" className={"p-2 rounded-lg " + (currentView === 'logs' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-list-bullets text-xl"></i></a>}
+                                {userRole === 'admin' && <a href="#settings" className={"p-2 rounded-lg " + (currentView === 'settings' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-gear text-xl"></i></a>}
                             </div>
-                            <button onClick={toggleDark} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-wedding-500 shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all"><i className={\`ph-fill \${darkMode ? 'ph-sun' : 'ph-moon'} text-lg sm:text-xl\`}></i></button>
-                            <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); setIsAuth(false); window.location.hash = '#login'; }} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-500 hover:text-white shadow-sm border border-red-100 dark:border-red-900/30 transition-all"><i className="ph-bold ph-power text-lg sm:text-xl"></i></button>
+                            <button onClick={toggleDark} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-wedding-500 shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all"><i className={"ph-fill text-lg sm:text-xl " + (darkMode ? 'ph-sun' : 'ph-moon')}></i></button>
+                            <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); setIsAuth(false); window.location.hash = '#login'; window.location.reload(); }} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-500 hover:text-white shadow-sm border border-red-100 dark:border-red-900/30 transition-all"><i className="ph-bold ph-power text-lg sm:text-xl"></i></button>
                         </div>
                     </nav>
 
                     <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 relative z-10 pb-16">
-                        {view === 'dashboard' && <Dashboard />}
-                        {view === 'guests' && <GuestManagement showToast={showToast} />}
-                        {view === 'settings' && <Settings showToast={showToast} appSettings={appSettings} setAppSettings={setAppSettings} />}
+                        {currentView === 'dashboard' && <Dashboard userRole={userRole} />}
+                        {currentView === 'guests' && <GuestManagement showToast={showToast} userRole={userRole} />}
+                        {currentView === 'logs' && userRole === 'admin' && <AuditLogs showToast={showToast} />}
+                        {currentView === 'settings' && userRole === 'admin' && <Settings showToast={showToast} appSettings={appSettings} setAppSettings={setAppSettings} />}
                     </main>
 
                     <footer className="mt-auto py-8 text-center no-print relative z-10 border-t border-gray-200/50 dark:border-gray-800/50">
@@ -279,7 +318,7 @@ const UI_HTML = `<!DOCTYPE html>
                     </footer>
 
                     {toast && (
-                        <div className={"fixed bottom-8 right-8 px-6 py-4 rounded-2xl shadow-luxury text-white animate-float z-50 font-bold flex items-center gap-3 border border-white/20 backdrop-blur-md " + (toast.type === 'error' ? 'bg-red-500/90' : toast.type === 'warn' ? 'bg-amber-500/90' : 'bg-wedding-800/90')}>
+                        <div className={"fixed bottom-8 right-8 px-6 py-4 rounded-2xl shadow-luxury text-white animate-float z-50 font-bold flex items-center gap-3 border border-white/20 backdrop-blur-md font-mm " + (toast.type === 'error' ? 'bg-red-500/90' : toast.type === 'warn' ? 'bg-amber-500/90' : 'bg-wedding-800/90')}>
                             <i className={"ph-fill text-2xl " + (toast.type === 'error' ? 'ph-warning' : toast.type === 'warn' ? 'ph-warning-circle' : 'ph-check-circle')}></i>
                             {toast.msg}
                         </div>
@@ -289,71 +328,166 @@ const UI_HTML = `<!DOCTYPE html>
         }
 
         function Login({ onLogin, appSettings }) {
-            const [username, setUsername] = useState(''); const [password, setPassword] = useState(''); const [errorMsg, setErrorMsg] = useState(''); const [isLoading, setIsLoading] = useState(false);
+            const [username, setUsername] = useState(''); 
+            const [password, setPassword] = useState(''); 
+            const [errorMsg, setErrorMsg] = useState(''); 
+            const [successMsg, setSuccessMsg] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            
+            const [showPassword, setShowPassword] = useState(false);
+            const [showRecovery, setShowRecovery] = useState(false);
+            const [showNewPassword, setShowNewPassword] = useState(false);
+
+            const [view, setView] = useState('login'); 
+            const [recoveryKey, setRecoveryKey] = useState('');
+            const [newPassword, setNewPassword] = useState('');
+
             const handleLogin = async (e) => {
-                e.preventDefault(); setErrorMsg(''); setIsLoading(true);
+                e.preventDefault(); setErrorMsg(''); setSuccessMsg(''); setIsLoading(true);
                 try {
                     const res = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ username, password }), headers: { 'Content-Type': 'application/json' }});
                     setIsLoading(false); if (res.ok) onLogin(); else setErrorMsg('Username သို့မဟုတ် Password မှားယွင်းနေပါသည်');
                 } catch(e) { setIsLoading(false); setErrorMsg('Network ချိတ်ဆက်မှု အဆင်မပြေပါ'); }
             };
 
+            const handleReset = async (e) => {
+                e.preventDefault(); setErrorMsg(''); setSuccessMsg(''); setIsLoading(true);
+                try {
+                    const res = await fetch('/api/reset-password', { method: 'POST', body: JSON.stringify({ username, recoveryKey, newPassword }), headers: { 'Content-Type': 'application/json' }});
+                    const data = await res.json();
+                    setIsLoading(false); 
+                    if (res.ok) { 
+                        setSuccessMsg('စကားဝှက် အောင်မြင်စွာ ပြောင်းလဲပြီးပါပြီ။ ကျေးဇူးပြု၍ ပြန်လည်ဝင်ရောက်ပါ။'); 
+                        setTimeout(() => { setView('login'); setSuccessMsg(''); setPassword(''); }, 2500);
+                    } 
+                    else setErrorMsg(data.error === 'Invalid Recovery Key' ? 'Recovery Key မှားယွင်းနေပါသည်' : 'Username ရှာမတွေ့ပါ');
+                } catch(e) { setIsLoading(false); setErrorMsg('Network ချိတ်ဆက်မှု အဆင်မပြေပါ'); }
+            };
+
             return (
                 <div className="min-h-screen flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&bg=80')] bg-cover bg-center relative">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-md"></div>
-                    <div className="glass-luxury p-10 sm:p-14 rounded-[2.5rem] w-full max-w-md relative z-10 text-center shadow-2xl border border-white/20">
+                    
+                    <div className="glass-luxury p-10 sm:p-14 rounded-[2.5rem] w-full max-w-md relative z-10 text-center shadow-2xl border border-white/20 transition-all duration-500 overflow-hidden font-sans">
+                        
                         {appSettings?.logo_url ? (
                             <div className="w-24 h-24 mx-auto mb-6 rounded-full p-[3px] bg-gradient-to-tr from-wedding-500 to-wedding-100 shadow-luxury">
                                 <img src={appSettings.logo_url} className="w-full h-full rounded-full object-cover border-2 border-white dark:border-gray-900" />
                             </div>
                         ) : (
-                            <div className="w-24 h-24 mx-auto bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center shadow-luxury border-4 border-white">
-                                <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg>
+                            <div className="w-24 h-24 mx-auto bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center shadow-luxury border-4 border-white mb-6">
+                                {view === 'login' ? <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg> : <i className="ph-fill ph-shield-check text-5xl text-white"></i>}
                             </div>
                         )}
-                        <h1 className="text-4xl font-serif text-gray-900 dark:text-white mb-2 font-bold tracking-tight">Welcome Back</h1>
-                        <p className="font-serif italic text-gray-500 dark:text-gray-300 mb-10 text-lg tracking-wide">Sign in to manage your special day</p>
-                        <form onSubmit={handleLogin} className="space-y-5">
-                            <div className="relative group">
-                                <i className="ph-fill ph-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-xl transition-colors"></i>
-                                <input type="text" placeholder="Username" className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all" value={username} onChange={e => setUsername(e.target.value)} required />
+
+                        {view === 'login' ? (
+                            <div className="animate-fade-in">
+                                <h1 className="text-4xl font-serif text-gray-900 dark:text-white mb-2 font-bold tracking-tight">Welcome Back</h1>
+                                <p className="font-serif italic text-gray-500 dark:text-gray-300 mb-8 text-lg tracking-wide">Sign in to manage your special day</p>
+                                
+                                <form onSubmit={handleLogin} className="space-y-5 text-left">
+                                    <div className="relative group">
+                                        <i className="ph-fill ph-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-xl transition-colors"></i>
+                                        <input type="text" placeholder="Username" className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all" value={username} onChange={e => setUsername(e.target.value)} required />
+                                    </div>
+                                    <div className="relative group">
+                                        <i className="ph-fill ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-xl transition-colors"></i>
+                                        <input type={showPassword ? "text" : "password"} placeholder="Password" className="w-full pl-14 pr-12 py-4 rounded-2xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all" value={password} onChange={e => setPassword(e.target.value)} required />
+                                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                            <i className={"ph-fill text-xl " + (showPassword ? "ph-eye-slash" : "ph-eye")}></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="flex justify-end mt-2">
+                                        <button type="button" onClick={() => { setView('reset'); setErrorMsg(''); setSuccessMsg(''); }} className="text-xs font-bold text-wedding-800 dark:text-wedding-500 hover:underline">Forgot Password?</button>
+                                    </div>
+
+                                    {errorMsg && <div className="bg-red-500/10 text-red-600 dark:text-red-400 text-sm py-3 px-4 rounded-2xl border border-red-500/20 flex items-center justify-center gap-2 font-bold font-mm tracking-normal"><i className="ph-fill ph-warning-circle text-xl"></i>{errorMsg}</div>}
+                                    {successMsg && <div className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm py-3 px-4 rounded-2xl border border-emerald-500/20 flex items-center justify-center gap-2 font-bold font-mm tracking-normal"><i className="ph-fill ph-check-circle text-xl"></i>{successMsg}</div>}
+                                    
+                                    <button disabled={isLoading} className="w-full bg-wedding-800 text-white font-bold py-4 rounded-2xl hover:bg-wedding-900 transition-all duration-300 disabled:opacity-70 mt-2 shadow-luxury">
+                                        {isLoading ? <span className="flex items-center justify-center gap-2"><i className="ph-bold ph-spinner animate-spin text-xl"></i> Authenticating...</span> : 'Secure Sign In'}
+                                    </button>
+                                </form>
                             </div>
-                            <div className="relative group">
-                                <i className="ph-fill ph-lock-key absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-xl transition-colors"></i>
-                                <input type="password" placeholder="Password" className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all" value={password} onChange={e => setPassword(e.target.value)} required />
+                        ) : (
+                            <div className="animate-fade-in">
+                                <h1 className="text-3xl font-serif text-gray-900 dark:text-white mb-2 font-bold tracking-tight">Reset Password</h1>
+                                <p className="font-serif italic text-gray-500 dark:text-gray-300 mb-6 text-sm tracking-wide">Enter Master Recovery Key to reset access</p>
+                                
+                                <form onSubmit={handleReset} className="space-y-4 text-left">
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-500 ml-1">Account Username</label>
+                                        <div className="relative group">
+                                            <i className="ph-fill ph-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-lg transition-colors"></i>
+                                            <input type="text" placeholder="e.g. admin" className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all text-sm" value={username} onChange={e => setUsername(e.target.value)} required />
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-500 ml-1">Recovery Key</label>
+                                        <div className="relative group">
+                                            <i className="ph-fill ph-key absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-lg transition-colors"></i>
+                                            <input type={showRecovery ? "text" : "password"} placeholder="Enter secret recovery key" className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all text-sm" value={recoveryKey} onChange={e => setRecoveryKey(e.target.value)} required />
+                                            <button type="button" onClick={() => setShowRecovery(!showRecovery)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                                <i className={"ph-fill text-lg " + (showRecovery ? "ph-eye-slash" : "ph-eye")}></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-500 ml-1">New Password</label>
+                                        <div className="relative group">
+                                            <i className="ph-fill ph-lock-key absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-wedding-500 text-lg transition-colors"></i>
+                                            <input type={showNewPassword ? "text" : "password"} placeholder="Enter new password" className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 focus:bg-white dark:focus:bg-gray-800 font-bold text-gray-900 dark:text-white transition-all text-sm" value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
+                                            <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                                <i className={"ph-fill text-lg " + (showNewPassword ? "ph-eye-slash" : "ph-eye")}></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {errorMsg && <div className="bg-red-500/10 text-red-600 dark:text-red-400 text-xs py-3 px-4 rounded-xl border border-red-500/20 flex items-center justify-center gap-2 font-bold mt-2 font-mm tracking-normal"><i className="ph-fill ph-warning-circle text-lg"></i>{errorMsg}</div>}
+                                    {successMsg && <div className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs py-3 px-4 rounded-xl border border-emerald-500/20 flex items-center justify-center gap-2 font-bold mt-2 font-mm tracking-normal"><i className="ph-fill ph-check-circle text-lg"></i>{successMsg}</div>}
+                                    
+                                    <button disabled={isLoading} className="w-full bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold py-3.5 rounded-xl hover:bg-gray-800 dark:hover:bg-white transition-all duration-300 disabled:opacity-70 mt-4 shadow-md">
+                                        {isLoading ? <span className="flex items-center justify-center gap-2"><i className="ph-bold ph-spinner animate-spin text-lg"></i> Resetting...</span> : 'Reset Password'}
+                                    </button>
+                                    
+                                    <button type="button" onClick={() => { setView('login'); setErrorMsg(''); setSuccessMsg(''); }} className="w-full bg-transparent text-gray-500 dark:text-gray-400 font-bold py-3.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 text-sm mt-2 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 flex items-center justify-center">
+                                        <i className="ph-bold ph-arrow-left mr-2"></i> Back to Sign In
+                                    </button>
+                                </form>
                             </div>
-                            {errorMsg && <div className="bg-red-500/10 text-red-600 dark:text-red-400 text-sm py-3 px-4 rounded-2xl border border-red-500/20 flex items-center justify-center gap-2 font-bold"><i className="ph-fill ph-warning-circle text-xl"></i>{errorMsg}</div>}
-                            <button disabled={isLoading} className="w-full bg-wedding-800 text-white font-bold py-4 rounded-2xl hover:bg-wedding-900 transition-all duration-300 disabled:opacity-70 mt-2">
-                                {isLoading ? <span className="flex items-center justify-center gap-2"><i className="ph-bold ph-spinner animate-spin text-xl"></i> Authenticating...</span> : 'Secure Sign In'}
-                            </button>
-                        </form>
+                        )}
                     </div>
                 </div>
             );
         }
 
-        function Dashboard() {
+        function Dashboard({ userRole }) {
             const [stats, setStats] = useState({ total: 0, pending: 0, written: 0, invited: 0, attended: 0, total_gifts: 0, gift_items_count: 0, groomSide: 0, brideSide: 0, bothSide: 0 });
             const [settings, setSettings] = useState({});
 
             const loadData = useCallback(async () => {
                 try {
-                    const data = await apiCall('/api/guests');
-                    if(!data.guests) return;
-                    const guests = data.guests;
-                    const totalGifts = guests.reduce((sum, g) => {
-                        if (!g.gift_amount) return sum;
-                        const amtStr = convertToEnglishDigits(g.gift_amount).replace(/,/g, '');
-                        const amt = parseFloat(amtStr); return sum + (isNaN(amt) ? 0 : amt);
-                    }, 0);
-                    const giftItemsCount = guests.filter(g => g.gift_item && g.gift_item.trim() !== '').length;
+                    const data = await apiCall('/api/stats');
+                    if (data && data.stats) {
+                        const counts = data.stats;
+                        const giftList = counts.gifts || [];
+                        const totalGifts = giftList.reduce((sum, g) => {
+                            if (!g.gift_amount) return sum;
+                            const amtStr = convertToEnglishDigits(g.gift_amount).replace(/,/g, '');
+                            const amt = parseFloat(amtStr); return sum + (isNaN(amt) ? 0 : amt);
+                        }, 0);
+                        const giftItemsCount = giftList.filter(g => g.gift_item && (g.gift_item||'').toString().trim() !== '').length;
 
-                    setStats({
-                        total: guests.length, pending: guests.filter(g => g.status === 'Pending').length,
-                        written: guests.filter(g => g.status === 'Written').length, invited: guests.filter(g => g.status === 'Invited').length,
-                        attended: guests.filter(g => g.attended === 1).length, total_gifts: totalGifts, gift_items_count: giftItemsCount,
-                        groomSide: guests.filter(g => g.side === 'Groom').length, brideSide: guests.filter(g => g.side === 'Bride').length, bothSide: guests.filter(g => g.side === 'Both').length 
-                    });
+                        setStats({
+                            total: counts.total || 0, pending: counts.pending || 0,
+                            written: counts.written || 0, invited: counts.invited || 0,
+                            attended: counts.attended || 0, total_gifts: totalGifts, gift_items_count: giftItemsCount,
+                            groomSide: counts.groomSide || 0, brideSide: counts.brideSide || 0, bothSide: counts.bothSide || 0 
+                        });
+                    }
                 } catch (e) {}
             }, []);
 
@@ -391,7 +525,7 @@ const UI_HTML = `<!DOCTYPE html>
                                         <i className="ph-fill ph-calendar-blank text-2xl sm:text-3xl drop-shadow-sm"></i>
                                     </div>
                                     <div className="flex flex-col text-left">
-                                        <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">မင်္ဂလာအချိန်</span>
+                                        <span className="text-[12px] font-bold text-gray-400 font-mm mb-0.5">မင်္ဂလာအချိန်</span>
                                         <span className="tracking-wide text-lg sm:text-xl text-gray-900 dark:text-white font-black font-numbers">{settings.wedding_date || 'Date TBD'}</span>
                                     </div>
                                 </div>
@@ -403,8 +537,8 @@ const UI_HTML = `<!DOCTYPE html>
                                         <i className="ph-fill ph-map-pin text-2xl sm:text-3xl drop-shadow-sm"></i>
                                     </div>
                                     <div className="flex flex-col text-left">
-                                        <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">မင်္ဂလာနေရာ</span>
-                                        <span className="tracking-wide leading-relaxed text-lg sm:text-xl text-gray-900 dark:text-white font-black">{settings.venue || 'Venue TBD'}</span>
+                                        <span className="text-[12px] font-bold text-gray-400 font-mm mb-0.5">မင်္ဂလာနေရာ</span>
+                                        <span className="tracking-wide leading-relaxed text-lg sm:text-xl text-gray-900 dark:text-white font-black font-mm">{settings.venue || 'Venue TBD'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -429,30 +563,30 @@ const UI_HTML = `<!DOCTYPE html>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 no-print">
                         <div className="glass-luxury rounded-[2rem] p-8 flex items-center gap-6 group overflow-hidden">
                             <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-[1.25rem] bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 border border-emerald-100 dark:border-emerald-800/30 flex items-center justify-center shrink-0 shadow-sm transform group-hover:scale-110 transition-transform duration-500">
-                                <i className="ph-fill ph-wallet text-4xl sm:text-5xl drop-shadow-sm"></i>
+                                {userRole === 'admin' ? <i className="ph-fill ph-wallet text-4xl sm:text-5xl drop-shadow-sm"></i> : <i className="ph-fill ph-lock-key text-4xl sm:text-5xl drop-shadow-sm"></i>}
                             </div>
                             <div className="relative z-10 w-full overflow-hidden">
-                                <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Gift Amount</p>
+                                <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 font-sans">Total Gift Amount</p>
                                 <div className="flex items-baseline gap-2 overflow-hidden">
                                     <h2 className="text-2xl sm:text-3xl font-bold font-numbers text-gray-900 dark:text-white tracking-tight truncate">
-                                        {formatMoney(stats.total_gifts)}
+                                        {userRole === 'admin' ? formatMoney(stats.total_gifts) : '***'}
                                     </h2>
-                                    <span className="text-sm font-bold text-gray-400">Ks</span>
+                                    <span className="text-sm font-bold text-gray-400 font-sans">Ks</span>
                                 </div>
                             </div>
                         </div>
                         
                         <div className="glass-luxury rounded-[2rem] p-8 flex items-center gap-6 group overflow-hidden">
                             <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-[1.25rem] bg-purple-50 dark:bg-purple-900/20 text-purple-500 border border-purple-100 dark:border-purple-800/30 flex items-center justify-center shrink-0 shadow-sm transform group-hover:scale-110 transition-transform duration-500">
-                                <i className="ph-fill ph-gift text-4xl sm:text-5xl drop-shadow-sm"></i>
+                                {userRole === 'admin' ? <i className="ph-fill ph-gift text-4xl sm:text-5xl drop-shadow-sm"></i> : <i className="ph-fill ph-lock-key text-4xl sm:text-5xl drop-shadow-sm"></i>}
                             </div>
                             <div className="relative z-10 w-full overflow-hidden">
-                                <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Gift Items Count</p>
+                                <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 font-sans">Gift Items Count</p>
                                 <div className="flex items-baseline gap-2 overflow-hidden">
                                     <h2 className="text-2xl sm:text-3xl font-bold font-numbers text-gray-900 dark:text-white tracking-tight truncate">
-                                        {stats.gift_items_count}
+                                        {userRole === 'admin' ? stats.gift_items_count : '***'}
                                     </h2>
-                                    <span className="text-sm font-bold text-gray-400">မျိုး</span>
+                                    <span className="text-sm font-bold text-gray-400 font-mm">မျိုး</span>
                                 </div>
                             </div>
                         </div>
@@ -473,7 +607,7 @@ const UI_HTML = `<!DOCTYPE html>
                                 <div className="relative">
                                     <div className="flex justify-between items-end mb-4">
                                         <div>
-                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Invited</span>
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1 font-sans">Invited</span>
                                             <span className="text-2xl font-bold font-numbers text-amber-500">{stats.invited} <span className="text-xs text-gray-400">/ {stats.total}</span></span>
                                         </div>
                                         <div className="px-3 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-bold font-numbers shadow-sm">{invitedPercent}%</div>
@@ -486,7 +620,7 @@ const UI_HTML = `<!DOCTYPE html>
                                 <div className="relative">
                                     <div className="flex justify-between items-end mb-4">
                                         <div>
-                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Attended</span>
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1 font-sans">Attended</span>
                                             <span className="text-2xl font-bold font-numbers text-emerald-500">{stats.attended} <span className="text-xs text-gray-400">/ {stats.invited}</span></span>
                                         </div>
                                         <div className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-bold font-numbers shadow-sm">{attendedPercent}%</div>
@@ -520,7 +654,7 @@ const UI_HTML = `<!DOCTYPE html>
                                         <i className="ph-fill ph-user text-xl"></i>
                                     </div>
                                     <p className="text-2xl font-bold font-numbers text-indigo-600 dark:text-indigo-400 z-10">{stats.groomSide}</p>
-                                    <p className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1 z-10 text-center">သတို့သားဖက်</p>
+                                    <p className="text-[11px] sm:text-[12px] font-bold text-gray-500 mt-1 z-10 text-center font-mm">သတို့သားဖက်</p>
                                 </div>
                                 
                                 <div className="flex flex-col items-center p-4 rounded-2xl bg-pink-50/50 dark:bg-pink-900/10 border border-pink-100 dark:border-pink-900/30 relative overflow-hidden group">
@@ -528,7 +662,7 @@ const UI_HTML = `<!DOCTYPE html>
                                         <i className="ph-fill ph-user-circle text-xl"></i>
                                     </div>
                                     <p className="text-2xl font-bold font-numbers text-pink-600 dark:text-pink-400 z-10">{stats.brideSide}</p>
-                                    <p className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1 z-10 text-center">သတို့သမီးဖက်</p>
+                                    <p className="text-[11px] sm:text-[12px] font-bold text-gray-500 mt-1 z-10 text-center font-mm">သတို့သမီးဖက်</p>
                                 </div>
                                 
                                 <div className="flex flex-col items-center p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 relative overflow-hidden group">
@@ -536,7 +670,7 @@ const UI_HTML = `<!DOCTYPE html>
                                         <i className="ph-fill ph-users-three text-xl"></i>
                                     </div>
                                     <p className="text-2xl font-bold font-numbers text-emerald-600 dark:text-emerald-400 z-10">{stats.bothSide}</p>
-                                    <p className="text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1 z-10 text-center">နှစ်ဖက်မိတ်ဆွေ</p>
+                                    <p className="text-[11px] sm:text-[12px] font-bold text-gray-500 mt-1 z-10 text-center font-mm">နှစ်ဖက်မိတ်ဆွေ</p>
                                 </div>
                             </div>
                         </div>
@@ -551,33 +685,58 @@ const UI_HTML = `<!DOCTYPE html>
                     <div className={"w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-500 group-hover:scale-110 shadow-sm border border-white/40 " + iconBg}>
                         <i className={"ph-fill ph-" + icon + " text-2xl sm:text-3xl"}></i>
                     </div>
-                    <p className="text-[9px] sm:text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1.5">{title}</p>
+                    <p className="text-[9px] sm:text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1.5 font-sans">{title}</p>
                     <p className="text-2xl sm:text-3xl font-bold font-numbers tracking-tight">{value}</p>
                 </div>
             );
         }
 
-        function GuestManagement({ showToast }) {
-            const [guests, setGuests] = useState([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(''); const [filter, setFilter] = useState('All Status'); const [sideFilter, setSideFilter] = useState('All'); const [locationFilter, setLocationFilter] = useState('All Locations'); 
-            const [formData, setFormData] = useState({ id: null, name: '', address: '', note: '', status: 'Pending', side: 'Groom', attended: 0, gift_amount: '', gift_item: '' }); const [isModalOpen, setModalOpen] = useState(false); const [settings, setSettings] = useState({});
+        function GuestManagement({ showToast, userRole }) {
+            const [guests, setGuests] = useState([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(''); const [debouncedSearch, setDebouncedSearch] = useState(''); const [filter, setFilter] = useState('All Status'); const [sideFilter, setSideFilter] = useState('All'); const [locationFilter, setLocationFilter] = useState('All Locations'); 
+            const [formData, setFormData] = useState({ id: null, name: '', address: '', note: '', status: 'Pending', side: 'Groom', attended: 0, gift_amount: '', gift_item: '' }); const [isModalOpen, setModalOpen] = useState(false);
             const [isEditMode, setIsEditMode] = useState(false); const [selectedIds, setSelectedIds] = useState([]); const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false); const [deletePassword, setDeletePassword] = useState(''); const [isDeleting, setIsDeleting] = useState(false); const [isSaving, setIsSaving] = useState(false); const [pageCount, setPageCount] = useState(1); 
+            const [hasMore, setHasMore] = useState(false);
+            const [locationsList, setLocationsList] = useState([]);
+            
+            const [showDeletePwd, setShowDeletePwd] = useState(false);
 
-            const fetchGuests = useCallback(async (showLoad = false) => {
+            // [PERFORMANCE] Debounce search to avoid API spamming
+            useEffect(() => {
+                const timer = setTimeout(() => setDebouncedSearch(search), 500);
+                return () => clearTimeout(timer);
+            }, [search]);
+
+            const fetchGuests = useCallback(async (showLoad = false, page = 1) => {
                 if(showLoad) setLoading(true);
-                try { const data = await apiCall('/api/guests'); if(data && data.guests) setGuests(data.guests); } 
+                try { 
+                    const query = 'search=' + encodeURIComponent(normalizeMyanmarText(debouncedSearch)) + '&location=' + encodeURIComponent(locationFilter) + '&status=' + encodeURIComponent(filter) + '&side=' + encodeURIComponent(sideFilter) + '&page=' + page;
+                    const data = await apiCall('/api/guests?' + query); 
+                    if(data && data.guests) {
+                        if (page === 1) setGuests(data.guests);
+                        else setGuests(prev => [...prev, ...data.guests]);
+                        setHasMore(data.guests.length === 50);
+                    }
+                    if (page === 1 && data && data.locations) setLocationsList(data.locations);
+                } 
                 catch (e) { if(showLoad) showToast("စာရင်းများ ပြန်လည်ရယူရန် အင်တာနက်ချိတ်ဆက်မှု လိုအပ်ပါသည်", "error"); } 
                 finally { if(showLoad) setLoading(false); }
-            }, []);
+            }, [debouncedSearch, locationFilter, filter, sideFilter]);
 
-            useEffect(() => { fetchGuests(true); apiCall('/api/settings').then(data => { if(data && data.settings) setSettings(data.settings); }).catch(e=>console.log(e)); const interval = setInterval(() => { fetchGuests(false); }, 60000); return () => clearInterval(interval); }, [fetchGuests]);
+            useEffect(() => { setPageCount(1); fetchGuests(true, 1); }, [debouncedSearch, locationFilter, filter, sideFilter]);
+            useEffect(() => { if (pageCount > 1) fetchGuests(false, pageCount); }, [pageCount]);
 
             const formatDateTime = (isoString) => {
                 if (!isoString) return '-'; const date = new Date(isoString); return date.toLocaleString('en-US', { timeZone: 'Asia/Yangon', hour12: true, year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
             };
 
-            const exportExcel = () => {
-                const ws = XLSX.utils.json_to_sheet(guests.map(g => ({ 'Side (ဖက်)': g.side === 'Groom' ? 'သတို့သားဖက်' : g.side === 'Bride' ? 'သတို့သမီးဖက်' : 'နှစ်ဖက်မိတ်ဆွေ', 'Guest Name (နာမည်)': g.name, 'Group City (လိပ်စာ)': g.address, 'Status': g.status, 'Attended (ရောက်ရှိ)': g.attended ? 'Yes' : 'No', 'Gift Amount (လက်ဖွဲ့ငွေ)': g.gift_amount ? convertToEnglishDigits(g.gift_amount) : '-', 'Gift Item (လက်ဖွဲ့ပစ္စည်း)': g.gift_item || '-', 'Note (မှတ်ချက်)': g.note || '-', 'Last Updated (နောက်ဆုံးပြင်ဆင်ချိန်)': formatDateTime(g.updated_at) })));
-                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Guests"); XLSX.writeFile(wb, "Wedding_Guest_List_With_Gifts.xlsx"); showToast("Exported to Excel");
+            const exportExcel = async () => {
+                try {
+                    const data = await apiCall('/api/guests/all');
+                    if (data && data.guests) {
+                        const ws = XLSX.utils.json_to_sheet(data.guests.map(g => ({ 'Side (ဖက်)': g.side === 'Groom' ? 'သတို့သားဖက်' : g.side === 'Bride' ? 'သတို့သမီးဖက်' : 'နှစ်ဖက်မိတ်ဆွေ', 'Guest Name (နာမည်)': g.name, 'Group City (လိပ်စာ)': g.address, 'Status': g.status, 'Attended (ရောက်ရှိ)': g.attended ? 'Yes' : 'No', 'Gift Amount (လက်ဖွဲ့ငွေ)': g.gift_amount ? convertToEnglishDigits(g.gift_amount) : '-', 'Gift Item (လက်ဖွဲ့ပစ္စည်း)': g.gift_item || '-', 'Note (မှတ်ချက်)': g.note || '-', 'Last Updated (နောက်ဆုံးပြင်ဆင်ချိန်)': formatDateTime(g.updated_at) })));
+                        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Guests"); XLSX.writeFile(wb, "Wedding_Guest_List_With_Gifts.xlsx"); showToast("Exported to Excel");
+                    }
+                } catch(e) { showToast("Export လုပ်ရာတွင် အဆင်မပြေပါ", "error"); }
             };
 
             const handleImportExcel = async (e) => {
@@ -585,13 +744,11 @@ const UI_HTML = `<!DOCTYPE html>
                 reader.onload = async (evt) => {
                     setLoading(true); const bstr = evt.target.result; const wb = XLSX.read(bstr, {type:'binary'}); const wsname = wb.SheetNames[0]; const ws = wb.Sheets[wsname]; const data = XLSX.utils.sheet_to_json(ws);
                     const newGuests = [];
-                    const existingSet = new Set(guests.map(g => g.name.trim().toLowerCase() + '|' + g.address.trim().toLowerCase()));
-
+                    
                     for (let row of data) {
                         const guestName = row['Name'] || row['Guest Name'] || row['Guest'] || ''; if (!guestName) continue;
                         const sideStr = (row['Side'] || row['Category'] || '').toString(); let parsedSide = 'Groom'; if (sideStr.includes('သမီး')) parsedSide = 'Bride'; else if (sideStr.includes('နှစ်')) parsedSide = 'Both';
                         
-                        // [UPDATE] Attended and Gift handling for the Demo Import
                         const guest = { 
                             name: guestName.toString().trim(), 
                             address: (row['Address'] || row['Group City'] || row['City'] || 'General').toString().trim(), 
@@ -602,9 +759,7 @@ const UI_HTML = `<!DOCTYPE html>
                             gift_amount: row['Gift Amount'] ? row['Gift Amount'].toString().trim() : '', 
                             gift_item: row['Gift Item'] ? row['Gift Item'].toString().trim() : '' 
                         };
-                        
-                        const key = guest.name.toLowerCase() + '|' + guest.address.toLowerCase();
-                        if (!existingSet.has(key)) { newGuests.push(guest); existingSet.add(key); }
+                        newGuests.push(guest);
                     }
                     if (newGuests.length > 0) {
                         showToast("ဧည့်သည် (" + newGuests.length + ") ဦး စတင်ထည့်သွင်းနေပါသည်...", 'warn');
@@ -617,16 +772,32 @@ const UI_HTML = `<!DOCTYPE html>
                             showToast("Excel မှ ဧည့်သည် အားလုံး အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။", 'success'); 
                         } 
                         catch (err) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ၊ ပြန်စမ်းကြည့်ပါ", 'error'); }
-                    } else { showToast("အသစ်ထည့်သွင်းရန် ဧည့်သည် မရှိပါ (သို့) ထပ်နေပါသည်", 'warn'); }
-                    fetchGuests(true);
+                    } else { showToast("အသစ်ထည့်သွင်းရန် ဧည့်သည် မရှိပါ", 'warn'); }
+                    fetchGuests(true, 1);
                 }; reader.readAsBinaryString(file); e.target.value = null; 
             };
 
             const saveGuest = async (e) => {
                 e.preventDefault();
-                if (!formData.id && guests.some(g => g.name.trim().toLowerCase() === formData.name.trim().toLowerCase() && g.address.trim().toLowerCase() === formData.address.trim().toLowerCase())) { showToast('ဤဧည့်သည်အမည်မှာ စာရင်းထဲတွင် ရှိပြီးသားဖြစ်နေပါသည်!', 'error'); return; }
                 setIsSaving(true); 
-                try { const method = formData.id ? 'PUT' : 'POST'; const url = formData.id ? "/api/guests/" + formData.id : '/api/guests'; await apiCall(url, { method, body: JSON.stringify(formData) }); showToast("Guest saved successfully"); setModalOpen(false); fetchGuests(false); } 
+                try { 
+                    const method = formData.id ? 'PUT' : 'POST'; const url = formData.id ? "/api/guests/" + formData.id : '/api/guests'; 
+                    
+                    // Duplicate strict check with safe null handling
+                    if (!formData.id && guests.some(g => (g.name || '').toString().trim().toLowerCase() === (formData.name || '').toString().trim().toLowerCase() && (g.address || '').toString().trim().toLowerCase() === (formData.address || '').toString().trim().toLowerCase())) {
+                        showToast('ဤဧည့်သည်အမည်နှင့် လိပ်စာမှာ စာရင်းထဲတွင် ရှိပြီးသားဖြစ်နေပါသည်!', 'error'); 
+                        setIsSaving(false); return;
+                    }
+
+                    const res = await fetch(url, { method, body: JSON.stringify(formData), headers: { 'Content-Type': 'application/json' } }); 
+                    const data = await res.json();
+                    
+                    if (!res.ok) {
+                        showToast(data.error === 'Duplicate entry' ? 'ဤဧည့်သည်အမည်နှင့် လိပ်စာမှာ စာရင်းထဲတွင် ရှိပြီးသားဖြစ်နေပါသည်!' : 'အမှားအယွင်းဖြစ်ပွားပါသည်', 'error');
+                    } else {
+                        showToast("Guest saved successfully"); setModalOpen(false); fetchGuests(false, 1); 
+                    }
+                } 
                 catch (error) { showToast("ချိတ်ဆက်မှု အဆင်မပြေပါ၊ အင်တာနက်ကို စစ်ဆေးပါ", "error"); } finally { setIsSaving(false); }
             };
 
@@ -634,18 +805,21 @@ const UI_HTML = `<!DOCTYPE html>
                 e.preventDefault(); setIsDeleting(true);
                 try {
                     const res = await fetch('/api/guests/bulk-delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: selectedIds, password: deletePassword }) });
-                    if (res.ok) { showToast("ဧည့်သည် (" + selectedIds.length + ") ဦးကို စာရင်းမှ ဖျက်ပစ်လိုက်ပါပြီ"); setShowBulkDeleteModal(false); setIsEditMode(false); setSelectedIds([]); setDeletePassword(''); fetchGuests(false); } 
+                    if (res.ok) { showToast("ဧည့်သည် (" + selectedIds.length + ") ဦးကို စာရင်းမှ ဖျက်ပစ်လိုက်ပါပြီ"); setShowBulkDeleteModal(false); setIsEditMode(false); setSelectedIds([]); setDeletePassword(''); fetchGuests(false, 1); } 
                     else { showToast('Admin Password မှားယွင်းနေပါသည်', 'error'); }
                 } catch (error) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ", "error"); } finally { setIsDeleting(false); }
             };
 
-            const locationsList = useMemo(() => { const locs = new Set(guests.map(g => g.address.trim())); return Array.from(locs).sort(); }, [guests]);
-            const filteredGuests = guests.filter(g => {
-                const normSearch = normalizeMyanmarText(search); const normName = normalizeMyanmarText(g.name); const normAddress = normalizeMyanmarText(g.address); const normNote = normalizeMyanmarText(g.note); const normGift = normalizeMyanmarText(g.gift_item);
-                return (filter === 'All Status' || g.status === filter) && (sideFilter === 'All' || g.side === sideFilter) && (locationFilter === 'All Locations' || g.address.trim() === locationFilter) && (normName.includes(normSearch) || normAddress.includes(normSearch) || normNote.includes(normSearch) || (normGift && normGift.includes(normSearch)));
-            });
-            const paginatedGuests = filteredGuests.slice(0, pageCount * 50);
-            const grouped = useMemo(() => { const groups = {}; paginatedGuests.forEach(g => { const k = g.address.trim() || 'No Address'; if (!groups[k]) groups[k] = []; groups[k].push(g); }); return groups; }, [paginatedGuests]);
+            // SAFE GROUPING: Handles null or empty addresses properly without crashing
+            const grouped = useMemo(() => { 
+                const groups = {}; 
+                guests.forEach(g => { 
+                    const k = (g.address || '').toString().trim() || 'No Address'; 
+                    if (!groups[k]) groups[k] = []; 
+                    groups[k].push(g); 
+                }); 
+                return groups; 
+            }, [guests]);
 
             return (
                 <div className="space-y-6 relative z-10 w-full max-w-6xl mx-auto">
@@ -653,19 +827,19 @@ const UI_HTML = `<!DOCTYPE html>
                         <h2 className="text-3xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">Guest Roster</h2>
                         
                         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-                            <button onClick={() => { setFormData({id:null, name:'', address:'', note:'', status:'Pending', side:'Groom', attended: 0, gift_amount:'', gift_item:''}); setModalOpen(true); }} className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-2.5 rounded-xl flex-1 sm:flex-none flex justify-center items-center gap-2 hover:shadow-lg transition-all font-bold text-sm"><i className="ph-bold ph-plus text-lg"></i> Add</button>
-                            <button onClick={() => { setIsEditMode(!isEditMode); setSelectedIds([]); }} className={"px-5 py-2.5 rounded-xl font-bold flex justify-center items-center gap-2 transition-all text-sm " + (isEditMode ? 'bg-red-500 text-white shadow-md' : 'glass-luxury text-gray-700 dark:text-gray-300')}>
+                            <button onClick={() => { setFormData({id:null, name:'', address:'', note:'', status:'Pending', side:'Groom', attended: 0, gift_amount:'', gift_item:''}); setModalOpen(true); }} className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-2.5 rounded-xl flex-1 sm:flex-none flex justify-center items-center gap-2 hover:shadow-lg transition-all font-bold text-sm font-sans"><i className="ph-bold ph-plus text-lg"></i> Add</button>
+                            {userRole === 'admin' && <button onClick={() => { setIsEditMode(!isEditMode); setSelectedIds([]); }} className={"px-5 py-2.5 rounded-xl font-bold flex justify-center items-center gap-2 transition-all text-sm font-sans " + (isEditMode ? 'bg-red-500 text-white shadow-md' : 'glass-luxury text-gray-700 dark:text-gray-300')}>
                                 <i className={"ph-bold " + (isEditMode ? 'ph-x-circle' : 'ph-check-square-offset') + " text-lg"}></i> {isEditMode ? 'Cancel' : 'Select'}
-                            </button>
-                            <label className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold cursor-pointer transition-all hover:bg-white/50 text-sm">
+                            </button>}
+                            {userRole === 'admin' && <label className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold cursor-pointer transition-all hover:bg-white/50 text-sm font-sans">
                                 <i className="ph-bold ph-upload-simple text-blue-600 text-lg"></i> Import
                                 <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={handleImportExcel} />
-                            </label>
-                            <button onClick={exportExcel} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm"><i className="ph-bold ph-download-simple text-emerald-600 text-lg"></i> Export</button>
-                            <button onClick={() => window.print()} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm">
+                            </label>}
+                            {userRole === 'admin' && <button onClick={exportExcel} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm font-sans"><i className="ph-bold ph-download-simple text-emerald-600 text-lg"></i> Export</button>}
+                            <button onClick={() => window.print()} className="glass-luxury px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 font-bold transition-all hover:bg-white/50 text-sm font-sans">
                                 <i className="ph-bold ph-printer text-purple-600 text-lg"></i> Print
                             </button>
-                            <button onClick={() => fetchGuests(true)} title="Refresh Data" className="glass-luxury px-4 py-2.5 rounded-xl font-bold flex justify-center items-center hover:bg-white/50 transition-all text-gray-700 dark:text-gray-300">
+                            <button onClick={() => { setPageCount(1); fetchGuests(true, 1); }} title="Refresh Data" className="glass-luxury px-4 py-2.5 rounded-xl font-bold flex justify-center items-center hover:bg-white/50 transition-all text-gray-700 dark:text-gray-300 font-sans">
                                 <i className={"ph-bold ph-arrows-clockwise text-xl " + (loading ? "animate-spin text-wedding-500" : "")}></i>
                             </button>
                         </div>
@@ -675,41 +849,41 @@ const UI_HTML = `<!DOCTYPE html>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div className="relative w-full">
                                 <i className="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
-                                <input type="text" placeholder="Search guests..." className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white" value={search} onChange={e=>{setSearch(e.target.value); setPageCount(1);}} />
+                                <input type="text" placeholder="Search guests..." className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white font-mm" value={search} onChange={e=>{setSearch(e.target.value); setPageCount(1);}} />
                             </div>
-                            <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500" value={locationFilter} onChange={e=>{setLocationFilter(e.target.value); setPageCount(1);}}><option>All Locations</option>{locationsList.map(loc => <option key={loc} value={loc}>{loc}</option>)}</select>
-                            <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500" value={filter} onChange={e=>{setFilter(e.target.value); setPageCount(1);}}><option>All Status</option><option>Pending</option><option>Written</option><option>Invited</option></select>
+                            <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-mm" value={locationFilter} onChange={e=>{setLocationFilter(e.target.value); setPageCount(1);}}><option>All Locations</option>{locationsList.map(loc => <option key={loc} value={loc}>{loc}</option>)}</select>
+                            <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-sans" value={filter} onChange={e=>{setFilter(e.target.value); setPageCount(1);}}><option>All Status</option><option>Pending</option><option>Written</option><option>Invited</option></select>
                         </div>
                         <div className="flex bg-gray-100/50 dark:bg-gray-800/50 p-1 rounded-xl w-full flex-wrap sm:flex-nowrap gap-1 border border-gray-200/50 dark:border-gray-700/50">
-                            <button onClick={() => {setSideFilter('All'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[11px] sm:text-xs rounded-lg font-bold transition-all " + (sideFilter === 'All' ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700')}>အားလုံး</button>
-                            <button onClick={() => {setSideFilter('Groom'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[11px] sm:text-xs rounded-lg font-bold transition-all " + (sideFilter === 'Groom' ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 shadow-sm border border-indigo-100 dark:border-indigo-800' : 'text-gray-500 hover:text-gray-700')}>သတို့သားဖက်</button>
-                            <button onClick={() => {setSideFilter('Bride'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[11px] sm:text-xs rounded-lg font-bold transition-all " + (sideFilter === 'Bride' ? 'bg-pink-50 dark:bg-pink-900/40 text-pink-700 dark:text-pink-400 shadow-sm border border-pink-100 dark:border-pink-800' : 'text-gray-500 hover:text-gray-700')}>သတို့သမီးဖက်</button>
-                            <button onClick={() => {setSideFilter('Both'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[11px] sm:text-xs rounded-lg font-bold transition-all " + (sideFilter === 'Both' ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-800' : 'text-gray-500 hover:text-gray-700')}>နှစ်ဖက်မိတ်ဆွေ</button>
+                            <button onClick={() => {setSideFilter('All'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[12px] sm:text-sm rounded-lg font-bold transition-all font-mm " + (sideFilter === 'All' ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700')}>အားလုံး</button>
+                            <button onClick={() => {setSideFilter('Groom'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[12px] sm:text-sm rounded-lg font-bold transition-all font-mm " + (sideFilter === 'Groom' ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 shadow-sm border border-indigo-100 dark:border-indigo-800' : 'text-gray-500 hover:text-gray-700')}>သတို့သားဖက်</button>
+                            <button onClick={() => {setSideFilter('Bride'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[12px] sm:text-sm rounded-lg font-bold transition-all font-mm " + (sideFilter === 'Bride' ? 'bg-pink-50 dark:bg-pink-900/40 text-pink-700 dark:text-pink-400 shadow-sm border border-pink-100 dark:border-pink-800' : 'text-gray-500 hover:text-gray-700')}>သတို့သမီးဖက်</button>
+                            <button onClick={() => {setSideFilter('Both'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[12px] sm:text-sm rounded-lg font-bold transition-all font-mm " + (sideFilter === 'Both' ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-800' : 'text-gray-500 hover:text-gray-700')}>နှစ်ဖက်မိတ်ဆွေ</button>
                         </div>
                     </div>
 
-                    {isEditMode && (
+                    {isEditMode && userRole === 'admin' && (
                         <div className="glass-luxury !bg-red-50/80 dark:!bg-red-900/20 flex justify-between items-center p-4 rounded-xl border border-red-200 dark:border-red-800/50 no-print animate-fade-in">
-                            <label className="flex items-center gap-3 cursor-pointer font-bold text-sm text-red-900 dark:text-red-200 select-none">
-                                <input type="checkbox" className="w-5 h-5 accent-red-600 rounded cursor-pointer" checked={filteredGuests.length > 0 && selectedIds.length === filteredGuests.length} onChange={(e) => { if(e.target.checked) setSelectedIds(filteredGuests.map(g => g.id)); else setSelectedIds([]); }} />
-                                အားလုံးရွေးရန်
+                            <label className="flex items-center gap-3 cursor-pointer font-bold text-sm text-red-900 dark:text-red-200 select-none font-mm">
+                                <input type="checkbox" className="w-5 h-5 accent-red-600 rounded cursor-pointer" checked={guests.length > 0 && selectedIds.length === guests.length} onChange={(e) => { if(e.target.checked) setSelectedIds(guests.map(g => g.id)); else setSelectedIds([]); }} />
+                                လက်ရှိမျက်နှာပြင်မှ အားလုံးရွေးရန်
                             </label>
                             {selectedIds.length > 0 && (
-                                <button onClick={() => setShowBulkDeleteModal(true)} className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all shadow-md">
+                                <button onClick={() => setShowBulkDeleteModal(true)} className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all shadow-md font-mm">
                                     <i className="ph-bold ph-trash-simple text-base"></i> ဖျက်မည် ({selectedIds.length})
                                 </button>
                             )}
                         </div>
                     )}
 
-                    {loading && filteredGuests.length === 0 && search === '' ? (
+                    {loading && guests.length === 0 && debouncedSearch === '' ? (
                         <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-20 bg-gray-200/50 dark:bg-gray-800/50 rounded-2xl animate-pulse"></div>)}</div>
                     ) : Object.keys(grouped).length === 0 ? (
                         <div className="text-center py-20 glass-luxury rounded-[2rem]">
                             <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
                                 <i className="ph-fill ph-users text-3xl text-gray-400"></i>
                             </div>
-                            <p className="text-gray-500 dark:text-gray-400 font-bold">
+                            <p className="text-gray-500 dark:text-gray-400 font-bold font-mm">
                                 {search !== '' ? 'ဧည့်သည်စာရင်း မတွေ့ပါ၊ နာမည် သို့မဟုတ် လိပ်စာကို ပြန်လည်စစ်ဆေးပေးပါ။' : 'No guests found.'}
                             </p>
                         </div>
@@ -718,44 +892,49 @@ const UI_HTML = `<!DOCTYPE html>
                             {Object.entries(grouped).map(([address, groupGuests]) => (
                                 <div key={address} className="glass-luxury rounded-2xl overflow-hidden page-break-inside-avoid">
                                     <div className="bg-gray-50/50 dark:bg-gray-900/50 px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center backdrop-blur-md">
-                                        <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2"><i className="ph-fill ph-map-pin text-wedding-500 text-xl no-print"></i> {address}</h3>
-                                        <span className="bg-white dark:bg-gray-800 text-gray-500 border border-gray-200 dark:border-gray-700 text-xs px-3 py-1 rounded-full font-bold shadow-sm">{groupGuests.length} Guests</span>
+                                        <h3 className="font-bold text-base sm:text-[17px] text-gray-900 dark:text-white flex items-center gap-2 font-mm"><i className="ph-fill ph-map-pin text-wedding-500 text-xl no-print"></i> {address}</h3>
+                                        <span className="bg-white dark:bg-gray-800 text-gray-500 border border-gray-200 dark:border-gray-700 text-xs px-3 py-1 rounded-full font-bold shadow-sm font-sans">{groupGuests.length} Guests</span>
                                     </div>
                                     <div className="divide-y divide-gray-100 dark:divide-gray-800/50">
                                         {groupGuests.map(g => (
                                             <div key={g.id} className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                                                 <div className="flex items-start sm:items-center gap-4 w-full sm:w-auto">
-                                                    {isEditMode && <input type="checkbox" className="w-5 h-5 mt-1 sm:mt-0 accent-red-600 rounded cursor-pointer no-print flex-shrink-0" checked={selectedIds.includes(g.id)} onChange={() => { if (selectedIds.includes(g.id)) setSelectedIds(selectedIds.filter(id => id !== g.id)); else setSelectedIds([...selectedIds, g.id]); }} />}
+                                                    {isEditMode && userRole === 'admin' && <input type="checkbox" className="w-5 h-5 mt-1 sm:mt-0 accent-red-600 rounded cursor-pointer no-print flex-shrink-0" checked={selectedIds.includes(g.id)} onChange={() => { if (selectedIds.includes(g.id)) setSelectedIds(selectedIds.filter(id => id !== g.id)); else setSelectedIds([...selectedIds, g.id]); }} />}
                                                     <div>
-                                                        <p className={"font-serif font-bold text-lg flex flex-wrap items-center gap-2 " + (g.attended ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white')}>
+                                                        <p className={"font-bold text-base flex flex-wrap items-center gap-2 font-mm " + (g.attended ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white')}>
                                                             {g.attended === 1 && <i className="ph-fill ph-check-circle text-emerald-500 text-xl drop-shadow-sm" title="ရောက်ရှိပြီး"></i>}
                                                             {g.name}
-                                                            <span className={"font-sans px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-widest whitespace-nowrap border " + (g.side === 'Groom' ? 'bg-indigo-50/50 text-indigo-600 border-indigo-200' : g.side === 'Bride' ? 'bg-pink-50/50 text-pink-600 border-pink-200' : 'bg-emerald-50/50 text-emerald-600 border-emerald-200')}>
+                                                            <span className={"px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-bold border font-mm " + (g.side === 'Groom' ? 'bg-indigo-50/50 text-indigo-600 border-indigo-200' : g.side === 'Bride' ? 'bg-pink-50/50 text-pink-600 border-pink-200' : 'bg-emerald-50/50 text-emerald-600 border-emerald-200')}>
                                                                 {g.side === 'Groom' ? 'သတို့သားဖက်' : g.side === 'Bride' ? 'သတို့သမီးဖက်' : 'နှစ်ဖက်မိတ်ဆွေ'}
                                                             </span>
                                                         </p>
-                                                        {g.note && <p className="text-sm text-gray-500 mt-1 font-bold flex items-center gap-1.5"><i className="ph-bold ph-note-pencil text-gray-400 no-print text-base"></i>{g.note}</p>}
+                                                        {g.note && <p className="text-sm text-gray-500 mt-1 font-bold flex items-center gap-1.5 font-mm"><i className="ph-bold ph-note-pencil text-gray-400 no-print text-base"></i>{g.note}</p>}
                                                         
-                                                        {(g.gift_amount || g.gift_item) && (
+                                                        {userRole === 'admin' && (g.gift_amount || g.gift_item) && (
                                                             <div className="mt-2 inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 px-3 py-1.5 rounded-lg shadow-sm">
                                                                 <div className="w-5 h-5 rounded-full bg-wedding-100 dark:bg-wedding-900/40 flex items-center justify-center text-wedding-600"><i className="ph-fill ph-gift text-xs"></i></div>
-                                                                <p className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                                                                    {g.gift_amount && <span><span className="font-black font-numbers text-sm">{g.gift_amount}</span> <span className="text-gray-400 font-sans">Ks</span></span>}
+                                                                <p className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2 font-mm">
+                                                                    {g.gift_amount && <span><span className="font-black font-numbers text-sm font-sans">{g.gift_amount}</span> <span className="text-gray-400 font-mm">Ks</span></span>}
                                                                     {g.gift_amount && g.gift_item && <span className="w-1 h-1 rounded-full bg-gray-300"></span>}
-                                                                    {g.gift_item && <span className="font-sans">{g.gift_item}</span>}
+                                                                    {g.gift_item && <span className="font-mm">{g.gift_item}</span>}
                                                                 </p>
+                                                            </div>
+                                                        )}
+                                                        {userRole === 'staff' && (g.gift_amount || g.gift_item) && (
+                                                            <div className="mt-2 inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 px-3 py-1.5 rounded-lg shadow-sm opacity-60">
+                                                                <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500"><i className="ph-fill ph-lock-key text-xs"></i></div>
+                                                                <p className="text-[10px] font-bold text-gray-500 uppercase font-sans">Gift Logged (Hidden)</p>
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
                                                 <div className={"flex items-center gap-3 justify-end w-full sm:w-auto mt-2 sm:mt-0 " + (isEditMode ? 'pl-9' : 'pl-0') + " sm:pl-0"}>
-                                                    <span className={"px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest whitespace-nowrap shadow-sm border " + (g.status==='Invited'?'bg-emerald-50 text-emerald-700 border-emerald-200':g.status==='Written'?'bg-purple-50 text-purple-700 border-purple-200':'bg-amber-50 text-amber-700 border-amber-200')}>
+                                                    <span className={"px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase whitespace-nowrap shadow-sm border font-sans " + (g.status==='Invited'?'bg-emerald-50 text-emerald-700 border-emerald-200':g.status==='Written'?'bg-purple-50 text-purple-700 border-purple-200':'bg-amber-50 text-amber-700 border-amber-200')}>
                                                         {g.status}
                                                     </span>
                                                     <div className="flex gap-2 no-print ml-auto">
                                                         <button onClick={() => { setFormData(g); setModalOpen(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-blue-600 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-pencil-simple text-lg"></i></button>
-                                                        {/* [UPDATE] Password prompt added for single delete via Modal */}
-                                                        <button onClick={() => { setSelectedIds([g.id]); setShowBulkDeleteModal(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-red-500 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-red-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-trash text-lg"></i></button>
+                                                        {userRole === 'admin' && <button onClick={() => { setSelectedIds([g.id]); setShowBulkDeleteModal(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-red-500 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-red-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-trash text-lg"></i></button>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -763,9 +942,9 @@ const UI_HTML = `<!DOCTYPE html>
                                     </div>
                                 </div>
                             ))}
-                            {filteredGuests.length > pageCount * 50 && (
+                            {hasMore && (
                                 <div className="text-center pt-4 pb-8 no-print">
-                                    <button onClick={() => setPageCount(p => p + 1)} className="glass-luxury px-8 py-3 rounded-full font-bold text-gray-800 dark:text-gray-200 hover:-translate-y-1 transition-all flex items-center gap-2 mx-auto">
+                                    <button onClick={() => setPageCount(p => p + 1)} className="glass-luxury px-8 py-3 rounded-full font-bold text-gray-800 dark:text-gray-200 hover:-translate-y-1 transition-all flex items-center gap-2 mx-auto text-sm font-mm">
                                         <i className="ph-bold ph-caret-down text-wedding-500 text-lg"></i> နောက်ထပ် ဧည့်သည်များ ပြရန်
                                     </button>
                                 </div>
@@ -777,65 +956,73 @@ const UI_HTML = `<!DOCTYPE html>
                         <div className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex items-center justify-center p-4 no-print">
                             <div className="glass-luxury p-8 sm:p-10 w-full max-w-xl shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto !bg-white dark:!bg-gray-900 rounded-[2.5rem]">
                                 <button onClick={() => setModalOpen(false)} className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"><i className="ph-bold ph-x text-lg"></i></button>
-                                <h3 className="text-2xl font-serif font-bold mb-6 text-gray-900 dark:text-white">{formData.id ? 'Edit Guest Details' : 'Add New Guest'}</h3>
+                                <h3 className="text-2xl font-serif font-bold mb-6 text-gray-900 dark:text-white font-sans">{formData.id ? 'Edit Guest Details' : 'Add New Guest'}</h3>
                                 <form onSubmit={saveGuest} className="space-y-5">
                                     <div className="grid grid-cols-3 gap-3">
-                                        <label className={"cursor-pointer border-2 rounded-xl p-3 text-[11px] sm:text-sm text-center font-bold uppercase tracking-wider transition-all " + (formData.side === 'Groom' ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-400')}>
-                                            <input type="radio" name="side" className="hidden" checked={formData.side === 'Groom'} onChange={() => setFormData({...formData, side: 'Groom'})} />
+                                        <label className={"cursor-pointer border-2 rounded-xl p-3 text-[12px] sm:text-sm text-center font-bold font-mm transition-all " + (formData.side === 'Groom' ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-500')}>
+                                            <input type="radio" name="side" className="hidden" checked={formData.side === 'Groom'} onChange={() => setFormData(Object.assign({}, formData, { side: 'Groom' }))} />
                                             သတို့သားဖက်
                                         </label>
-                                        <label className={"cursor-pointer border-2 rounded-xl p-3 text-[11px] sm:text-sm text-center font-bold uppercase tracking-wider transition-all " + (formData.side === 'Bride' ? 'border-pink-500 bg-pink-50/50 text-pink-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-400')}>
-                                            <input type="radio" name="side" className="hidden" checked={formData.side === 'Bride'} onChange={() => setFormData({...formData, side: 'Bride'})} />
+                                        <label className={"cursor-pointer border-2 rounded-xl p-3 text-[12px] sm:text-sm text-center font-bold font-mm transition-all " + (formData.side === 'Bride' ? 'border-pink-500 bg-pink-50/50 text-pink-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-500')}>
+                                            <input type="radio" name="side" className="hidden" checked={formData.side === 'Bride'} onChange={() => setFormData(Object.assign({}, formData, { side: 'Bride' }))} />
                                             သတို့သမီးဖက်
                                         </label>
-                                        <label className={"cursor-pointer border-2 rounded-xl p-3 text-[11px] sm:text-sm text-center font-bold uppercase tracking-wider transition-all " + (formData.side === 'Both' ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-400')}>
-                                            <input type="radio" name="side" className="hidden" checked={formData.side === 'Both'} onChange={() => setFormData({...formData, side: 'Both'})} />
+                                        <label className={"cursor-pointer border-2 rounded-xl p-3 text-[12px] sm:text-sm text-center font-bold font-mm transition-all " + (formData.side === 'Both' ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-400')}>
+                                            <input type="radio" name="side" className="hidden" checked={formData.side === 'Both'} onChange={() => setFormData(Object.assign({}, formData, { side: 'Both' }))} />
                                             နှစ်ဖက်မိတ်ဆွေ
                                         </label>
                                     </div>
                                     
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">Guest Name</label>
-                                        <input type="text" required className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white text-base transition-all" value={formData.name} onChange={e=>setFormData({...formData, name: e.target.value})} />
+                                        <label className="block text-[10px] font-bold uppercase mb-1.5 text-gray-400 font-sans">Guest Name</label>
+                                        <input type="text" required className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white text-base transition-all font-mm" value={formData.name} onChange={e=>setFormData(Object.assign({}, formData, { name: e.target.value }))} />
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">Address / City</label>
-                                        <input type="text" required placeholder="e.g. Yangon" className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white text-base transition-all" value={formData.address} onChange={e=>setFormData({...formData, address: e.target.value})} />
+                                        <label className="block text-[10px] font-bold uppercase mb-1.5 text-gray-400 font-sans">Address / City</label>
+                                        <input type="text" required placeholder="e.g. Yangon" className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white text-base transition-all font-mm" value={formData.address} onChange={e=>setFormData(Object.assign({}, formData, { address: e.target.value }))} />
                                     </div>
                                     
-                                    <div className="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
-                                        <div className="col-span-2">
-                                            <h4 className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2"><i className="ph-fill ph-gift text-wedding-500 text-xl"></i> လက်ဖွဲ့မှတ်တမ်း</h4>
+                                    {userRole === 'admin' && (
+                                        <div className="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
+                                            <div className="col-span-2 mb-1">
+                                                <div className="text-[16px] font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2 font-mm">
+                                                    <i className="ph-fill ph-gift text-wedding-500 text-[22px]"></i> လက်ဖွဲ့မှတ်တမ်း
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-[11px] font-bold mb-1.5 text-gray-400">
+                                                    <span className="uppercase text-[10px] tracking-widest font-sans">Amount</span> <span className="font-mm">(ငွေ)</span>
+                                                </label>
+                                                <input type="text" placeholder="50000" className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg font-black font-numbers text-sm text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 font-sans" value={formData.gift_amount} onChange={e=>setFormData(Object.assign({}, formData, { gift_amount: convertToEnglishDigits(e.target.value) }))} />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[11px] font-bold mb-1.5 text-gray-400">
+                                                    <span className="uppercase text-[10px] tracking-widest font-sans">Item</span> <span className="font-mm">(ပစ္စည်း)</span>
+                                                </label>
+                                                <input type="text" placeholder="e.g. ရွှေဆွဲကြိုး" className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg font-bold text-sm text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 font-mm" value={formData.gift_item} onChange={e=>setFormData(Object.assign({}, formData, { gift_item: e.target.value }))} />
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">Amount (ငွေ)</label>
-                                            <input type="text" placeholder="50000" className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg font-black font-numbers text-sm text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500" value={formData.gift_amount} onChange={e=>setFormData({...formData, gift_amount: convertToEnglishDigits(e.target.value)})} />
-                                        </div>
-                                        <div>
-                                            <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">Item (ပစ္စည်း)</label>
-                                            <input type="text" placeholder="e.g. ရွှေဆွဲကြိုး" className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg font-bold text-sm text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500" value={formData.gift_item} onChange={e=>setFormData({...formData, gift_item: e.target.value})} />
-                                        </div>
-                                    </div>
+                                    )}
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">Status</label>
-                                            <select className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white shadow-sm" value={formData.status} onChange={e=>setFormData({...formData, status: e.target.value})}><option>Pending</option><option>Written</option><option>Invited</option></select>
+                                            <label className="block text-[10px] font-bold uppercase mb-1.5 text-gray-400 font-sans">Status</label>
+                                            <select className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white shadow-sm font-sans" value={formData.status} onChange={e=>setFormData(Object.assign({}, formData, { status: e.target.value }))}><option>Pending</option><option>Written</option><option>Invited</option></select>
                                         </div>
                                         <div className="flex items-end h-full">
                                             <label className={"w-full min-h-[50px] flex items-center justify-center gap-2 cursor-pointer px-3 rounded-xl border transition-all shadow-sm " + (formData.attended === 1 ? 'bg-emerald-50 border-emerald-300 dark:bg-emerald-900/20' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700')}>
-                                                <input type="checkbox" className="w-5 h-5 accent-emerald-500 rounded cursor-pointer" checked={formData.attended === 1} onChange={(e) => setFormData({...formData, attended: e.target.checked ? 1 : 0})} />
-                                                <span className={"font-bold text-sm " + (formData.attended === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500')}>ရောက်ရှိ (Attended)</span>
+                                                <input type="checkbox" className="w-5 h-5 accent-emerald-500 rounded cursor-pointer" checked={formData.attended === 1} onChange={(e) => setFormData(Object.assign({}, formData, { attended: e.target.checked ? 1 : 0 }))} />
+                                                <span className={"font-bold text-sm font-mm " + (formData.attended === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500')}>ရောက်ရှိ <span className="font-sans text-[11px] uppercase tracking-widest">(Attended)</span></span>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">Note (Optional)</label>
-                                        <input type="text" className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white text-base transition-all" value={formData.note} onChange={e=>setFormData({...formData, note: e.target.value})} />
+                                        <label className="block text-[10px] font-bold uppercase mb-1.5 text-gray-400 font-sans">Note (Optional)</label>
+                                        <input type="text" className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white text-base transition-all font-mm" value={formData.note} onChange={e=>setFormData(Object.assign({}, formData, { note: e.target.value }))} />
                                     </div>
                                     
-                                    <button disabled={isSaving} className={"w-full text-white py-3.5 rounded-xl mt-2 font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 " + (isSaving ? 'bg-gray-400' : 'bg-wedding-800 hover:bg-wedding-900 shadow-luxury hover:-translate-y-0.5')}>
+                                    <button disabled={isSaving} className={"w-full text-white py-3.5 rounded-xl mt-2 font-bold text-base transition-all flex items-center justify-center gap-2 font-sans " + (isSaving ? 'bg-gray-400' : 'bg-wedding-800 hover:bg-wedding-900 shadow-luxury hover:-translate-y-0.5')}>
                                         {isSaving ? <React.Fragment><i className="ph-bold ph-spinner animate-spin text-xl"></i> Saving...</React.Fragment> : 'Save Guest Details'}
                                     </button>
                                 </form>
@@ -843,20 +1030,25 @@ const UI_HTML = `<!DOCTYPE html>
                         </div>
                     )}
 
-                    {showBulkDeleteModal && (
+                    {showBulkDeleteModal && userRole === 'admin' && (
                         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 no-print">
                             <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 w-full max-w-sm text-center relative animate-fade-in shadow-luxury border border-white/20">
                                 <button onClick={() => { setShowBulkDeleteModal(false); setDeletePassword(''); }} className="absolute top-5 right-5 text-gray-400 hover:text-gray-800"><i className="ph-bold ph-x text-xl"></i></button>
                                 <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5 border-2 border-red-100 dark:border-red-900/50 shadow-sm">
                                     <i className="ph-fill ph-warning-circle text-3xl"></i>
                                 </div>
-                                <h3 className="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2">ဖျက်မှာ သေချာပြီလား?</h3>
-                                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-6">ရွေးချယ်ထားသော ဧည့်သည် <span className="text-red-500 text-base">({selectedIds.length})</span> ဦးကို စာရင်းမှ အပြီးတိုင် ဖျက်ပစ်ပါမည်။</p>
+                                <h3 className="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2 font-mm">ဖျက်မှာ သေချာပြီလား?</h3>
+                                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-6 font-mm">ရွေးချယ်ထားသော ဧည့်သည် <span className="text-red-500 text-base font-sans">({selectedIds.length})</span> ဦးကို စာရင်းမှ အပြီးတိုင် ဖျက်ပစ်ပါမည်။</p>
                                 <form onSubmit={confirmBulkDelete} className="text-left space-y-4">
-                                    <input type="password" placeholder="Admin Password" required className="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-bold focus:outline-none focus:border-red-500" value={deletePassword} onChange={e=>setDeletePassword(e.target.value)} />
-                                    <div className="flex gap-3">
-                                        <button type="button" onClick={() => { setShowBulkDeleteModal(false); setDeletePassword(''); }} className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200">Cancel</button>
-                                        <button disabled={isDeleting} className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-md">
+                                    <div className="relative">
+                                        <input type={showDeletePwd ? "text" : "password"} placeholder="Admin Password" required className="w-full pl-5 pr-12 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-bold focus:outline-none focus:border-red-500 text-gray-900 dark:text-white transition-all font-sans" value={deletePassword} onChange={e=>setDeletePassword(e.target.value)} />
+                                        <button type="button" onClick={() => setShowDeletePwd(!showDeletePwd)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                            <i className={"ph-fill text-lg " + (showDeletePwd ? "ph-eye-slash" : "ph-eye")}></i>
+                                        </button>
+                                    </div>
+                                    <div className="flex gap-3 mt-4">
+                                        <button type="button" onClick={() => { setShowBulkDeleteModal(false); setDeletePassword(''); }} className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 font-sans">Cancel</button>
+                                        <button disabled={isDeleting} className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-md font-mm">
                                             {isDeleting ? <React.Fragment><i className="ph-bold ph-spinner animate-spin"></i> ဖျက်နေသည်</React.Fragment> : 'ဖျက်မည်'}
                                         </button>
                                     </div>
@@ -868,16 +1060,115 @@ const UI_HTML = `<!DOCTYPE html>
             );
         }
 
+        function AuditLogs({ showToast }) {
+            const [logs, setLogs] = useState([]);
+            const [loading, setLoading] = useState(true);
+
+            const fetchLogs = useCallback(() => {
+                setLoading(true);
+                apiCall('/api/logs')
+                    .then(data => { if (data && data.logs) setLogs(data.logs); })
+                    .catch(() => showToast('မှတ်တမ်းများ ရယူ၍မရပါ', 'error'))
+                    .finally(() => setLoading(false));
+            }, []);
+
+            useEffect(() => {
+                fetchLogs();
+            }, [fetchLogs]);
+
+            const handleDeleteLog = async (id) => {
+                try {
+                    const res = await fetch('/api/logs/' + id, { method: 'DELETE' });
+                    if (res.ok) { 
+                        setLogs(prev => prev.filter(l => l.id !== id)); 
+                        showToast('မှတ်တမ်းတစ်ခု ဖျက်ပစ်ပါပြီ'); 
+                    }
+                } catch(e) { showToast('ဖျက်၍မရပါ', 'error'); }
+            };
+
+            const handleClearAll = async () => {
+                if(window.confirm('မှတ်တမ်းများအားလုံးကို အပြီးတိုင် ဖျက်ပစ်ရန် သေချာပြီလား?')) {
+                    try {
+                        const res = await fetch('/api/logs', { method: 'DELETE' });
+                        if (res.ok) { 
+                            setLogs([]); 
+                            showToast('မှတ်တမ်းအားလုံး ဖျက်ပစ်ပါပြီ'); 
+                        }
+                    } catch(e) { showToast('ဖျက်၍မရပါ', 'error'); }
+                }
+            };
+
+            const formatDateTime = (isoString) => {
+                if (!isoString) return '-'; const date = new Date(isoString); return date.toLocaleString('en-US', { timeZone: 'Asia/Yangon', hour12: true, year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto space-y-6 relative z-10 font-sans">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-3xl font-serif font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm">
+                                <i className="ph-fill ph-list-bullets text-2xl"></i>
+                            </div> 
+                            Activity Logs
+                        </h2>
+                        {logs.length > 0 && (
+                            <button onClick={handleClearAll} className="glass-luxury px-4 py-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold text-sm flex items-center gap-2 transition-all shadow-sm font-mm">
+                                <i className="ph-bold ph-trash text-lg"></i> အားလုံးဖျက်မည်
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="glass-luxury rounded-[2rem] overflow-hidden">
+                        {loading ? (
+                            <div className="p-10 text-center text-gray-500"><i className="ph-bold ph-spinner animate-spin text-3xl mb-2"></i><p>Loading records...</p></div>
+                        ) : logs.length === 0 ? (
+                            <div className="p-10 text-center text-gray-500 font-mm">မှတ်တမ်း မရှိသေးပါ</div>
+                        ) : (
+                            <div className="divide-y divide-gray-100 dark:divide-gray-800/50">
+                                {logs.map((log) => (
+                                    <div key={log.id} className="p-5 sm:p-6 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 shadow-inner">
+                                            {(log.action || '') === 'ADD' ? <i className="ph-bold ph-user-plus text-emerald-500 text-xl"></i> :
+                                             (log.action || '') === 'UPDATE' ? <i className="ph-bold ph-pencil-simple text-blue-500 text-xl"></i> :
+                                             (log.action || '').indexOf('DELETE') !== -1 ? <i className="ph-bold ph-trash text-red-500 text-xl"></i> :
+                                             (log.action || '') === 'IMPORT' ? <i className="ph-bold ph-upload-simple text-purple-500 text-xl"></i> :
+                                             <i className="ph-bold ph-info text-xl"></i>}
+                                        </div>
+                                        <div className="flex-grow">
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white leading-relaxed font-mm">{log.details}</p>
+                                            <div className="flex items-center gap-3 mt-1.5">
+                                                <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1 font-sans"><i className="ph-bold ph-clock"></i> {formatDateTime(log.created_at)}</span>
+                                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+                                                <span className={"text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md font-sans " + (log.username === 'admin' ? 'bg-wedding-100 text-wedding-800' : 'bg-blue-100 text-blue-800')}>{log.username}</span>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => handleDeleteLog(log.id)} className="w-9 h-9 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex-shrink-0 shadow-sm border border-transparent hover:border-red-100 dark:hover:border-red-800/50" title="Delete Log">
+                                            <i className="ph-bold ph-trash text-lg"></i>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
         function Settings({ showToast, appSettings, setAppSettings }) {
-            const [settings, setSettings] = useState({ groom_name: '', bride_name: '', wedding_date: '', venue: '', footer_text: '', logo_url: '', theme_color: 'gold', effect_on: 1 });
-            const [creds, setCreds] = useState({ username: '', password: '' });
+            const [settings, setSettings] = useState({ groom_name: '', bride_name: '', wedding_date: '', venue: '', footer_text: '', logo_url: '', theme_color: 'gold', effect_on: 1, recovery_key: '' });
+            const [creds, setCreds] = useState({ target: 'admin', username: '', password: '' });
             const [isUpdating, setIsUpdating] = useState(false);
+            const [isSavingSettings, setIsSavingSettings] = useState(false);
             
+            // Password Show/Hide toggles
+            const [showRecoveryKey, setShowRecoveryKey] = useState(false);
+            const [showSettingsPwd, setShowSettingsPwd] = useState(false);
+
             const [srcImage, setSrcImage] = useState(null);
             const [cropData, setCropData] = useState({ x: 50, y: 50, size: 80 }); 
             const canvasRef = useRef(null); const imageRef = useRef(null);
 
-            useEffect(() => { apiCall('/api/settings').then(data => { if(data.settings) setSettings(prev => ({...prev, ...data.settings})); }); }, []);
+            useEffect(() => { apiCall('/api/settings').then(data => { if(data.settings) setSettings(prev => Object.assign({}, prev, data.settings)); }); }, []);
             useEffect(() => {
                 if (!srcImage || !canvasRef.current || !imageRef.current) return;
                 const canvas = canvasRef.current; const ctx = canvas.getContext('2d'); const img = imageRef.current;
@@ -890,25 +1181,28 @@ const UI_HTML = `<!DOCTYPE html>
             }, [srcImage, cropData]);
 
             const handleSave = async (e) => {
-                e.preventDefault(); await fetch('/api/settings', { method: 'PUT', body: JSON.stringify(settings), headers: { 'Content-Type': 'application/json' } });
-                setAppSettings(settings); showToast('Settings saved successfully'); setTimeout(() => window.location.reload(), 800); 
+                e.preventDefault(); setIsSavingSettings(true);
+                await fetch('/api/settings', { method: 'PUT', body: JSON.stringify(settings), headers: { 'Content-Type': 'application/json' } });
+                setAppSettings(settings); showToast('Settings saved successfully'); setIsSavingSettings(false); setTimeout(() => window.location.reload(), 800); 
             };
+            
             const handleUpdateCreds = async (e) => {
                 e.preventDefault(); setIsUpdating(true);
-                const res = await fetch('/api/change-credentials', { method: 'POST', body: JSON.stringify({ newUsername: creds.username, newPassword: creds.password }), headers: { 'Content-Type': 'application/json' } });
-                setIsUpdating(false); if (res.ok) { showToast('Login အချက်အလက်များ အောင်မြင်စွာ ပြောင်းလဲပြီးပါပြီ'); setCreds({ username: '', password: '' }); } else { showToast('ပြောင်းလဲခြင်း မအောင်မြင်ပါ၊ ပြန်လည်ကြိုးစားပါ', 'error'); }
+                const res = await fetch('/api/change-credentials', { method: 'POST', body: JSON.stringify({ target: creds.target, newUsername: creds.username, newPassword: creds.password }), headers: { 'Content-Type': 'application/json' } });
+                setIsUpdating(false); if (res.ok) { showToast(creds.target + ' account အချက်အလက်များ ပြောင်းလဲပြီးပါပြီ'); setCreds({ target: 'admin', username: '', password: '' }); } else { showToast('ပြောင်းလဲခြင်း မအောင်မြင်ပါ', 'error'); }
             };
+
             const handleFileSelect = (e) => {
                 const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => setSrcImage(reader.result); reader.readAsDataURL(file);
             };
             const handleApplyCrop = async () => {
                 if (!canvasRef.current) return; const base64Data = canvasRef.current.toDataURL('image/png').split(',')[1];
                 const res = await fetch('/api/uploads', { method: 'POST', body: JSON.stringify({ mime_type: 'image/png', base64_data: base64Data }), headers: { 'Content-Type': 'application/json' } });
-                const data = await res.json(); setSettings({ ...settings, logo_url: data.url }); setSrcImage(null); showToast('Monogram အား စိတ်ကြိုက်အဝိုင်းပုံစံ ဖြတ်ညှပ်ပြီးပါပြီ', 'success');
+                const data = await res.json(); setSettings(Object.assign({}, settings, { logo_url: data.url })); setSrcImage(null); showToast('Monogram အား စိတ်ကြိုက်အဝိုင်းပုံစံ ဖြတ်ညှပ်ပြီးပါပြီ', 'success');
             };
 
             return (
-                <div className="max-w-3xl mx-auto space-y-8 relative z-10 pb-10">
+                <div className="max-w-3xl mx-auto space-y-8 relative z-10 pb-10 font-sans">
                     <div className="glass-luxury p-8 sm:p-12 rounded-[2.5rem]">
                         <h2 className="text-2xl font-serif font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-3">
                             <div className="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 shadow-sm border-2 border-white dark:border-blue-800/50 flex items-center justify-center flex-shrink-0">
@@ -922,7 +1216,7 @@ const UI_HTML = `<!DOCTYPE html>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     {Object.entries({ gold: 'Classic Gold', rose: 'Rose Pink', emerald: 'Emerald', blue: 'Navy Blue' }).map(([key, label]) => (
                                         <label key={key} className={"cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all transform hover:-translate-y-0.5 " + (settings.theme_color === key ? 'border-wedding-500 bg-wedding-50/50 text-wedding-800 shadow-md' : 'border-gray-100 dark:border-gray-800 text-gray-500 bg-white/50 dark:bg-gray-900/50 hover:bg-white')}>
-                                            <input type="radio" className="hidden" checked={settings.theme_color === key} onChange={() => setSettings({...settings, theme_color: key})} />
+                                            <input type="radio" className="hidden" checked={settings.theme_color === key} onChange={() => setSettings(Object.assign({}, settings, { theme_color: key }))} />
                                             <div className="w-8 h-8 rounded-full mx-auto mb-2 shadow-inner border border-black/5" style={{ backgroundColor: key==='gold'?'#c2a37d':key==='rose'?'#fb7185':key==='emerald'?'#34d399':'#60a5fa' }}></div>
                                             <span className="text-[10px] uppercase tracking-wider">{label}</span>
                                         </label>
@@ -935,7 +1229,7 @@ const UI_HTML = `<!DOCTYPE html>
                                     <span className="font-bold text-gray-800 dark:text-gray-200">Floating Particles & Glow</span>
                                     <div className={"w-12 h-6 rounded-full transition-colors relative shadow-inner " + (settings.effect_on === 1 ? 'bg-wedding-500' : 'bg-gray-300 dark:bg-gray-700')}>
                                         <div className={"absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm " + (settings.effect_on === 1 ? 'left-7' : 'left-1')}></div>
-                                        <input type="checkbox" className="hidden" checked={settings.effect_on === 1} onChange={(e) => setSettings({...settings, effect_on: e.target.checked ? 1 : 0})} />
+                                        <input type="checkbox" className="hidden" checked={settings.effect_on === 1} onChange={(e) => setSettings(Object.assign({}, settings, { effect_on: e.target.checked ? 1 : 0 }))} />
                                     </div>
                                 </label>
                             </div>
@@ -953,21 +1247,21 @@ const UI_HTML = `<!DOCTYPE html>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">Groom's Name</label>
-                                    <input type="text" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all" value={settings.groom_name} onChange={e=>setSettings({...settings, groom_name: e.target.value})} />
+                                    <input type="text" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all font-mm" value={settings.groom_name} onChange={e=>setSettings(Object.assign({}, settings, { groom_name: e.target.value }))} />
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">Bride's Name</label>
-                                    <input type="text" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all" value={settings.bride_name} onChange={e=>setSettings({...settings, bride_name: e.target.value})} />
+                                    <input type="text" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all font-mm" value={settings.bride_name} onChange={e=>setSettings(Object.assign({}, settings, { bride_name: e.target.value }))} />
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">Wedding Date</label>
-                                    <input type="date" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all" value={settings.wedding_date} onChange={e=>setSettings({...settings, wedding_date: e.target.value})} />
+                                    <input type="date" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all" value={settings.wedding_date} onChange={e=>setSettings(Object.assign({}, settings, { wedding_date: e.target.value }))} />
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">Venue</label>
-                                    <input type="text" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all" value={settings.venue} onChange={e=>setSettings({...settings, venue: e.target.value})} />
+                                    <input type="text" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all font-mm" value={settings.venue} onChange={e=>setSettings(Object.assign({}, settings, { venue: e.target.value }))} />
                                 </div>
                             </div>
                             
@@ -989,9 +1283,9 @@ const UI_HTML = `<!DOCTYPE html>
                                                 <canvas ref={canvasRef} width="300" height="300" className="w-full h-full object-cover" />
                                             </div>
                                             <div className="w-full space-y-4 text-left">
-                                                <div><label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Horizontal (X)</label><input type="range" min="0" max="100" className="w-full accent-wedding-800" value={cropData.x} onChange={e => setCropData({...cropData, x: parseInt(e.target.value)})} /></div>
-                                                <div><label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Vertical (Y)</label><input type="range" min="0" max="100" className="w-full accent-wedding-800" value={cropData.y} onChange={e => setCropData({...cropData, y: parseInt(e.target.value)})} /></div>
-                                                <div><label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Zoom (Scale)</label><input type="range" min="20" max="100" className="w-full accent-wedding-800" value={cropData.size} onChange={e => setCropData({...cropData, size: parseInt(e.target.value)})} /></div>
+                                                <div><label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Horizontal (X)</label><input type="range" min="0" max="100" className="w-full accent-wedding-800" value={cropData.x} onChange={e => setCropData(Object.assign({}, cropData, { x: parseInt(e.target.value) }))} /></div>
+                                                <div><label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Vertical (Y)</label><input type="range" min="0" max="100" className="w-full accent-wedding-800" value={cropData.y} onChange={e => setCropData(Object.assign({}, cropData, { y: parseInt(e.target.value) }))} /></div>
+                                                <div><label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">Zoom (Scale)</label><input type="range" min="20" max="100" className="w-full accent-wedding-800" value={cropData.size} onChange={e => setCropData(Object.assign({}, cropData, { size: parseInt(e.target.value) }))} /></div>
                                             </div>
                                         </div>
                                         <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -1006,7 +1300,7 @@ const UI_HTML = `<!DOCTYPE html>
                                             <input type="file" accept="image/*,image/svg+xml" className="hidden" onChange={handleFileSelect} />
                                         </label>
                                         {settings.logo_url && (
-                                            <button type="button" onClick={() => setSettings({...settings, logo_url: ''})} className="px-8 py-4 rounded-2xl text-sm font-bold transition-all text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100">Remove Monogram</button>
+                                            <button type="button" onClick={() => setSettings(Object.assign({}, settings, { logo_url: '' }))} className="px-8 py-4 rounded-2xl text-sm font-bold transition-all text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 hover:bg-red-100">Remove Monogram</button>
                                         )}
                                     </div>
                                 )}
@@ -1014,9 +1308,26 @@ const UI_HTML = `<!DOCTYPE html>
 
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">Footer Quote</label>
-                                <textarea rows="2" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 italic text-base text-center text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all" value={settings.footer_text} onChange={e=>setSettings({...settings, footer_text: e.target.value})}></textarea>
+                                <textarea rows="2" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 italic text-base text-center text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all font-mm" value={settings.footer_text} onChange={e=>setSettings(Object.assign({}, settings, { footer_text: e.target.value }))}></textarea>
                             </div>
-                            <button className="w-full bg-gradient-to-r from-wedding-900 to-wedding-800 text-white font-bold text-base tracking-wide py-3.5 rounded-xl shadow-luxury transition-all transform hover:-translate-y-0.5 mt-2">Save All Configurations</button>
+                            
+                            <div className="mt-8 border-t border-gray-200/50 dark:border-gray-800/50 pt-8">
+                                <h3 className="text-lg font-serif font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                    <i className="ph-fill ph-key text-wedding-500"></i> Master Recovery Key
+                                </h3>
+                                <p className="text-[11px] sm:text-xs text-gray-500 mb-5 font-bold leading-relaxed font-mm">ဤ Key သည် Password မေ့သွားပါက ပြန်လည်ရယူရန် (Reset) အတွက် အသုံးပြုရမည့် အရေးကြီးသော လျှို့ဝှက်စာသား ဖြစ်ပါသည်။ သေချာစွာ မှတ်သားထားပါ။ (Default: EverAfter2026)</p>
+                                
+                                <div className="relative">
+                                    <input type={showRecoveryKey ? "text" : "password"} placeholder="Enter New Master Recovery Key" className="w-full pl-5 pr-12 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold focus:outline-none focus:border-wedding-500 shadow-sm transition-all text-sm" value={settings.recovery_key || ''} onChange={e=>setSettings(Object.assign({}, settings, { recovery_key: e.target.value }))} />
+                                    <button type="button" onClick={() => setShowRecoveryKey(!showRecoveryKey)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                        <i className={"ph-fill text-lg " + (showRecoveryKey ? "ph-eye-slash" : "ph-eye")}></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button disabled={isSavingSettings} className="w-full bg-gradient-to-r from-wedding-900 to-wedding-800 text-white font-bold text-base tracking-wide py-3.5 rounded-xl shadow-luxury transition-all transform hover:-translate-y-0.5 mt-4 uppercase">
+                                {isSavingSettings ? 'Saving Configurations...' : 'Save All Configurations'}
+                            </button>
                         </form>
                     </div>
 
@@ -1028,15 +1339,30 @@ const UI_HTML = `<!DOCTYPE html>
                             Account Security
                         </h2>
                         <form onSubmit={handleUpdateCreds} className="space-y-5">
+                            <div className="flex gap-4 mb-4">
+                                <label className={"flex-1 cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all " + (creds.target === 'admin' ? 'border-red-500 bg-red-50/50 text-red-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-500')}>
+                                    <input type="radio" name="target" className="hidden" checked={creds.target === 'admin'} onChange={() => setCreds(Object.assign({}, creds, { target: 'admin' }))} />
+                                    Admin Account
+                                </label>
+                                <label className={"flex-1 cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all " + (creds.target === 'staff' ? 'border-blue-500 bg-blue-50/50 text-blue-700 shadow-sm' : 'border-gray-100 dark:border-gray-800 text-gray-500')}>
+                                    <input type="radio" name="target" className="hidden" checked={creds.target === 'staff'} onChange={() => setCreds(Object.assign({}, creds, { target: 'staff' }))} />
+                                    Staff Account
+                                </label>
+                            </div>
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">New Username</label>
-                                <input type="text" placeholder="Enter new username" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-red-500 font-bold shadow-sm transition-all" value={creds.username} onChange={e => setCreds({...creds, username: e.target.value})} required />
+                                <input type="text" placeholder="Enter new username" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-red-500 font-bold shadow-sm transition-all" value={creds.username} onChange={e => setCreds(Object.assign({}, creds, { username: e.target.value }))} required />
                             </div>
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-gray-500">New Password</label>
-                                <input type="password" placeholder="Enter new password" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-red-500 font-bold shadow-sm transition-all" value={creds.password} onChange={e => setCreds({...creds, password: e.target.value})} required />
+                                <div className="relative">
+                                    <input type={showSettingsPwd ? "text" : "password"} placeholder="Enter new password" className="w-full pl-4 pr-12 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-red-500 font-bold shadow-sm transition-all" value={creds.password} onChange={e => setCreds(Object.assign({}, creds, { password: e.target.value }))} required />
+                                    <button type="button" onClick={() => setShowSettingsPwd(!showSettingsPwd)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                        <i className={"ph-fill text-lg " + (showSettingsPwd ? "ph-eye-slash" : "ph-eye")}></i>
+                                    </button>
+                                </div>
                             </div>
-                            <button disabled={isUpdating} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-base py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 mt-2">Update Secure Credentials</button>
+                            <button disabled={isUpdating} className={"w-full text-white font-bold text-base py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 mt-2 uppercase " + (creds.target === 'admin' ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700')}>Update Credentials</button>
                         </form>
                     </div>
                 </div>
@@ -1050,7 +1376,6 @@ const UI_HTML = `<!DOCTYPE html>
 </html>`;
 
 // --- ၂။ BACKEND (API & DATABASE) ၏ CODE များ ---
-// [SECURITY UPDATE] Added Secret Salt to prevent Rainbow Table attacks
 async function hashPassword(password) {
     const salt = "YoneMan_EverAfter_Secure_Salt_2026_";
 	const msgBuffer = new TextEncoder().encode(salt + password);
@@ -1059,38 +1384,44 @@ async function hashPassword(password) {
 	return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ⚠️ သတိပြုရန်: Database Setup အတွက် /api/setup ကို Browser ကနေ ခေါ်ပေးရပါမယ်။
+async function logAction(env, username, action, details) {
+    try {
+        await env.DB.prepare('INSERT INTO logs (action, details, username, created_at) VALUES (?, ?, ?, ?)')
+            .bind(action, details, username || 'system', new Date().toISOString()).run();
+    } catch(e) { console.error("Logging error", e) }
+}
+
 async function runMigrations(env) {
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, groom_name TEXT, bride_name TEXT, wedding_date TEXT, venue TEXT, footer_text TEXT, logo_url TEXT, theme_color TEXT, effect_on INTEGER)").run();
-    await env.DB.prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password_hash TEXT)").run();
+    await env.DB.prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password_hash TEXT, role TEXT DEFAULT 'admin')").run();
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS guests (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, note TEXT, status TEXT, side TEXT DEFAULT 'Groom', attended INTEGER DEFAULT 0, gift_amount TEXT, gift_item TEXT, updated_at TEXT)").run();
-    await env.DB.prepare("CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, created_at TEXT)").run();
-    
-    // [FIXED] Database table required if R2 Storage is not attached
+    await env.DB.prepare("CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, username TEXT, role TEXT, created_at TEXT)").run();
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS uploads (id TEXT PRIMARY KEY, mime_type TEXT, base64_data TEXT)").run();
+    await env.DB.prepare("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, action TEXT, details TEXT, username TEXT, created_at TEXT)").run();
     
-    // [PERFORMANCE UPDATE] Indexing for blazing fast search and sorting
     await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_guests_address_name ON guests(address, name)").run();
 
-    // [DATA INTEGRITY UPDATE] Ensure exact uniqueness to prevent duplicates at the database level
-    try {
-        await env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_guest ON guests(name, address)").run();
-    } catch(e) {
-        // Ignores if index already exists or if there's conflicting data during dev
-    }
+    try { await env.DB.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_guest ON guests(name, address)").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'admin'").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE sessions ADD COLUMN role TEXT DEFAULT 'admin'").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE sessions ADD COLUMN username TEXT").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE settings ADD COLUMN recovery_key TEXT DEFAULT 'EverAfter2026'").run(); } catch(e) {}
 
-    // Insert default setting if empty
     const s = await env.DB.prepare("SELECT id FROM settings WHERE id = 1").first();
-    if(!s) await env.DB.prepare("INSERT INTO settings (id, theme_color, effect_on) VALUES (1, 'gold', 1)").run();
+    if(!s) await env.DB.prepare("INSERT INTO settings (id, theme_color, effect_on, recovery_key) VALUES (1, 'gold', 1, 'EverAfter2026')").run();
 
-    // Insert default user if empty
-    const u = await env.DB.prepare("SELECT id FROM users WHERE id = 1").first();
-    if(!u) {
-        const h = await hashPassword('admin123'); // Default password
-        await env.DB.prepare("INSERT INTO users (id, username, password_hash) VALUES (1, 'admin', ?)").bind(h).run();
+    const u1 = await env.DB.prepare("SELECT id FROM users WHERE id = 1").first();
+    if(!u1) {
+        const h = await hashPassword('admin123'); 
+        await env.DB.prepare("INSERT INTO users (id, username, password_hash, role) VALUES (1, 'admin', ?, 'admin')").bind(h).run();
+    }
+    const u2 = await env.DB.prepare("SELECT id FROM users WHERE id = 2").first();
+    if(!u2) {
+        const h = await hashPassword('staff123'); 
+        await env.DB.prepare("INSERT INTO users (id, username, password_hash, role) VALUES (2, 'staff', ?, 'staff')").bind(h).run();
     }
 
-    return "Database Schema & Indexes Updated Successfully! You can now log in.";
+    return "Database Schema & Indexes Updated Successfully!";
 }
 
 export default {
@@ -1099,7 +1430,6 @@ export default {
 		const path = url.pathname;
 		const method = request.method;
 
-        // [OPTIMIZATION] Setup Route - Database စတင်တည်ဆောက်ရန် လင့်ခ်
         if (path === '/api/setup') {
             const msg = await runMigrations(env);
             return new Response(msg, { status: 200 });
@@ -1128,33 +1458,36 @@ export default {
 
 		if (path === '/') return new Response(UI_HTML, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
 
-        // [SECURITY UPDATE] Clean up Expired Sessions in background so D1 memory is freed
-        try {
-            ctx.waitUntil(env.DB.prepare("DELETE FROM sessions WHERE datetime(created_at) < datetime('now', '-1 day')").run());
-        } catch(e) {}
-
-        // Secure Session Check
         const cookieHeader = request.headers.get('Cookie');
-        let isValidSession = false;
+        let sessionUser = null;
         if (cookieHeader) {
             const match = cookieHeader.match(/session_id=([^;]+)/);
             if (match) {
-                const sessionId = match[1];
-                const sessionRecord = await env.DB.prepare('SELECT * FROM sessions WHERE session_id = ?').bind(sessionId).first();
-                if (sessionRecord) isValidSession = true;
+                sessionUser = await env.DB.prepare('SELECT * FROM sessions WHERE session_id = ?').bind(match[1]).first();
             }
         }
 
-        // Settings နဲ့ Uploads တွေကို Login မဝင်ခင် ခေါ်ခွင့်ပြုရမယ် (Logo ပေါ်အောင်)
+        const isProtected = path.startsWith('/api/') && path !== '/api/login' && path !== '/api/reset-password' && path !== '/api/setup' && !(path === '/api/settings' && method === 'GET') && !path.startsWith('/api/uploads/');
+        
+        if (isProtected && !sessionUser) {
+            return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+        }
+
+        const isAdmin = sessionUser ? sessionUser.role === 'admin' : false;
+        const currentUsername = sessionUser ? sessionUser.username : '';
+
+        // PUBLIC APIs
         if (path === '/api/settings' && method === 'GET') {
 			const settings = await env.DB.prepare('SELECT * FROM settings WHERE id = 1').first();
+            // [SECURITY] Hide Recovery Key from Public
+            if (!sessionUser || sessionUser.role !== 'admin') {
+                if (settings) delete settings.recovery_key;
+            }
 			return Response.json({ settings });
 		}
 
-        // [FIXED] Uploads Fetching properly handling MIME types from R2 and D1
         if (path.startsWith('/api/uploads/') && method === 'GET') {
 			const id = path.split('/').pop();
-            
             if (env.BUCKET) {
                 const object = await env.BUCKET.get(id);
                 if (object) {
@@ -1165,8 +1498,6 @@ export default {
                     return new Response(object.body, { headers });
                 }
             } 
-            
-            // D1 Fallback
             const img = await env.DB.prepare('SELECT * FROM uploads WHERE id = ?').bind(id.replace(/\.[^/.]+$/, "")).first();
             if (img) {
                 const binaryData = atob(img.base64_data);
@@ -1174,44 +1505,45 @@ export default {
                 for (let i = 0; i < binaryData.length; i++) arrayBuffer[i] = binaryData.charCodeAt(i);
                 return new Response(arrayBuffer, { headers: { 'Content-Type': img.mime_type, 'Cache-Control': 'public, max-age=31536000, immutable' }});
             }
-
             return new Response('Not found', { status: 404 });
 		}
 
-        // --- PUBLIC ROUTES (No Login Required) ---
 		if (path === '/api/login' && method === 'POST') {
+            try { await env.DB.prepare("DELETE FROM sessions WHERE datetime(created_at) < datetime('now', '-1 day')").run(); } catch(e) {}
 			const { username, password } = await request.json();
 			const hashedInput = await hashPassword(password);
 			const user = await env.DB.prepare('SELECT * FROM users WHERE username = ? AND password_hash = ?').bind(username, hashedInput).first();
 
 			if (user) {
-                // Secure Random Session ID ဖန်တီးခြင်း
                 const sessionId = crypto.randomUUID();
-                await env.DB.prepare('INSERT INTO sessions (session_id, created_at) VALUES (?, ?)').bind(sessionId, new Date().toISOString()).run();
-                
+                await env.DB.prepare('INSERT INTO sessions (session_id, username, role, created_at) VALUES (?, ?, ?, ?)')
+                    .bind(sessionId, user.username, user.role || 'admin', new Date().toISOString()).run();
+                await logAction(env, user.username, 'LOGIN', 'User logged in successfully');
 				return new Response(JSON.stringify({ success: true }), {
-					headers: { 
-						'Content-Type': 'application/json',
-						'Set-Cookie': `session_id=${sessionId}; HttpOnly; Secure; SameSite=Strict; Max-Age=86400; Path=/`
-					}
+					headers: { 'Content-Type': 'application/json', 'Set-Cookie': "session_id=" + sessionId + "; HttpOnly; Secure; SameSite=Strict; Max-Age=86400; Path=/" }
 				});
 			}
 			return new Response('Unauthorized', { status: 401 });
 		}
 
-        // --- PROTECTED ROUTES (Login Required) ---
-        const isProtected = path.startsWith('/api/') 
-            && path !== '/api/login' 
-            && path !== '/api/setup'
-            && !(path === '/api/settings' && method === 'GET') 
-            && !path.startsWith('/api/uploads/');
-
-        if (isProtected && !isValidSession) {
-            return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+        if (path === '/api/reset-password' && method === 'POST') {
+            const { username, recoveryKey, newPassword } = await request.json();
+            const settings = await env.DB.prepare('SELECT recovery_key FROM settings WHERE id = 1').first();
+            
+            if (settings && settings.recovery_key === recoveryKey) {
+                const newHash = await hashPassword(newPassword);
+                const user = await env.DB.prepare('SELECT id FROM users WHERE username = ?').bind(username).first();
+                if (!user) return Response.json({ error: 'Username not found' }, { status: 404 });
+                
+                await env.DB.prepare('UPDATE users SET password_hash = ? WHERE username = ?').bind(newHash, username).run();
+                await logAction(env, username, 'SECURITY', 'Password reset successfully using Master Recovery Key');
+                return Response.json({ success: true });
+            }
+            return Response.json({ error: 'Invalid Recovery Key' }, { status: 403 });
         }
 
         if (path === '/api/auth/check' && method === 'GET') {
-			return new Response(JSON.stringify({ auth: true }), { headers: { 'Content-Type': 'application/json' }});
+			return new Response(JSON.stringify({ auth: true, role: sessionUser.role, username: sessionUser.username }), { headers: { 'Content-Type': 'application/json' }});
 		}
 
 		if (path === '/api/logout' && method === 'POST') {
@@ -1219,61 +1551,90 @@ export default {
                 const match = cookieHeader.match(/session_id=([^;]+)/);
                 if (match) await env.DB.prepare('DELETE FROM sessions WHERE session_id = ?').bind(match[1]).run();
             }
-			return new Response('Logged out', {
-				headers: { 'Set-Cookie': 'session_id=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/' }
-			});
+            await logAction(env, currentUsername, 'LOGOUT', 'User logged out');
+			return new Response('Logged out', { headers: { 'Set-Cookie': 'session_id=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/' } });
 		}
 
-        // GUESTS API
-		if (path === '/api/guests') {
-			if (method === 'GET') {
-				const { results } = await env.DB.prepare('SELECT * FROM guests ORDER BY address, name').all();
-				return new Response(JSON.stringify({ guests: results }), { headers: { 'Content-Type': 'application/json' } });
-			}
-			if (method === 'POST') {
-				const data = await request.json();
-                try {
-				    await env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-					    .bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
-				    return Response.json({ success: true });
-                } catch (e) {
-                    // [DATA INTEGRITY] Catch UNIQUE constraint failure from DB
-                    return Response.json({ success: false, error: 'Duplicate entry' }, { status: 400 });
-                }
-			}
+        if (path === '/api/stats' && method === 'GET') {
+            const counts = await env.DB.prepare("SELECT COUNT(*) as total, SUM(CASE WHEN status='Pending' THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN status='Written' THEN 1 ELSE 0 END) as written, SUM(CASE WHEN status='Invited' THEN 1 ELSE 0 END) as invited, SUM(CASE WHEN attended=1 THEN 1 ELSE 0 END) as attended, SUM(CASE WHEN side='Groom' THEN 1 ELSE 0 END) as groomSide, SUM(CASE WHEN side='Bride' THEN 1 ELSE 0 END) as brideSide, SUM(CASE WHEN side='Both' THEN 1 ELSE 0 END) as bothSide FROM guests").first();
+            const gifts = await env.DB.prepare("SELECT gift_amount, gift_item FROM guests WHERE (gift_amount != '' AND gift_amount IS NOT NULL) OR (gift_item != '' AND gift_item IS NOT NULL)").all();
+            
+            return Response.json({ stats: Object.assign({}, counts, { gifts: gifts.results }) });
+        }
+
+		if (path === '/api/guests' && method === 'GET') {
+            const searchParams = url.searchParams;
+            const search = searchParams.get('search') || '';
+            const location = searchParams.get('location') || 'All Locations';
+            const status = searchParams.get('status') || 'All Status';
+            const side = searchParams.get('side') || 'All';
+            const page = parseInt(searchParams.get('page')) || 1;
+            const limit = 50; const offset = (page - 1) * limit;
+
+            let query = "SELECT * FROM guests WHERE 1=1"; let params = [];
+            if (search) { query += " AND (name LIKE ? OR address LIKE ? OR note LIKE ? OR gift_item LIKE ?)"; const lk = "%" + search + "%"; params.push(lk, lk, lk, lk); }
+            if (location !== 'All Locations') { query += " AND address = ?"; params.push(location); }
+            if (status !== 'All Status') { query += " AND status = ?"; params.push(status); }
+            if (side !== 'All') { query += " AND side = ?"; params.push(side); }
+            
+            query += " ORDER BY address, name LIMIT ? OFFSET ?"; params.push(limit, offset);
+            const { results } = await env.DB.prepare(query).bind(...params).all();
+            
+            let locations = [];
+            if (page === 1) {
+                const locData = await env.DB.prepare("SELECT DISTINCT address FROM guests WHERE address != '' AND address IS NOT NULL ORDER BY address").all();
+                locations = locData.results.map(r => r.address);
+            }
+            return Response.json({ guests: results, locations });
+		}
+
+        if (path === '/api/guests/all' && method === 'GET') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
+            const { results } = await env.DB.prepare("SELECT * FROM guests ORDER BY address, name").all();
+            return Response.json({ guests: results });
+        }
+
+		if (path === '/api/guests' && method === 'POST') {
+            const data = await request.json();
+            try {
+                await env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                    .bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
+                await logAction(env, currentUsername, 'ADD', "Added " + data.name + " (" + data.address + ")");
+                return Response.json({ success: true });
+            } catch (e) {
+                return Response.json({ success: false, error: 'Duplicate entry' }, { status: 400 });
+            }
 		}
 
         if (path === '/api/guests/bulk-delete' && method === 'POST') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
             const { ids, password } = await request.json();
             const hashedInput = await hashPassword(password);
-            // Default user check (id=1)
             const user = await env.DB.prepare('SELECT * FROM users WHERE id = 1 AND password_hash = ?').bind(hashedInput).first();
-            
             if (!user) return new Response(JSON.stringify({ error: 'Incorrect password' }), { status: 403 });
 
             if (ids && ids.length > 0) {
                 const placeholders = ids.map(() => '?').join(',');
-                await env.DB.prepare(`DELETE FROM guests WHERE id IN (${placeholders})`).bind(...ids).run();
+                await env.DB.prepare("DELETE FROM guests WHERE id IN (" + placeholders + ")").bind(...ids).run();
+                await logAction(env, currentUsername, 'BULK_DELETE', "Deleted " + ids.length + " guests securely");
             }
             return Response.json({ success: true });
         }
 
-        // [PERFECTED] Handling exactly batch by batch for large Excel Imports
         if (path === '/api/guests/bulk' && method === 'POST') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
             const { guests } = await request.json();
             if (!guests || !Array.isArray(guests)) return Response.json({ success: false, error: 'Invalid data' }, { status: 400 });
-
-            // Using OR IGNORE to prevent bulk import crash if a duplicate sneaks in
             const statements = guests.map(g => {
                 return env.DB.prepare('INSERT OR IGNORE INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
                     .bind(g.name, g.address, g.note || '', g.status, g.side, g.attended || 0, g.gift_amount || '', g.gift_item || '', new Date().toISOString());
             });
-
-            const batchSize = 100; // Optimal speed to prevent Worker Timeout
+            const batchSize = 100;
             for (let i = 0; i < statements.length; i += batchSize) {
                 const batch = statements.slice(i, i + batchSize);
                 await env.DB.batch(batch);
             }
+            await logAction(env, currentUsername, 'IMPORT', "Imported " + guests.length + " guests via Excel");
             return Response.json({ success: true, count: guests.length });
         }
 
@@ -1282,59 +1643,78 @@ export default {
 			const data = await request.json();
 			await env.DB.prepare('UPDATE guests SET name = ?, address = ?, note = ?, status = ?, side = ?, attended = ?, gift_amount = ?, gift_item = ?, updated_at = ? WHERE id = ?')
 				.bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString(), id).run();
-			return Response.json({ success: true });
+			await logAction(env, currentUsername, 'UPDATE', "Updated " + data.name);
+            return Response.json({ success: true });
 		}
 
 		if (path.startsWith('/api/guests/') && method === 'DELETE') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
 			const id = path.split('/').pop();
 			await env.DB.prepare('DELETE FROM guests WHERE id = ?').bind(id).run();
+            await logAction(env, currentUsername, 'DELETE', "Deleted guest ID: " + id);
 			return Response.json({ success: true });
 		}
 
+        if (path === '/api/logs' && method === 'GET') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
+            const { results } = await env.DB.prepare("SELECT * FROM logs ORDER BY id DESC LIMIT 100").all();
+            return Response.json({ logs: results });
+        }
+
+        if (path === '/api/logs' && method === 'DELETE') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
+            await env.DB.prepare("DELETE FROM logs").run();
+            await logAction(env, currentUsername, 'SYSTEM', "Cleared all activity logs");
+            return Response.json({ success: true });
+        }
+
+        if (path.startsWith('/api/logs/') && method === 'DELETE') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
+            const id = path.split('/').pop();
+            await env.DB.prepare("DELETE FROM logs WHERE id = ?").bind(id).run();
+            return Response.json({ success: true });
+        }
+
 		if (path === '/api/settings' && method === 'PUT') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
 			const d = await request.json();
-			await env.DB.prepare('UPDATE settings SET groom_name = ?, bride_name = ?, wedding_date = ?, venue = ?, footer_text = ?, logo_url = ?, theme_color = ?, effect_on = ? WHERE id = 1')
-				.bind(d.groom_name, d.bride_name, d.wedding_date, d.venue, d.footer_text, d.logo_url, d.theme_color || 'gold', d.effect_on !== undefined ? d.effect_on : 1).run();
-			return Response.json({ success: true }); 
+			await env.DB.prepare('UPDATE settings SET groom_name = ?, bride_name = ?, wedding_date = ?, venue = ?, footer_text = ?, logo_url = ?, theme_color = ?, effect_on = ?, recovery_key = ? WHERE id = 1')
+				.bind(d.groom_name, d.bride_name, d.wedding_date, d.venue, d.footer_text, d.logo_url, d.theme_color || 'gold', d.effect_on !== undefined ? d.effect_on : 1, d.recovery_key || 'EverAfter2026').run();
+			await logAction(env, currentUsername, 'SETTINGS', "Updated App Configurations & Recovery Key");
+            return Response.json({ success: true }); 
 		}
 
         if (path === '/api/change-credentials' && method === 'POST') {
-			const { newUsername, newPassword } = await request.json();
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
+			const { target, newUsername, newPassword } = await request.json();
 			const newHash = await hashPassword(newPassword);
-			await env.DB.prepare('UPDATE users SET username = ?, password_hash = ? WHERE id = 1').bind(newUsername, newHash).run();
-			return Response.json({ success: true });
+            const targetId = target === 'staff' ? 2 : 1;
+			await env.DB.prepare('UPDATE users SET username = ?, password_hash = ? WHERE id = ?').bind(newUsername, newHash, targetId).run();
+			await logAction(env, currentUsername, 'SECURITY', "Changed credentials for " + target);
+            return Response.json({ success: true });
 		}
 
-        // [FIXED] UPLOADS API handles dynamic MIME types correctly
 		if (path === '/api/uploads' && method === 'POST') {
+            if (!isAdmin) return new Response('Forbidden', { status: 403 });
             const contentLength = request.headers.get('content-length');
-            if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) {
-                return Response.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 413 });
-            }
+            if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) return Response.json({ error: 'File too large.' }, { status: 413 });
 
 			const { mime_type, base64_data } = await request.json();
-			const id = crypto.randomUUID();
-            const protocol = url.protocol;
-			const host = url.host;
-            
-            // Extract correct extension
+			const id = crypto.randomUUID(); const protocol = url.protocol; const host = url.host;
             let ext = '.png';
-            if (mime_type === 'image/jpeg') ext = '.jpg';
-            else if (mime_type === 'image/webp') ext = '.webp';
-            else if (mime_type === 'image/svg+xml') ext = '.svg';
+            if (mime_type === 'image/jpeg') ext = '.jpg'; else if (mime_type === 'image/webp') ext = '.webp'; else if (mime_type === 'image/svg+xml') ext = '.svg';
             
             if (env.BUCKET) {
-                const binaryData = atob(base64_data);
-                const arrayBuffer = new Uint8Array(binaryData.length);
+                // [UPDATE] Added customMetadata to R2 for better asset tracking
+                const binaryData = atob(base64_data); const arrayBuffer = new Uint8Array(binaryData.length);
                 for (let i = 0; i < binaryData.length; i++) { arrayBuffer[i] = binaryData.charCodeAt(i); }
-                
-                // Keep MIME type in R2 Metadata
-                await env.BUCKET.put(id + ext, arrayBuffer, { httpMetadata: { contentType: mime_type } });
+                await env.BUCKET.put(id + ext, arrayBuffer, { 
+                    httpMetadata: { contentType: mime_type },
+                    customMetadata: { uploaded_by: currentUsername, app: 'EverAfter' }
+                });
                 return Response.json({ url: protocol + "//" + host + "/api/uploads/" + id + ext });
             } else {
-                // Save to D1 Fallback
-                await env.DB.prepare('INSERT INTO uploads (id, mime_type, base64_data) VALUES (?, ?, ?)')
-				    .bind(id, mime_type, base64_data).run();
+                await env.DB.prepare('INSERT INTO uploads (id, mime_type, base64_data) VALUES (?, ?, ?)').bind(id, mime_type, base64_data).run();
                 return Response.json({ url: protocol + "//" + host + "/api/uploads/" + id });
             }
 		}
