@@ -134,13 +134,6 @@ const UI_HTML = `<!DOCTYPE html>
     <script type="text/babel">
         const { useState, useEffect, useMemo, useRef, useCallback } = React;
 
-        const THEMES = {
-            gold: { 50: '#faf7f2', 100: '#f0e8d9', 500: '#c2a37d', 800: '#5c4e3c', 900: '#3d3428' },
-            rose: { 50: '#fff1f2', 100: '#ffe4e6', 500: '#fb7185', 800: '#be123c', 900: '#881337' },
-            emerald: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#34d399', 800: '#047857', 900: '#064e3b' },
-            blue: { 50: '#eff6ff', 100: '#dbeafe', 500: '#60a5fa', 800: '#1d4ed8', 900: '#1e3a8a' }
-        };
-
         const PATTERNS = { 
             floral: 'https://www.transparenttextures.com/patterns/floral-motif.png', 
             dots: 'https://www.transparenttextures.com/patterns/stardust.png', 
@@ -154,9 +147,10 @@ const UI_HTML = `<!DOCTYPE html>
             return str.toString().replace(/[၀-၉]/g, m => myNumbers[m]);
         };
 
+        // [BUG-FIX] Space ဖြုတ်ပစ်ခြင်းကို ဖယ်ရှားထားသဖြင့် ရှာဖွေရာတွင် Error မရှိတော့ပါ။
         const normalizeMyanmarText = (str) => {
             if (!str) return '';
-            return str.trim().replace(/၀/g, 'ဝ').replace(/\\s+/g, '').toLowerCase();
+            return str.trim().replace(/၀/g, 'ဝ').toLowerCase();
         };
 
         const apiCall = async (url, options = {}) => {
@@ -242,12 +236,9 @@ const UI_HTML = `<!DOCTYPE html>
                 const newDark = !darkMode; setDarkMode(newDark); localStorage.setItem('weddingDarkMode', newDark);
                 if (newDark) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');
             };
-
-            const themeColors = THEMES[appSettings.theme_color || 'gold'];
-            const cssVars = ':root { --w-50: ' + themeColors[50] + '; --w-100: ' + themeColors[100] + '; --w-500: ' + themeColors[500] + '; --w-800: ' + themeColors[800] + '; --w-900: ' + themeColors[900] + '; }';
             
             if (isInitialLoad) return null; 
-            if (!isAuth && view === 'login') return <React.Fragment><style>{cssVars}</style><Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} /></React.Fragment>;
+            if (!isAuth && view === 'login') return <Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} />;
             if (!isAuth) return <div className="flex h-screen items-center justify-center bg-[#f8f7f5] dark:bg-zinc-950"><div className="w-12 h-12 border-4 border-wedding-100 border-t-wedding-500 rounded-full animate-spin"></div></div>;
 
             let currentView = view;
@@ -258,7 +249,6 @@ const UI_HTML = `<!DOCTYPE html>
 
             return (
                 <div className="min-h-screen flex flex-col relative font-mm">
-                    <style>{cssVars}</style>
                     {PATTERNS[appSettings.bg_pattern] && <div className="site-bg-pattern no-print" style={{ backgroundImage: "url('" + PATTERNS[appSettings.bg_pattern] + "')" }}></div>}
                     <AmbientBackground effect_on={appSettings.effect_on} />
                     
@@ -306,7 +296,7 @@ const UI_HTML = `<!DOCTYPE html>
 
                     <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 relative z-10 pb-16">
                         {currentView === 'dashboard' && <Dashboard userRole={userRole} />}
-                        {currentView === 'guests' && <GuestManagement showToast={showToast} userRole={userRole} />}
+                        {currentView === 'guests' && <GuestManagement showToast={showToast} userRole={userRole} appSettings={appSettings} />}
                         {currentView === 'logs' && userRole === 'admin' && <AuditLogs showToast={showToast} />}
                         {currentView === 'settings' && userRole === 'admin' && <Settings showToast={showToast} appSettings={appSettings} setAppSettings={setAppSettings} />}
                     </main>
@@ -691,7 +681,7 @@ const UI_HTML = `<!DOCTYPE html>
             );
         }
 
-        function GuestManagement({ showToast, userRole }) {
+        function GuestManagement({ showToast, userRole, appSettings }) {
             const [guests, setGuests] = useState([]); const [loading, setLoading] = useState(true); const [search, setSearch] = useState(''); const [debouncedSearch, setDebouncedSearch] = useState(''); const [filter, setFilter] = useState('All Status'); const [sideFilter, setSideFilter] = useState('All'); const [locationFilter, setLocationFilter] = useState('All Locations'); 
             const [formData, setFormData] = useState({ id: null, name: '', address: '', note: '', status: 'Pending', side: 'Groom', attended: 0, gift_amount: '', gift_item: '' }); const [isModalOpen, setModalOpen] = useState(false);
             const [isEditMode, setIsEditMode] = useState(false); const [selectedIds, setSelectedIds] = useState([]); const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false); const [deletePassword, setDeletePassword] = useState(''); const [isDeleting, setIsDeleting] = useState(false); const [isSaving, setIsSaving] = useState(false); const [pageCount, setPageCount] = useState(1); 
@@ -933,8 +923,8 @@ const UI_HTML = `<!DOCTYPE html>
                                                         {g.status}
                                                     </span>
                                                     <div className="flex gap-2 no-print ml-auto">
-                                                        <button onClick={() => { setFormData(g); setModalOpen(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-blue-600 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-pencil-simple text-lg"></i></button>
-                                                        {userRole === 'admin' && <button onClick={() => { setSelectedIds([g.id]); setShowBulkDeleteModal(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-red-500 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-red-50 shadow-sm transition-all hover:-translate-y-0.5"><i className="ph-bold ph-trash text-lg"></i></button>}
+                                                        <button onClick={() => { setFormData(g); setModalOpen(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-blue-600 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 shadow-sm transition-all hover:-translate-y-0.5" title="Edit Guest"><i className="ph-bold ph-pencil-simple text-lg"></i></button>
+                                                        {userRole === 'admin' && <button onClick={() => { setSelectedIds([g.id]); setShowBulkDeleteModal(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-red-500 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-red-50 shadow-sm transition-all hover:-translate-y-0.5" title="Delete Guest"><i className="ph-bold ph-trash text-lg"></i></button>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -952,6 +942,7 @@ const UI_HTML = `<!DOCTYPE html>
                         </div>
                     )}
 
+                    {/* EDIT / ADD MODAL */}
                     {isModalOpen && (
                         <div className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex items-center justify-center p-4 no-print">
                             <div className="glass-luxury p-8 sm:p-10 w-full max-w-xl shadow-2xl relative animate-fade-in max-h-[90vh] overflow-y-auto !bg-white dark:!bg-gray-900 rounded-[2.5rem]">
@@ -991,13 +982,13 @@ const UI_HTML = `<!DOCTYPE html>
                                             </div>
                                             <div>
                                                 <label className="block text-[11px] font-bold mb-1.5 text-gray-400">
-                                                    <span className="uppercase text-[10px] tracking-widest font-sans">Amount</span> <span className="font-mm">(ငွေ)</span>
+                                                    <span className="uppercase text-[10px] font-sans">Amount</span> <span className="font-mm">(ငွေ)</span>
                                                 </label>
                                                 <input type="text" placeholder="50000" className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg font-black font-numbers text-sm text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 font-sans" value={formData.gift_amount} onChange={e=>setFormData(Object.assign({}, formData, { gift_amount: convertToEnglishDigits(e.target.value) }))} />
                                             </div>
                                             <div>
                                                 <label className="block text-[11px] font-bold mb-1.5 text-gray-400">
-                                                    <span className="uppercase text-[10px] tracking-widest font-sans">Item</span> <span className="font-mm">(ပစ္စည်း)</span>
+                                                    <span className="uppercase text-[10px] font-sans">Item</span> <span className="font-mm">(ပစ္စည်း)</span>
                                                 </label>
                                                 <input type="text" placeholder="e.g. ရွှေဆွဲကြိုး" className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg font-bold text-sm text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 font-mm" value={formData.gift_item} onChange={e=>setFormData(Object.assign({}, formData, { gift_item: e.target.value }))} />
                                             </div>
@@ -1012,7 +1003,7 @@ const UI_HTML = `<!DOCTYPE html>
                                         <div className="flex items-end h-full">
                                             <label className={"w-full min-h-[50px] flex items-center justify-center gap-2 cursor-pointer px-3 rounded-xl border transition-all shadow-sm " + (formData.attended === 1 ? 'bg-emerald-50 border-emerald-300 dark:bg-emerald-900/20' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700')}>
                                                 <input type="checkbox" className="w-5 h-5 accent-emerald-500 rounded cursor-pointer" checked={formData.attended === 1} onChange={(e) => setFormData(Object.assign({}, formData, { attended: e.target.checked ? 1 : 0 }))} />
-                                                <span className={"font-bold text-sm font-mm " + (formData.attended === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500')}>ရောက်ရှိ <span className="font-sans text-[11px] uppercase tracking-widest">(Attended)</span></span>
+                                                <span className={"font-bold text-sm font-mm " + (formData.attended === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500')}>ရောက်ရှိ <span className="font-sans text-[11px] uppercase">(Attended)</span></span>
                                             </label>
                                         </div>
                                     </div>
@@ -1160,9 +1151,9 @@ const UI_HTML = `<!DOCTYPE html>
             const [isUpdating, setIsUpdating] = useState(false);
             const [isSavingSettings, setIsSavingSettings] = useState(false);
             
-            // Password Show/Hide toggles
             const [showRecoveryKey, setShowRecoveryKey] = useState(false);
             const [showSettingsPwd, setShowSettingsPwd] = useState(false);
+            const [showKeyUpdate, setShowKeyUpdate] = useState(false);
 
             const [srcImage, setSrcImage] = useState(null);
             const [cropData, setCropData] = useState({ x: 50, y: 50, size: 80 }); 
@@ -1183,7 +1174,9 @@ const UI_HTML = `<!DOCTYPE html>
             const handleSave = async (e) => {
                 e.preventDefault(); setIsSavingSettings(true);
                 await fetch('/api/settings', { method: 'PUT', body: JSON.stringify(settings), headers: { 'Content-Type': 'application/json' } });
-                setAppSettings(settings); showToast('Settings saved successfully'); setIsSavingSettings(false); setTimeout(() => window.location.reload(), 800); 
+                setAppSettings(settings); showToast('Settings saved successfully'); setIsSavingSettings(false); 
+                setShowKeyUpdate(false); 
+                setTimeout(() => window.location.reload(), 800); 
             };
             
             const handleUpdateCreds = async (e) => {
@@ -1195,10 +1188,17 @@ const UI_HTML = `<!DOCTYPE html>
             const handleFileSelect = (e) => {
                 const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => setSrcImage(reader.result); reader.readAsDataURL(file);
             };
+            
             const handleApplyCrop = async () => {
-                if (!canvasRef.current) return; const base64Data = canvasRef.current.toDataURL('image/png').split(',')[1];
+                if (!canvasRef.current) return; 
+                const base64Data = canvasRef.current.toDataURL('image/png').split(',')[1];
                 const res = await fetch('/api/uploads', { method: 'POST', body: JSON.stringify({ mime_type: 'image/png', base64_data: base64Data }), headers: { 'Content-Type': 'application/json' } });
-                const data = await res.json(); setSettings(Object.assign({}, settings, { logo_url: data.url })); setSrcImage(null); showToast('Monogram အား စိတ်ကြိုက်အဝိုင်းပုံစံ ဖြတ်ညှပ်ပြီးပါပြီ', 'success');
+                const data = await res.json(); 
+                if (data.url) {
+                    setSettings(Object.assign({}, settings, { logo_url: data.url })); setSrcImage(null); showToast('Monogram အား စိတ်ကြိုက်အဝိုင်းပုံစံ ဖြတ်ညှပ်ပြီးပါပြီ', 'success');
+                } else {
+                    showToast('Upload failed', 'error');
+                }
             };
 
             return (
@@ -1311,19 +1311,30 @@ const UI_HTML = `<!DOCTYPE html>
                                 <textarea rows="2" className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 italic text-base text-center text-gray-900 dark:text-white focus:outline-none focus:border-wedding-500 shadow-sm transition-all font-mm" value={settings.footer_text} onChange={e=>setSettings(Object.assign({}, settings, { footer_text: e.target.value }))}></textarea>
                             </div>
                             
-                            <div className="mt-8 border-t border-gray-200/50 dark:border-gray-800/50 pt-8">
-                                <h3 className="text-lg font-serif font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                                    <i className="ph-fill ph-key text-wedding-500"></i> Master Recovery Key
-                                </h3>
-                                <p className="text-[11px] sm:text-xs text-gray-500 mb-5 font-bold leading-relaxed font-mm">ဤ Key သည် Password မေ့သွားပါက ပြန်လည်ရယူရန် (Reset) အတွက် အသုံးပြုရမည့် အရေးကြီးသော လျှို့ဝှက်စာသား ဖြစ်ပါသည်။ သေချာစွာ မှတ်သားထားပါ။ (Default: EverAfter2026)</p>
-                                
-                                <div className="relative">
-                                    <input type={showRecoveryKey ? "text" : "password"} placeholder="Enter New Master Recovery Key" className="w-full pl-5 pr-12 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold focus:outline-none focus:border-wedding-500 shadow-sm transition-all text-sm" value={settings.recovery_key || ''} onChange={e=>setSettings(Object.assign({}, settings, { recovery_key: e.target.value }))} />
-                                    <button type="button" onClick={() => setShowRecoveryKey(!showRecoveryKey)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
-                                        <i className={"ph-fill text-lg " + (showRecoveryKey ? "ph-eye-slash" : "ph-eye")}></i>
+                            {!showKeyUpdate ? (
+                                <div className="mt-8 border-t border-gray-200/50 dark:border-gray-800/50 pt-8">
+                                    <button type="button" onClick={() => setShowKeyUpdate(true)} className="text-[13px] font-bold text-gray-400 hover:text-red-500 flex items-center gap-2 transition-colors w-max">
+                                        <i className="ph-bold ph-key"></i> Change Master Recovery Key
                                     </button>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="mt-8 border-t border-gray-200/50 dark:border-gray-800/50 pt-8 relative animate-fade-in">
+                                    <div className="bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-[1.5rem] p-6 relative">
+                                        <button type="button" onClick={() => setShowKeyUpdate(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-red-500 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors"><i className="ph-bold ph-x"></i></button>
+                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                            <i className="ph-fill ph-key text-red-500 text-lg"></i> Update Master Recovery Key
+                                        </h3>
+                                        <p className="text-[11px] text-gray-500 mb-4 font-bold leading-relaxed font-mm">Password မေ့သွားပါက ပြန်လည်ရယူရန် (Reset) အတွက် အသုံးပြုရမည့် အရေးကြီးသော လျှို့ဝှက်စာသားဖြစ်ပါသည်။ သေချာစွာ မှတ်သားထားပါ။</p>
+                                        
+                                        <div className="relative">
+                                            <input type={showRecoveryKey ? "text" : "password"} placeholder="Enter New Master Recovery Key" className="w-full pl-5 pr-12 py-3.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-bold focus:outline-none focus:border-red-500 shadow-sm transition-all text-sm" value={settings.recovery_key || ''} onChange={e=>setSettings(Object.assign({}, settings, { recovery_key: e.target.value }))} />
+                                            <button type="button" onClick={() => setShowRecoveryKey(!showRecoveryKey)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none transition-colors">
+                                                <i className={"ph-fill text-lg " + (showRecoveryKey ? "ph-eye-slash" : "ph-eye")}></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             <button disabled={isSavingSettings} className="w-full bg-gradient-to-r from-wedding-900 to-wedding-800 text-white font-bold text-base tracking-wide py-3.5 rounded-xl shadow-luxury transition-all transform hover:-translate-y-0.5 mt-4 uppercase">
                                 {isSavingSettings ? 'Saving Configurations...' : 'Save All Configurations'}
@@ -1694,10 +1705,11 @@ export default {
             return Response.json({ success: true });
 		}
 
+        // [ပြင်ဆင်ချက်] - သီချင်း (Music) နှင့် နောက်ခံပုံ (Background Image) Upload အပိုများကို ဖယ်ရှားပြီး မူလ Logo Crop အတွက် R2 Upload အပိုင်းကိုသာ အတိအကျ ပြန်လည် ထည့်သွင်းထားပါသည်
 		if (path === '/api/uploads' && method === 'POST') {
             if (!isAdmin) return new Response('Forbidden', { status: 403 });
             const contentLength = request.headers.get('content-length');
-            if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) return Response.json({ error: 'File too large.' }, { status: 413 });
+            if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) return Response.json({ error: 'File too large. (Max 5MB)' }, { status: 413 });
 
 			const { mime_type, base64_data } = await request.json();
 			const id = crypto.randomUUID(); const protocol = url.protocol; const host = url.host;
@@ -1705,7 +1717,6 @@ export default {
             if (mime_type === 'image/jpeg') ext = '.jpg'; else if (mime_type === 'image/webp') ext = '.webp'; else if (mime_type === 'image/svg+xml') ext = '.svg';
             
             if (env.BUCKET) {
-                // [UPDATE] Added customMetadata to R2 for better asset tracking
                 const binaryData = atob(base64_data); const arrayBuffer = new Uint8Array(binaryData.length);
                 for (let i = 0; i < binaryData.length; i++) { arrayBuffer[i] = binaryData.charCodeAt(i); }
                 await env.BUCKET.put(id + ext, arrayBuffer, { 
