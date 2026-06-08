@@ -8,7 +8,7 @@ const UI_HTML = `<!DOCTYPE html>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#5c4e3c">
     
-    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Padauk:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"><\/script>
     <script src="https://cdn.tailwindcss.com"><\/script>
     <script>
@@ -26,19 +26,20 @@ const UI_HTML = `<!DOCTYPE html>
                         } 
                     },
                     boxShadow: {
-                        'luxury': '0 20px 40px -15px rgba(0, 0, 0, 0.05), 0 0 20px 0 rgba(255, 255, 255, 0.5) inset',
-                        'luxury-dark': '0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(255, 255, 255, 0.05) inset',
+                        'luxury': '0 20px 40px -15px rgba(0, 0, 0, 0.05), inset 0 0 0 1.5px rgba(255, 255, 255, 0.6)',
+                        'luxury-dark': '0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 0 0 1.5px rgba(255, 255, 255, 0.05)',
+                        'glow': '0 0 20px 0 var(--w-500)',
                     },
                     animation: {
                         'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
-                        'spin-slow': 'spin 1.5s linear infinite',
+                        'spin-slow': 'spin 4s linear infinite',
                         'fade-in': 'fadeIn 0.5s ease-out forwards',
                     },
                     keyframes: {
                         pulseGlow: { 
-                            '0%, 100%': { opacity: 0.3, transform: 'scale(1)' }, 
-                            '50%': { opacity: 0.6, transform: 'scale(1.05)' } 
+                            '0%, 100%': { opacity: 0.2, transform: 'scale(1)' }, 
+                            '50%': { opacity: 0.5, transform: 'scale(1.05)' } 
                         },
                         float: { 
                             '0%, 100%': { transform: 'translateY(0)' }, 
@@ -80,25 +81,12 @@ const UI_HTML = `<!DOCTYPE html>
 
         .font-mm {
             font-family: 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif !important;
-            letter-spacing: 0px !important;
+            letter-spacing: 0.2px !important;
             word-spacing: normal !important;
         }
-        
-        p, span, div, a, th, td { font-family: inherit; }
-        
-        h1, h2, h3, .font-serif {
-            font-family: 'Playfair Display', serif;
-            letter-spacing: -0.01em;
-        }
-
-        .luxury-wedding-font, .luxury-wedding-font span {
-            font-family: 'Playfair Display', serif !important;
-            font-style: italic !important;
-            font-weight: 600 !important;
-            letter-spacing: 0.02em !important;
-            padding: 0 2px;
-        }
-        
+        .font-cursive { font-family: 'Great Vibes', cursive !important; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .luxury-wedding-font { font-family: 'Playfair Display', serif !important; font-style: italic !important; font-weight: 600 !important; letter-spacing: 0.02em !important; padding: 0 2px; }
         .font-numbers { font-family: 'Montserrat', sans-serif !important; letter-spacing: -0.02em; }
         
         body { background-color: #f8f7f5; position: relative; min-height: 100vh; overflow-x: hidden; }
@@ -107,32 +95,75 @@ const UI_HTML = `<!DOCTYPE html>
         .site-bg-pattern { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04; mix-blend-mode: multiply; }
         .dark .site-bg-pattern { opacity: 0.1; mix-blend-mode: overlay; }
 
-        .glass-luxury { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.04), inset 0 0 0 1px rgba(255,255,255,0.5); }
-        .dark .glass-luxury { background: rgba(24, 24, 27, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.02); }
+        .glass-luxury { 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 100%); 
+            backdrop-filter: blur(24px); 
+            border-top: 1px solid rgba(255, 255, 255, 1); 
+            border-left: 1px solid rgba(255, 255, 255, 1);
+            border-right: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05); 
+        }
+        .dark .glass-luxury { 
+            background: linear-gradient(135deg, rgba(24, 24, 27, 0.8) 0%, rgba(24, 24, 27, 0.6) 100%); 
+            border-top: 1px solid rgba(255, 255, 255, 0.15); 
+            border-left: 1px solid rgba(255, 255, 255, 0.15); 
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); 
+        }
 
         @keyframes luxuryFloat { 0% { transform: translateY(110vh) translateX(0px) scale(0.5); opacity: 0; } 10% { opacity: 0.9; } 50% { transform: translateY(50vh) translateX(20px) scale(1.1); } 90% { opacity: 0.9; } 100% { transform: translateY(-10vh) translateX(-20px) scale(1.5); opacity: 0; } }
         .luxury-particle { position: absolute; border-radius: 50%; background-color: var(--w-500); box-shadow: 0 0 15px 4px var(--w-500), inset 0 0 4px 1px rgba(255,255,255,0.5); animation: luxuryFloat linear infinite; opacity: 0; pointer-events: none; }
         .dark .luxury-particle { background-color: var(--w-100); box-shadow: 0 0 15px 4px var(--w-500); }
 
+        @keyframes cinematicFade { 0% { opacity: 0; filter: blur(10px); transform: scale(0.95); } 50% { opacity: 1; filter: blur(0px); transform: scale(1); } 100% { opacity: 0; filter: blur(10px); transform: scale(1.05); } }
+        .cinematic-intro { animation: cinematicFade 3.5s ease-in-out infinite; }
+
+        .envelope-container { perspective: 1200px; }
+        .envelope-wrapper { position: relative; width: 320px; height: 220px; background: linear-gradient(135deg, #f5f0e6, #e6dac3); border-radius: 8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
+        .envelope-wrapper:hover { transform: translateY(-5px) rotateX(5deg); box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5); }
+        .envelope-flap { position: absolute; top: 0; left: 0; width: 0; height: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 135px solid #e8d8c3; transform-origin: top; z-index: 40; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px 8px 0 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
+        .envelope-pocket { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-left: 160px solid #f0e6d6; border-right: 160px solid #f0e6d6; border-bottom: 125px solid #e3d0b8; z-index: 30; border-radius: 0 0 8px 8px; }
+        .envelope-letter { position: absolute; top: 10px; left: 15px; right: 15px; bottom: 10px; background: #fff; border-radius: 8px; z-index: 20; transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #f0e8d9; }
+        .wax-seal { position: absolute; top: 135px; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: radial-gradient(circle, #d4af37 0%, #aa7c11 100%); border-radius: 50%; z-index: 50; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Great Vibes', cursive; font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.4); transition: opacity 0.5s ease, transform 0.5s ease; text-shadow: 1px 1px 2px rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.2); }
+        
+        .is-open .envelope-flap { transform: rotateX(180deg); z-index: 10; }
+        .is-open .wax-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+        .is-open .envelope-letter { transform: translateY(-120px); z-index: 45; }
+
+        @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(194, 163, 125, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(194, 163, 125, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(194, 163, 125, 0); } }
+        .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+        .record-spin { animation: spin 4s linear infinite; }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
-        
         @media print { .no-print { display: none !important; } .glass-luxury { border: none; box-shadow: none; background: transparent !important; } body { background: white !important; color: black !important; } .page-break-inside-avoid { page-break-inside: avoid; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;} }
     </style>
 </head>
 <body class="text-gray-800 transition-colors duration-500">
     <div id="root">
-        <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background-color:#f8f7f5;" class="dark:bg-zinc-950 transition-colors">
-            <div style="width:50px; height:50px; border:4px solid rgba(194,163,125,0.3); border-top-color:#c2a37d; border-radius:50%; animation:spin 1s linear infinite;"></div>
-            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-            <p style="margin-top:24px; font-family:'Playfair Display', serif; color:#c2a37d; font-size:18px; letter-spacing:1px; font-style:italic;">Preparing Ever After...</p>
+        <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background-color:#111111;" class="dark:bg-zinc-950 transition-colors">
+            <h1 class="cinematic-intro" style="font-family:'Playfair Display', serif; color:#c2a37d; font-size:42px; font-style:italic; font-weight:600; letter-spacing: 2px;">Ever After</h1>
+            <div style="width: 1px; height: 50px; background: linear-gradient(to bottom, transparent, #c2a37d, transparent); margin-top: 24px; animation: pulseGlow 2s infinite;"></div>
         </div>
     </div>
 
     <script type="text/babel">
         const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+        const THEMES = {
+            gold: { 50: '#faf7f2', 100: '#f0e8d9', 500: '#c2a37d', 800: '#5c4e3c', 900: '#3d3428' },
+            rose: { 50: '#fff1f2', 100: '#ffe4e6', 500: '#fb7185', 800: '#be123c', 900: '#881337' },
+            emerald: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#34d399', 800: '#047857', 900: '#064e3b' },
+            blue: { 50: '#eff6ff', 100: '#dbeafe', 500: '#60a5fa', 800: '#1d4ed8', 900: '#1e3a8a' },
+            terracotta: { 50: '#fef6f5', 100: '#fbe8e2', 500: '#d97757', 800: '#9e472d', 900: '#7a341f' },
+            sage: { 50: '#f6f7f6', 100: '#e8ebe8', 500: '#8ba38d', 800: '#4a5e4c', 900: '#344536' },
+            burgundy: { 50: '#fdf2f4', 100: '#f9e1e5', 500: '#9d2235', 800: '#6b1220', 900: '#4a0a14' },
+            lavender: { 50: '#f8f5fc', 100: '#eee6f7', 500: '#a385c6', 800: '#5a4278', 900: '#402e57' }
+        };
 
         const PATTERNS = { 
             floral: 'https://www.transparenttextures.com/patterns/floral-motif.png', 
@@ -147,10 +178,20 @@ const UI_HTML = `<!DOCTYPE html>
             return str.toString().replace(/[၀-၉]/g, m => myNumbers[m]);
         };
 
-        // [BUG-FIX] Space ဖြုတ်ပစ်ခြင်းကို ဖယ်ရှားထားသဖြင့် ရှာဖွေရာတွင် Error မရှိတော့ပါ။
+        const toTitleCase = (str) => {
+            if (!str) return '';
+            return str.toString().trim().replace(/[\\s\\u200B]+/g, ' ').split(' ').map(word => {
+                if (word.length === 0) return word;
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }).join(' ');
+        };
+
         const normalizeMyanmarText = (str) => {
             if (!str) return '';
-            return str.trim().replace(/၀/g, 'ဝ').toLowerCase();
+            let s = str.toString().replace(/၀/g, 'ဝ').toLowerCase(); 
+            s = s.replace(/[\\s\\u200B]+/g, ''); 
+            s = s.replace(/\\u1025\\u102E/g, '\\u1026'); 
+            return s;
         };
 
         const apiCall = async (url, options = {}) => {
@@ -164,17 +205,123 @@ const UI_HTML = `<!DOCTYPE html>
             return (
                 <React.Fragment>
                     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-wedding-500/10 dark:bg-wedding-500/5 rounded-full blur-[100px] animate-pulse-glow"></div>
-                        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 dark:bg-purple-500/5 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
+                        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-wedding-500/10 dark:bg-wedding-500/5 rounded-full blur-[100px] animate-pulse-glow transition-colors duration-500"></div>
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 dark:bg-purple-500/5 rounded-full blur-[100px] animate-pulse-glow transition-colors duration-500" style={{ animationDelay: '2s' }}></div>
                     </div>
                     {effect_on === 1 && (
                         <div className="fixed inset-0 overflow-hidden pointer-events-none z-40">
                             {[...Array(25)].map((_, i) => (
-                                <div key={i} className="luxury-particle" style={{ left: (Math.random() * 100) + '%', width: (Math.random() * 5 + 3) + 'px', height: (Math.random() * 5 + 3) + 'px', animationDelay: (Math.random() * 10) + 's', animationDuration: (Math.random() * 10 + 15) + 's' }}></div>
+                                <div key={i} className="luxury-particle transition-colors duration-500" style={{ left: (Math.random() * 100) + '%', width: (Math.random() * 5 + 3) + 'px', height: (Math.random() * 5 + 3) + 'px', animationDelay: (Math.random() * 10) + 's', animationDuration: (Math.random() * 10 + 15) + 's' }}></div>
                             ))}
                         </div>
                     )}
                 </React.Fragment>
+            );
+        }
+
+        function GuestInviteView({ settings }) {
+            const [isOpened, setIsOpened] = useState(false);
+            const [showEnvelope, setShowEnvelope] = useState(true);
+            const [isPlaying, setIsPlaying] = useState(true);
+            const audioRef = useRef(null);
+
+            const handleOpen = () => {
+                setIsOpened(true);
+                if (audioRef.current) {
+                    audioRef.current.volume = 0.5;
+                    audioRef.current.play().catch(e => console.log("Audio blocked", e));
+                    setIsPlaying(true);
+                }
+                setTimeout(() => setShowEnvelope(false), 2000);
+            };
+
+            const toggleMusic = () => {
+                if (audioRef.current) {
+                    if (isPlaying) { audioRef.current.pause(); setIsPlaying(false); }
+                    else { audioRef.current.play(); setIsPlaying(true); }
+                }
+            };
+
+            const audioElement = settings.music_url ? <audio ref={audioRef} src={settings.music_url} loop /> : null;
+
+            if (showEnvelope) {
+                return (
+                    <div className="w-full max-w-[420px] min-h-screen bg-[#111] flex flex-col items-center justify-center relative mx-auto shadow-2xl overflow-hidden envelope-container">
+                        {audioElement}
+                        <div className="absolute inset-0 z-0 bg-black/60" style={{ backgroundImage: "url(" + (settings.bg_image || '') + ")", backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(8px) brightness(0.6)' }}></div>
+                        
+                        <div className="relative z-20 flex flex-col items-center animate-fade-in">
+                            <h1 className="font-cursive text-5xl text-white/90 mb-12 drop-shadow-lg text-center leading-tight">
+                                {settings.groom_name?.charAt(0)} <span className="text-3xl text-wedding-500">&amp;</span> {settings.bride_name?.charAt(0)}<br/>
+                                <span className="font-sans text-[10px] tracking-[0.4em] uppercase font-bold text-gray-300 mt-4 block">You're Invited</span>
+                            </h1>
+
+                            <div className={"envelope-wrapper " + (isOpened ? "is-open" : "")} onClick={!isOpened ? handleOpen : undefined}>
+                                <div className="envelope-flap"></div>
+                                <div className="envelope-letter">
+                                     <h2 className="font-cursive text-3xl text-wedding-500">{settings.groom_name} & {settings.bride_name}</h2>
+                                     <p className="font-sans text-[8px] uppercase tracking-widest text-gray-400 mt-2 font-bold">{settings.wedding_date}</p>
+                                </div>
+                                <div className="envelope-pocket"></div>
+                                <div className="wax-seal">E</div>
+                            </div>
+                            
+                            <p className={"text-white mt-14 font-sans text-[10px] tracking-[0.3em] uppercase font-bold drop-shadow-md transition-opacity duration-500 " + (isOpened ? "opacity-0" : "opacity-100 animate-pulse")}>Tap the seal to open</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="w-full max-w-[420px] min-h-screen bg-gradient-to-b from-[#faf8f5] to-[#f2ebe0] relative overflow-hidden flex flex-col pt-12 pb-10 px-6 box-border mx-auto shadow-2xl border border-white/50 animate-fade-in">
+                    <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/floral-motif.png')", zIndex: 0 }}></div>
+                    {audioElement}
+                    
+                    <div className="relative z-10 flex flex-col h-full items-center text-center">
+                        {settings.music_url && (
+                            <button onClick={toggleMusic} className={"absolute top-0 right-0 w-10 h-10 rounded-full bg-white/70 backdrop-blur-md border border-white/60 flex items-center justify-center shadow-lg text-wedding-600 transition-all z-50 " + (isPlaying ? "record-spin shadow-wedding-500/20" : "opacity-60")}>
+                                <i className={"ph-fill " + (isPlaying ? "ph-music-notes" : "ph-speaker-slash") + " text-lg"}></i>
+                                {isPlaying && <span className="absolute w-full h-full rounded-full border border-wedding-400/50 animate-pulse-ring"></span>}
+                            </button>
+                        )}
+                        
+                        <div className="mt-6 mb-2">
+                            <p className="font-sans text-[9px] tracking-[0.4em] font-bold text-gray-400 uppercase mb-4 opacity-80">We Are Getting Married</p>
+                            <h1 className="font-cursive text-7xl text-wedding-500 drop-shadow-sm leading-none" style={{ transform: 'translateX(-5px)' }}>{settings.groom_name}</h1>
+                            <span className="font-serif italic text-2xl text-gray-300 block my-1">&amp;</span>
+                            <h1 className="font-cursive text-7xl text-wedding-500 drop-shadow-sm leading-none" style={{ transform: 'translateX(5px)' }}>{settings.bride_name}</h1>
+                        </div>
+
+                        {settings.bg_image && (
+                            <div className="w-44 h-44 rounded-full p-[4px] bg-gradient-to-tr from-wedding-500 via-wedding-100 to-wedding-500 shadow-xl my-8 animate-fade-in delay-1 relative">
+                                <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse-glow z-0"></div>
+                                <img src={settings.bg_image} className="w-full h-full rounded-full object-cover border-[3px] border-white relative z-10" />
+                            </div>
+                        )}
+
+                        <div className="text-center mb-8 animate-fade-in delay-1 relative">
+                            <i className="ph-fill ph-quotes text-wedding-100 text-4xl absolute -top-4 -left-2 -z-10"></i>
+                            <p className="font-mm text-[15px] text-gray-700 leading-loose px-4 tracking-wide font-medium">ကျွန်တော်၊ ကျွန်မတို့၏ မင်္ဂလာ<br/>လက်ထပ်ထိမ်းမြားခြင်း အခမ်းအနားသို့<br/>မိတ်ဆွေသင်္ဂဟများအား ရိုသေလေးစားစွာဖြင့်<br/>ဖိတ်ကြားအပ်ပါသည်။</p>
+                        </div>
+
+                        <div className="space-y-4 w-full text-left animate-fade-in delay-2 mt-auto pb-4">
+                            <div className="glass-luxury p-4 rounded-3xl flex items-center gap-4 transition-transform hover:-translate-y-1">
+                                <div className="w-12 h-12 rounded-full bg-wedding-50 flex items-center justify-center text-wedding-500 shrink-0 border border-wedding-100/50 shadow-inner"><i className="ph-fill ph-calendar-blank text-2xl"></i></div>
+                                <div>
+                                    <p className="font-mm text-[10px] font-bold text-gray-400 mb-0.5 tracking-wider uppercase">မင်္ဂလာရက်</p>
+                                    <p className="font-sans font-bold text-gray-800 text-[14px]">{settings.wedding_date}</p>
+                                </div>
+                            </div>
+                            <div className="glass-luxury p-4 rounded-3xl flex items-center gap-4 transition-transform hover:-translate-y-1">
+                                <div className="w-12 h-12 rounded-full bg-wedding-50 flex items-center justify-center text-wedding-500 shrink-0 border border-wedding-100/50 shadow-inner"><i className="ph-fill ph-map-pin text-2xl"></i></div>
+                                <div>
+                                    <p className="font-mm text-[10px] font-bold text-gray-400 mb-0.5 tracking-wider uppercase">နေရာ</p>
+                                    <p className="font-mm font-bold text-gray-800 text-[14px] leading-snug">{settings.venue}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             );
         }
 
@@ -213,9 +360,9 @@ const UI_HTML = `<!DOCTYPE html>
                             setUserRole(res.role || 'admin');
                             setUserName(res.username || '');
                         } else {
-                            window.location.hash = '#login';
+                            if(window.location.hash !== '#view-invite') window.location.hash = '#login';
                         }
-                    } catch (error) { window.location.hash = '#login'; }
+                    } catch (error) { if(window.location.hash !== '#view-invite') window.location.hash = '#login'; }
                     
                     setIsInitialLoad(false);
                 };
@@ -224,21 +371,29 @@ const UI_HTML = `<!DOCTYPE html>
                 const hash = window.location.hash.replace('#', '') || 'dashboard';
                 setView(hash);
                 window.addEventListener('hashchange', () => {
-                    const newHash = window.location.hash.replace('#', '') || 'dashboard';
-                    setView(newHash);
+                    setView(window.location.hash.replace('#', '') || 'dashboard');
                 });
 
                 if (localStorage.getItem('weddingDarkMode') === 'true') { setDarkMode(true); document.documentElement.classList.add('dark'); }
             }, []);
 
-            const showToast = (msg, type = 'success') => { setToast({ msg, type }); setTimeout(() => setToast(null), 3500); };
+            const showToast = (msg, type = 'success') => { setToast({ msg, type }); setTimeout(() => setToast(null), type === 'success' ? 3500 : 5500); };
+            
             const toggleDark = () => {
                 const newDark = !darkMode; setDarkMode(newDark); localStorage.setItem('weddingDarkMode', newDark);
                 if (newDark) document.documentElement.classList.add('dark'); else document.documentElement.classList.remove('dark');
             };
             
+            const handleThemePreview = (newColor, effectState) => {
+                setAppSettings(prev => Object.assign({}, prev, { theme_color: newColor, effect_on: effectState }));
+            };
+
+            const themeColors = THEMES[appSettings.theme_color || 'gold'];
+            const cssVars = ':root { --w-50: ' + themeColors[50] + '; --w-100: ' + themeColors[100] + '; --w-500: ' + themeColors[500] + '; --w-800: ' + themeColors[800] + '; --w-900: ' + themeColors[900] + '; }';
+            
             if (isInitialLoad) return null; 
-            if (!isAuth && view === 'login') return <Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} />;
+            if (view === 'view-invite') return <GuestInviteView settings={appSettings} />;
+            if (!isAuth && view === 'login') return <React.Fragment><style>{cssVars}</style><Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} /></React.Fragment>;
             if (!isAuth) return <div className="flex h-screen items-center justify-center bg-[#f8f7f5] dark:bg-zinc-950"><div className="w-12 h-12 border-4 border-wedding-100 border-t-wedding-500 rounded-full animate-spin"></div></div>;
 
             let currentView = view;
@@ -248,24 +403,25 @@ const UI_HTML = `<!DOCTYPE html>
             }
 
             return (
-                <div className="min-h-screen flex flex-col relative font-mm">
+                <div className="min-h-screen flex flex-col relative font-mm transition-colors duration-500">
+                    <style>{cssVars}</style>
                     {PATTERNS[appSettings.bg_pattern] && <div className="site-bg-pattern no-print" style={{ backgroundImage: "url('" + PATTERNS[appSettings.bg_pattern] + "')" }}></div>}
                     <AmbientBackground effect_on={appSettings.effect_on} />
                     
                     <nav className="glass-luxury sticky top-0 z-50 px-4 sm:px-8 py-3 sm:py-4 mb-8 flex justify-between items-center no-print mx-0 sm:mx-6 sm:mt-6 rounded-b-3xl sm:rounded-[2rem]">
                         <div className="flex items-center gap-3">
                             {appSettings.logo_url ? (
-                                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full p-[2px] bg-gradient-to-tr from-wedding-500 to-wedding-100 shadow-md flex-shrink-0">
+                                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full p-[2px] bg-gradient-to-tr from-wedding-500 to-wedding-100 shadow-md flex-shrink-0 transition-all duration-500">
                                     <img src={appSettings.logo_url} className="w-full h-full rounded-full object-cover border-[1.5px] border-white dark:border-gray-900" />
                                 </div>
                             ) : (
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center shadow-md border-2 border-white dark:border-gray-800 flex-shrink-0">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-wedding-500 to-wedding-100 rounded-full flex items-center justify-center shadow-md border-2 border-white dark:border-gray-800 flex-shrink-0 transition-all duration-500">
                                     <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg>
                                 </div>
                             )}
                             <div className="hidden sm:flex flex-col ml-1">
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-tight font-sans">{userName}</span>
-                                <span className={"text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mt-0.5 w-max font-sans " + (userRole === 'admin' ? 'bg-wedding-100 text-wedding-800' : 'bg-blue-100 text-blue-800')}>{userRole === 'admin' ? 'Admin' : 'Staff'}</span>
+                                <span className={"text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mt-0.5 w-max font-sans transition-colors duration-500 " + (userRole === 'admin' ? 'bg-wedding-100 text-wedding-800' : 'bg-blue-100 text-blue-800')}>{userRole === 'admin' ? 'Admin' : 'Staff'}</span>
                             </div>
                         </div>
 
@@ -284,12 +440,13 @@ const UI_HTML = `<!DOCTYPE html>
                         
                         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                             <div className="flex md:hidden gap-1 mr-2">
-                                <a href="#dashboard" className={"p-2 rounded-lg " + (currentView === 'dashboard' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-squares-four text-xl"></i></a>
-                                <a href="#guests" className={"p-2 rounded-lg " + (currentView === 'guests' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-users text-xl"></i></a>
-                                {userRole === 'admin' && <a href="#logs" className={"p-2 rounded-lg " + (currentView === 'logs' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-list-bullets text-xl"></i></a>}
-                                {userRole === 'admin' && <a href="#settings" className={"p-2 rounded-lg " + (currentView === 'settings' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-gear text-xl"></i></a>}
+                                <a href="#dashboard" className={"p-2 rounded-lg transition-colors " + (currentView === 'dashboard' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-squares-four text-xl"></i></a>
+                                <a href="#guests" className={"p-2 rounded-lg transition-colors " + (currentView === 'guests' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-users text-xl"></i></a>
+                                {userRole === 'admin' && <a href="#logs" className={"p-2 rounded-lg transition-colors " + (currentView === 'logs' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-list-bullets text-xl"></i></a>}
+                                {userRole === 'admin' && <a href="#settings" className={"p-2 rounded-lg transition-colors " + (currentView === 'settings' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-gear text-xl"></i></a>}
                             </div>
                             <button onClick={toggleDark} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-wedding-500 shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all"><i className={"ph-fill text-lg sm:text-xl " + (darkMode ? 'ph-sun' : 'ph-moon')}></i></button>
+                            <a href="#view-invite" target="_blank" className="hidden sm:flex bg-wedding-100 text-wedding-900 px-4 py-2 rounded-xl font-bold text-xs items-center gap-2 shadow-sm hover:bg-wedding-200 transition-colors"><i className="ph-bold ph-envelope-open"></i> Preview Card</a>
                             <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); setIsAuth(false); window.location.hash = '#login'; window.location.reload(); }} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-500 hover:text-white shadow-sm border border-red-100 dark:border-red-900/30 transition-all"><i className="ph-bold ph-power text-lg sm:text-xl"></i></button>
                         </div>
                     </nav>
@@ -298,7 +455,7 @@ const UI_HTML = `<!DOCTYPE html>
                         {currentView === 'dashboard' && <Dashboard userRole={userRole} />}
                         {currentView === 'guests' && <GuestManagement showToast={showToast} userRole={userRole} appSettings={appSettings} />}
                         {currentView === 'logs' && userRole === 'admin' && <AuditLogs showToast={showToast} />}
-                        {currentView === 'settings' && userRole === 'admin' && <Settings showToast={showToast} appSettings={appSettings} setAppSettings={setAppSettings} />}
+                        {currentView === 'settings' && userRole === 'admin' && <Settings showToast={showToast} appSettings={appSettings} setAppSettings={setAppSettings} onLivePreview={handleThemePreview} />}
                     </main>
 
                     <footer className="mt-auto py-8 text-center no-print relative z-10 border-t border-gray-200/50 dark:border-gray-800/50">
@@ -308,9 +465,9 @@ const UI_HTML = `<!DOCTYPE html>
                     </footer>
 
                     {toast && (
-                        <div className={"fixed bottom-8 right-8 px-6 py-4 rounded-2xl shadow-luxury text-white animate-float z-50 font-bold flex items-center gap-3 border border-white/20 backdrop-blur-md font-mm " + (toast.type === 'error' ? 'bg-red-500/90' : toast.type === 'warn' ? 'bg-amber-500/90' : 'bg-wedding-800/90')}>
-                            <i className={"ph-fill text-2xl " + (toast.type === 'error' ? 'ph-warning' : toast.type === 'warn' ? 'ph-warning-circle' : 'ph-check-circle')}></i>
-                            {toast.msg}
+                        <div className={"fixed top-4 left-4 right-4 sm:top-6 sm:left-auto sm:right-8 mx-auto w-auto sm:w-max max-w-[92vw] sm:max-w-md px-5 py-4 rounded-2xl shadow-luxury text-white animate-fade-in z-[100] font-bold flex items-start sm:items-center gap-3 border border-white/20 backdrop-blur-md font-mm " + (toast.type === 'error' ? 'bg-red-500/95' : toast.type === 'warn' ? 'bg-amber-500/95' : 'bg-wedding-800/95')}>
+                            <i className={"ph-fill text-2xl shrink-0 mt-0.5 sm:mt-0 " + (toast.type === 'error' ? 'ph-warning' : toast.type === 'warn' ? 'ph-warning-circle' : 'ph-check-circle')}></i>
+                            <span className="leading-relaxed text-sm sm:text-base break-words">{toast.msg}</span>
                         </div>
                     )}
                 </div>
@@ -690,7 +847,6 @@ const UI_HTML = `<!DOCTYPE html>
             
             const [showDeletePwd, setShowDeletePwd] = useState(false);
 
-            // [PERFORMANCE] Debounce search to avoid API spamming
             useEffect(() => {
                 const timer = setTimeout(() => setDebouncedSearch(search), 500);
                 return () => clearTimeout(timer);
@@ -752,17 +908,26 @@ const UI_HTML = `<!DOCTYPE html>
                         newGuests.push(guest);
                     }
                     if (newGuests.length > 0) {
-                        showToast("ဧည့်သည် (" + newGuests.length + ") ဦး စတင်ထည့်သွင်းနေပါသည်...", 'warn');
+                        showToast("ဧည့်သည် (" + newGuests.length + ") ဦး စတင်စစ်ဆေး ထည့်သွင်းနေပါသည်...", 'warn');
                         try { 
                             const chunkSize = 500;
+                            let totalImported = 0;
                             for (let i = 0; i < newGuests.length; i += chunkSize) {
                                 const chunk = newGuests.slice(i, i + chunkSize);
-                                await apiCall('/api/guests/bulk', { method: 'POST', body: JSON.stringify({ guests: chunk }) });
+                                const res = await apiCall('/api/guests/bulk', { method: 'POST', body: JSON.stringify({ guests: chunk }) });
+                                if (res && res.count !== undefined) totalImported += res.count;
                             }
-                            showToast("Excel မှ ဧည့်သည် အားလုံး အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။", 'success'); 
+                            
+                            if (totalImported === 0) {
+                                showToast("ဖိုင်ထဲမှ ဧည့်သည်အားလုံးမှာ စာရင်းထဲတွင် ရှိပြီးသားဖြစ်နေသဖြင့် အသစ်ထပ်မံထည့်သွင်းခြင်း မရှိပါ။", 'error'); 
+                            } else if (totalImported < newGuests.length) {
+                                showToast("ဧည့်သည်အသစ် " + totalImported + " ဦး ထည့်သွင်းပြီးပါပြီ။ (ထပ်နေသော " + (newGuests.length - totalImported) + " ဦးကို ချန်လှပ်ထားပါသည်)", 'warn');
+                            } else {
+                                showToast("Excel မှ ဧည့်သည်အားလုံး (" + totalImported + " ဦး) အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ။", 'success'); 
+                            }
                         } 
                         catch (err) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ၊ ပြန်စမ်းကြည့်ပါ", 'error'); }
-                    } else { showToast("အသစ်ထည့်သွင်းရန် ဧည့်သည် မရှိပါ", 'warn'); }
+                    } else { showToast("ဖိုင်ထဲတွင် ထည့်သွင်းရန် ဧည့်သည်စာရင်း မတွေ့ပါ", 'warn'); }
                     fetchGuests(true, 1);
                 }; reader.readAsBinaryString(file); e.target.value = null; 
             };
@@ -773,17 +938,36 @@ const UI_HTML = `<!DOCTYPE html>
                 try { 
                     const method = formData.id ? 'PUT' : 'POST'; const url = formData.id ? "/api/guests/" + formData.id : '/api/guests'; 
                     
-                    // Duplicate strict check with safe null handling
-                    if (!formData.id && guests.some(g => (g.name || '').toString().trim().toLowerCase() === (formData.name || '').toString().trim().toLowerCase() && (g.address || '').toString().trim().toLowerCase() === (formData.address || '').toString().trim().toLowerCase())) {
-                        showToast('ဤဧည့်သည်အမည်နှင့် လိပ်စာမှာ စာရင်းထဲတွင် ရှိပြီးသားဖြစ်နေပါသည်!', 'error'); 
-                        setIsSaving(false); return;
+                    const formattedName = toTitleCase(formData.name);
+                    const formattedAddress = toTitleCase(formData.address);
+                    const payload = Object.assign({}, formData, { name: formattedName, address: formattedAddress });
+
+                    const normName = normalizeMyanmarText(payload.name);
+                    const normAddress = normalizeMyanmarText(payload.address);
+
+                    const existingGuest = guests.find(g => 
+                        g.id !== payload.id && 
+                        normalizeMyanmarText(g.name) === normName && 
+                        normalizeMyanmarText(g.address) === normAddress
+                    );
+
+                    if (existingGuest) {
+                        const sideNameMM = existingGuest.side === 'Groom' ? 'သတို့သားဖက်' : (existingGuest.side === 'Bride' ? 'သတို့သမီးဖက်' : 'နှစ်ဖက်မိတ်ဆွေ');
+                        showToast(\`ဒီနာမည်နဲ့ လိပ်စာက \${sideNameMM}က ဖိတ်မလို့ စာရင်းသွင်းထားပြီးသားဖြစ်လို့ ထပ်ရေးဖို့မလိုပါဘူး။\`, 'error'); 
+                        setIsSaving(false); 
+                        return;
                     }
 
-                    const res = await fetch(url, { method, body: JSON.stringify(formData), headers: { 'Content-Type': 'application/json' } }); 
+                    const res = await fetch(url, { method, body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json' } }); 
                     const data = await res.json();
                     
                     if (!res.ok) {
-                        showToast(data.error === 'Duplicate entry' ? 'ဤဧည့်သည်အမည်နှင့် လိပ်စာမှာ စာရင်းထဲတွင် ရှိပြီးသားဖြစ်နေပါသည်!' : 'အမှားအယွင်းဖြစ်ပွားပါသည်', 'error');
+                        if (data.error === 'Duplicate entry' && data.side) {
+                            const sideNameMM = data.side === 'Groom' ? 'သတို့သားဖက်' : (data.side === 'Bride' ? 'သတို့သမီးဖက်' : 'နှစ်ဖက်မိတ်ဆွေ');
+                            showToast(\`ဒီနာမည်နဲ့ လိပ်စာက \${sideNameMM}က ဖိတ်မလို့ စာရင်းသွင်းထားပြီးသားဖြစ်လို့ ထပ်ရေးဖို့မလိုပါဘူး။\`, 'error');
+                        } else {
+                            showToast("အမှားအယွင်းဖြစ်ပွားပါသည်", 'error');
+                        }
                     } else {
                         showToast("Guest saved successfully"); setModalOpen(false); fetchGuests(false, 1); 
                     }
@@ -800,15 +984,23 @@ const UI_HTML = `<!DOCTYPE html>
                 } catch (error) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ", "error"); } finally { setIsDeleting(false); }
             };
 
-            // SAFE GROUPING: Handles null or empty addresses properly without crashing
             const grouped = useMemo(() => { 
                 const groups = {}; 
                 guests.forEach(g => { 
-                    const k = (g.address || '').toString().trim() || 'No Address'; 
+                    const rawAddr = (g.address || '').toString().trim() || 'No Address'; 
+                    const lowerAddr = rawAddr.toLowerCase();
+                    const existingKey = Object.keys(groups).find(k => k.toLowerCase() === lowerAddr);
+                    const k = existingKey || toTitleCase(rawAddr);
+                    
                     if (!groups[k]) groups[k] = []; 
                     groups[k].push(g); 
                 }); 
-                return groups; 
+                
+                const sortedGroups = {};
+                Object.keys(groups).sort().forEach(key => {
+                    sortedGroups[key] = groups[key];
+                });
+                return sortedGroups; 
             }, [guests]);
 
             return (
@@ -837,9 +1029,15 @@ const UI_HTML = `<!DOCTYPE html>
 
                     <div className="glass-luxury p-6 rounded-[2rem] flex flex-col gap-4 no-print border border-gray-200/60 dark:border-gray-800/60 shadow-sm">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {/* [FIX]: Search Box တွင် 'X' clear button ထည့်သွင်းထားပါသည် */}
                             <div className="relative w-full">
                                 <i className="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
-                                <input type="text" placeholder="Search guests..." className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white font-mm" value={search} onChange={e=>{setSearch(e.target.value); setPageCount(1);}} />
+                                <input type="text" placeholder="Search guests..." className="w-full pl-12 pr-10 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white font-mm" value={search} onChange={e=>{setSearch(e.target.value); setPageCount(1);}} />
+                                {search && (
+                                    <button onClick={() => { setSearch(''); setPageCount(1); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-wedding-500 p-1">
+                                        <i className="ph-bold ph-x text-base"></i>
+                                    </button>
+                                )}
                             </div>
                             <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-mm" value={locationFilter} onChange={e=>{setLocationFilter(e.target.value); setPageCount(1);}}><option>All Locations</option>{locationsList.map(loc => <option key={loc} value={loc}>{loc}</option>)}</select>
                             <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-sans" value={filter} onChange={e=>{setFilter(e.target.value); setPageCount(1);}}><option>All Status</option><option>Pending</option><option>Written</option><option>Invited</option></select>
@@ -1145,7 +1343,7 @@ const UI_HTML = `<!DOCTYPE html>
             );
         }
 
-        function Settings({ showToast, appSettings, setAppSettings }) {
+        function Settings({ showToast, appSettings, setAppSettings, onLivePreview }) {
             const [settings, setSettings] = useState({ groom_name: '', bride_name: '', wedding_date: '', venue: '', footer_text: '', logo_url: '', theme_color: 'gold', effect_on: 1, recovery_key: '' });
             const [creds, setCreds] = useState({ target: 'admin', username: '', password: '' });
             const [isUpdating, setIsUpdating] = useState(false);
@@ -1173,8 +1371,13 @@ const UI_HTML = `<!DOCTYPE html>
 
             const handleSave = async (e) => {
                 e.preventDefault(); setIsSavingSettings(true);
-                await fetch('/api/settings', { method: 'PUT', body: JSON.stringify(settings), headers: { 'Content-Type': 'application/json' } });
-                setAppSettings(settings); showToast('Settings saved successfully'); setIsSavingSettings(false); 
+                const res = await fetch('/api/settings', { method: 'PUT', body: JSON.stringify(settings), headers: { 'Content-Type': 'application/json' } });
+                if (!res.ok) {
+                    showToast('Save မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ /api/setup သို့ဝင်ပြီး DB အသစ်တိုးပါ', 'error');
+                    setIsSavingSettings(false);
+                    return;
+                }
+                setAppSettings(settings); showToast('App Settings များကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ'); setIsSavingSettings(false); 
                 setShowKeyUpdate(false); 
                 setTimeout(() => window.location.reload(), 800); 
             };
@@ -1214,10 +1417,22 @@ const UI_HTML = `<!DOCTYPE html>
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest mb-3 text-gray-500">Theme Color</label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                    {Object.entries({ gold: 'Classic Gold', rose: 'Rose Pink', emerald: 'Emerald', blue: 'Navy Blue' }).map(([key, label]) => (
-                                        <label key={key} className={"cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all transform hover:-translate-y-0.5 " + (settings.theme_color === key ? 'border-wedding-500 bg-wedding-50/50 text-wedding-800 shadow-md' : 'border-gray-100 dark:border-gray-800 text-gray-500 bg-white/50 dark:bg-gray-900/50 hover:bg-white')}>
-                                            <input type="radio" className="hidden" checked={settings.theme_color === key} onChange={() => setSettings(Object.assign({}, settings, { theme_color: key }))} />
-                                            <div className="w-8 h-8 rounded-full mx-auto mb-2 shadow-inner border border-black/5" style={{ backgroundColor: key==='gold'?'#c2a37d':key==='rose'?'#fb7185':key==='emerald'?'#34d399':'#60a5fa' }}></div>
+                                    {Object.entries({ 
+                                        gold: 'Classic Gold', 
+                                        rose: 'Rose Pink', 
+                                        emerald: 'Emerald', 
+                                        blue: 'Navy Blue',
+                                        terracotta: 'Terracotta',
+                                        sage: 'Sage Garden',
+                                        burgundy: 'Royal Wine',
+                                        lavender: 'Dusty Lavender'
+                                    }).map(([key, label]) => (
+                                        <label key={key} className={"cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all transform hover:-translate-y-1 relative " + (settings.theme_color === key ? 'border-wedding-500 bg-white dark:bg-gray-800 text-wedding-800 dark:text-wedding-400 shadow-glow' : 'border-gray-100 dark:border-gray-800 text-gray-500 bg-white/50 dark:bg-gray-900/50 hover:bg-white')}>
+                                            <input type="radio" className="hidden" checked={settings.theme_color === key} onChange={() => { 
+                                                setSettings(Object.assign({}, settings, { theme_color: key }));
+                                                if(onLivePreview) onLivePreview(key, settings.effect_on);
+                                            }} />
+                                            <div className="w-8 h-8 rounded-full mx-auto mb-2 shadow-inner border border-black/5" style={{ backgroundColor: key==='gold'?'#c2a37d':key==='rose'?'#fb7185':key==='emerald'?'#34d399':key==='blue'?'#60a5fa':key==='terracotta'?'#d97757':key==='sage'?'#8ba38d':key==='burgundy'?'#9d2235':'#a385c6' }}></div>
                                             <span className="text-[10px] uppercase tracking-wider">{label}</span>
                                         </label>
                                     ))}
@@ -1229,7 +1444,11 @@ const UI_HTML = `<!DOCTYPE html>
                                     <span className="font-bold text-gray-800 dark:text-gray-200">Floating Particles & Glow</span>
                                     <div className={"w-12 h-6 rounded-full transition-colors relative shadow-inner " + (settings.effect_on === 1 ? 'bg-wedding-500' : 'bg-gray-300 dark:bg-gray-700')}>
                                         <div className={"absolute top-1 w-4 h-4 rounded-full bg-white transition-transform shadow-sm " + (settings.effect_on === 1 ? 'left-7' : 'left-1')}></div>
-                                        <input type="checkbox" className="hidden" checked={settings.effect_on === 1} onChange={(e) => setSettings(Object.assign({}, settings, { effect_on: e.target.checked ? 1 : 0 }))} />
+                                        <input type="checkbox" className="hidden" checked={settings.effect_on === 1} onChange={(e) => {
+                                            const val = e.target.checked ? 1 : 0;
+                                            setSettings(Object.assign({}, settings, { effect_on: val }));
+                                            if(onLivePreview) onLivePreview(settings.theme_color, val);
+                                        }} />
                                     </div>
                                 </label>
                             </div>
@@ -1295,8 +1514,8 @@ const UI_HTML = `<!DOCTYPE html>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-                                        <label className="cursor-pointer bg-white dark:bg-gray-800 px-8 py-4 rounded-2xl text-sm font-bold shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all flex items-center gap-3">
-                                            <svg className="w-6 h-6 mr-2 text-wedding-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8.5" cy="12" r="6"></circle><circle cx="15.5" cy="12" r="6"></circle></svg> Upload Couple's Monogram
+                                        <label className="cursor-pointer bg-white dark:bg-gray-800 px-8 py-4 rounded-2xl text-sm font-bold shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:text-wedding-500">
+                                            <i className="ph-fill ph-circles-three-plus text-xl text-wedding-500"></i> Upload Couple's Monogram
                                             <input type="file" accept="image/*,image/svg+xml" className="hidden" onChange={handleFileSelect} />
                                         </label>
                                         {settings.logo_url && (
@@ -1336,7 +1555,7 @@ const UI_HTML = `<!DOCTYPE html>
                                 </div>
                             )}
 
-                            <button disabled={isSavingSettings} className="w-full bg-gradient-to-r from-wedding-900 to-wedding-800 text-white font-bold text-base tracking-wide py-3.5 rounded-xl shadow-luxury transition-all transform hover:-translate-y-0.5 mt-4 uppercase">
+                            <button disabled={isSavingSettings} className="w-full bg-gradient-to-r from-wedding-900 to-wedding-800 text-white font-bold text-base tracking-wide py-4 rounded-xl shadow-luxury transition-all transform hover:-translate-y-1 mt-4 uppercase hover:shadow-glow">
                                 {isSavingSettings ? 'Saving Configurations...' : 'Save All Configurations'}
                             </button>
                         </form>
@@ -1403,7 +1622,7 @@ async function logAction(env, username, action, details) {
 }
 
 async function runMigrations(env) {
-    await env.DB.prepare("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, groom_name TEXT, bride_name TEXT, wedding_date TEXT, venue TEXT, footer_text TEXT, logo_url TEXT, theme_color TEXT, effect_on INTEGER)").run();
+    await env.DB.prepare("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, groom_name TEXT, bride_name TEXT, wedding_date TEXT, venue TEXT)").run();
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password_hash TEXT, role TEXT DEFAULT 'admin')").run();
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS guests (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, note TEXT, status TEXT, side TEXT DEFAULT 'Groom', attended INTEGER DEFAULT 0, gift_amount TEXT, gift_item TEXT, updated_at TEXT)").run();
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, username TEXT, role TEXT, created_at TEXT)").run();
@@ -1417,6 +1636,10 @@ async function runMigrations(env) {
     try { await env.DB.prepare("ALTER TABLE sessions ADD COLUMN role TEXT DEFAULT 'admin'").run(); } catch(e) {}
     try { await env.DB.prepare("ALTER TABLE sessions ADD COLUMN username TEXT").run(); } catch(e) {}
     try { await env.DB.prepare("ALTER TABLE settings ADD COLUMN recovery_key TEXT DEFAULT 'EverAfter2026'").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE settings ADD COLUMN footer_text TEXT").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE settings ADD COLUMN logo_url TEXT").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE settings ADD COLUMN theme_color TEXT DEFAULT 'gold'").run(); } catch(e) {}
+    try { await env.DB.prepare("ALTER TABLE settings ADD COLUMN effect_on INTEGER DEFAULT 1").run(); } catch(e) {}
 
     const s = await env.DB.prepare("SELECT id FROM settings WHERE id = 1").first();
     if(!s) await env.DB.prepare("INSERT INTO settings (id, theme_color, effect_on, recovery_key) VALUES (1, 'gold', 1, 'EverAfter2026')").run();
@@ -1434,6 +1657,22 @@ async function runMigrations(env) {
 
     return "Database Schema & Indexes Updated Successfully!";
 }
+
+const toTitleCaseDB = (str) => {
+    if (!str) return '';
+    return String(str).trim().replace(/[\\s\\u200B]+/g, ' ').split(' ').map(w => {
+        if (w.length === 0) return w;
+        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+    }).join(' ');
+};
+
+const normalizeTextForDB = (str) => {
+    if (!str) return '';
+    let s = String(str).replace(/၀/g, 'ဝ').toLowerCase();
+    s = s.replace(/[\\s\\u200B]+/g, ''); 
+    s = s.replace(/\\u1025\\u102E/g, '\\u1026'); 
+    return s;
+};
 
 export default {
 	async fetch(request, env, ctx) {
@@ -1487,10 +1726,8 @@ export default {
         const isAdmin = sessionUser ? sessionUser.role === 'admin' : false;
         const currentUsername = sessionUser ? sessionUser.username : '';
 
-        // PUBLIC APIs
         if (path === '/api/settings' && method === 'GET') {
 			const settings = await env.DB.prepare('SELECT * FROM settings WHERE id = 1').first();
-            // [SECURITY] Hide Recovery Key from Public
             if (!sessionUser || sessionUser.role !== 'admin') {
                 if (settings) delete settings.recovery_key;
             }
@@ -1583,8 +1820,25 @@ export default {
             const limit = 50; const offset = (page - 1) * limit;
 
             let query = "SELECT * FROM guests WHERE 1=1"; let params = [];
-            if (search) { query += " AND (name LIKE ? OR address LIKE ? OR note LIKE ? OR gift_item LIKE ?)"; const lk = "%" + search + "%"; params.push(lk, lk, lk, lk); }
-            if (location !== 'All Locations') { query += " AND address = ?"; params.push(location); }
+            
+            if (search) { 
+                const cleanSearch = String(search).replace(/[\\s\\u200B]+/g, '');
+                const s1 = cleanSearch;
+                const s2 = cleanSearch.replace(/\\u1026/g, '\\u1025\\u102E'); 
+                const s3 = cleanSearch.replace(/\\u1025\\u102E/g, '\\u1026'); 
+
+                query += " AND (" +
+                    "REPLACE(name, ' ', '') COLLATE NOCASE LIKE ? OR REPLACE(name, ' ', '') COLLATE NOCASE LIKE ? OR REPLACE(name, ' ', '') COLLATE NOCASE LIKE ? OR " +
+                    "REPLACE(address, ' ', '') COLLATE NOCASE LIKE ? OR REPLACE(address, ' ', '') COLLATE NOCASE LIKE ? OR REPLACE(address, ' ', '') COLLATE NOCASE LIKE ? OR " +
+                    "note COLLATE NOCASE LIKE ? OR gift_item COLLATE NOCASE LIKE ?" +
+                ")"; 
+                const lk1 = "%" + s1 + "%"; 
+                const lk2 = "%" + s2 + "%"; 
+                const lk3 = "%" + s3 + "%";
+                params.push(lk1, lk2, lk3, lk1, lk2, lk3, "%" + search + "%", "%" + search + "%"); 
+            }
+            
+            if (location !== 'All Locations') { query += " AND address COLLATE NOCASE = ?"; params.push(location); }
             if (status !== 'All Status') { query += " AND status = ?"; params.push(status); }
             if (side !== 'All') { query += " AND side = ?"; params.push(side); }
             
@@ -1593,8 +1847,15 @@ export default {
             
             let locations = [];
             if (page === 1) {
-                const locData = await env.DB.prepare("SELECT DISTINCT address FROM guests WHERE address != '' AND address IS NOT NULL ORDER BY address").all();
-                locations = locData.results.map(r => r.address);
+                const locData = await env.DB.prepare("SELECT address FROM guests WHERE address != '' AND address IS NOT NULL").all();
+                const uniqueLocs = new Set();
+                locData.results.forEach(r => {
+                    if(r.address) {
+                        const formatted = toTitleCaseDB(r.address);
+                        uniqueLocs.add(formatted);
+                    }
+                });
+                locations = Array.from(uniqueLocs).sort();
             }
             return Response.json({ guests: results, locations });
 		}
@@ -1607,10 +1868,27 @@ export default {
 
 		if (path === '/api/guests' && method === 'POST') {
             const data = await request.json();
+            
+            const allGuests = await env.DB.prepare("SELECT id, name, address, side FROM guests").all();
+            const normName = normalizeTextForDB(data.name);
+            const normAddr = normalizeTextForDB(data.address);
+            
+            const dup = allGuests.results.find(g => 
+                normalizeTextForDB(g.name) === normName && 
+                normalizeTextForDB(g.address) === normAddr
+            );
+
+            if (dup) {
+                return Response.json({ success: false, error: 'Duplicate entry', side: dup.side }, { status: 400 });
+            }
+
             try {
+                const payloadName = toTitleCaseDB(data.name);
+                const payloadAddr = toTitleCaseDB(data.address);
+
                 await env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-                    .bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
-                await logAction(env, currentUsername, 'ADD', "Added " + data.name + " (" + data.address + ")");
+                    .bind(payloadName, payloadAddr, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
+                await logAction(env, currentUsername, 'ADD', "Added " + payloadName + " (" + payloadAddr + ")");
                 return Response.json({ success: true });
             } catch (e) {
                 return Response.json({ success: false, error: 'Duplicate entry' }, { status: 400 });
@@ -1636,25 +1914,61 @@ export default {
             if (!isAdmin) return new Response('Forbidden', { status: 403 });
             const { guests } = await request.json();
             if (!guests || !Array.isArray(guests)) return Response.json({ success: false, error: 'Invalid data' }, { status: 400 });
-            const statements = guests.map(g => {
-                return env.DB.prepare('INSERT OR IGNORE INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-                    .bind(g.name, g.address, g.note || '', g.status, g.side, g.attended || 0, g.gift_amount || '', g.gift_item || '', new Date().toISOString());
+            
+            const allGuests = await env.DB.prepare("SELECT id, name, address FROM guests").all();
+            const existingSet = new Set(allGuests.results.map(g => normalizeTextForDB(g.name) + '|' + normalizeTextForDB(g.address)));
+
+            const validGuests = [];
+            for (let g of guests) {
+                if (!g.name) continue;
+                const key = normalizeTextForDB(g.name) + '|' + normalizeTextForDB(g.address || 'General');
+                if (!existingSet.has(key)) {
+                    g.name = toTitleCaseDB(g.name);
+                    g.address = toTitleCaseDB(g.address || 'General');
+                    validGuests.push(g);
+                    existingSet.add(key); 
+                }
+            }
+
+            if (validGuests.length === 0) return Response.json({ success: true, count: 0 });
+
+            const statements = validGuests.map(g => {
+                return env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                    .bind(g.name, g.address, g.note || '', g.status || 'Pending', g.side || 'Groom', g.attended || 0, g.gift_amount || '', g.gift_item || '', new Date().toISOString());
             });
             const batchSize = 100;
             for (let i = 0; i < statements.length; i += batchSize) {
                 const batch = statements.slice(i, i + batchSize);
                 await env.DB.batch(batch);
             }
-            await logAction(env, currentUsername, 'IMPORT', "Imported " + guests.length + " guests via Excel");
-            return Response.json({ success: true, count: guests.length });
+            await logAction(env, currentUsername, 'IMPORT', "Imported " + validGuests.length + " guests via Excel");
+            return Response.json({ success: true, count: validGuests.length });
         }
 
 		if (path.startsWith('/api/guests/') && method === 'PUT') {
 			const id = path.split('/').pop();
 			const data = await request.json();
+			
+            const allGuests = await env.DB.prepare("SELECT id, name, address, side FROM guests").all();
+            const normName = normalizeTextForDB(data.name);
+            const normAddr = normalizeTextForDB(data.address);
+            
+            const dup = allGuests.results.find(g => 
+                g.id.toString() !== id.toString() &&
+                normalizeTextForDB(g.name) === normName && 
+                normalizeTextForDB(g.address) === normAddr
+            );
+
+            if (dup) {
+                return Response.json({ success: false, error: 'Duplicate entry', side: dup.side }, { status: 400 });
+            }
+
+            const payloadName = toTitleCaseDB(data.name);
+            const payloadAddr = toTitleCaseDB(data.address);
+
 			await env.DB.prepare('UPDATE guests SET name = ?, address = ?, note = ?, status = ?, side = ?, attended = ?, gift_amount = ?, gift_item = ?, updated_at = ? WHERE id = ?')
-				.bind(data.name, data.address, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString(), id).run();
-			await logAction(env, currentUsername, 'UPDATE', "Updated " + data.name);
+				.bind(payloadName, payloadAddr, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString(), id).run();
+			await logAction(env, currentUsername, 'UPDATE', "Updated " + payloadName);
             return Response.json({ success: true });
 		}
 
@@ -1705,7 +2019,6 @@ export default {
             return Response.json({ success: true });
 		}
 
-        // [ပြင်ဆင်ချက်] - သီချင်း (Music) နှင့် နောက်ခံပုံ (Background Image) Upload အပိုများကို ဖယ်ရှားပြီး မူလ Logo Crop အတွက် R2 Upload အပိုင်းကိုသာ အတိအကျ ပြန်လည် ထည့်သွင်းထားပါသည်
 		if (path === '/api/uploads' && method === 'POST') {
             if (!isAdmin) return new Response('Forbidden', { status: 403 });
             const contentLength = request.headers.get('content-length');
