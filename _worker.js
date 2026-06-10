@@ -34,7 +34,7 @@ const UI_HTML = `<!DOCTYPE html>
                         'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'spin-slow': 'spin 4s linear infinite',
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
                     },
                     keyframes: {
                         pulseGlow: { 
@@ -46,7 +46,7 @@ const UI_HTML = `<!DOCTYPE html>
                             '50%': { transform: 'translateY(-10px)' } 
                         },
                         fadeIn: {
-                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '0%': { opacity: 0, transform: 'translateY(-15px)' },
                             '100%': { opacity: 1, transform: 'translateY(0)' }
                         }
                     }
@@ -84,7 +84,6 @@ const UI_HTML = `<!DOCTYPE html>
             letter-spacing: 0.2px !important;
             word-spacing: normal !important;
         }
-        .font-cursive { font-family: 'Great Vibes', cursive !important; }
         .font-serif { font-family: 'Playfair Display', serif; }
         .luxury-wedding-font { font-family: 'Playfair Display', serif !important; font-style: italic !important; font-weight: 600 !important; letter-spacing: 0.02em !important; padding: 0 2px; }
         .font-numbers { font-family: 'Montserrat', sans-serif !important; letter-spacing: -0.02em; }
@@ -117,25 +116,6 @@ const UI_HTML = `<!DOCTYPE html>
         .luxury-particle { position: absolute; border-radius: 50%; background-color: var(--w-500); box-shadow: 0 0 15px 4px var(--w-500), inset 0 0 4px 1px rgba(255,255,255,0.5); animation: luxuryFloat linear infinite; opacity: 0; pointer-events: none; }
         .dark .luxury-particle { background-color: var(--w-100); box-shadow: 0 0 15px 4px var(--w-500); }
 
-        @keyframes cinematicFade { 0% { opacity: 0; filter: blur(10px); transform: scale(0.95); } 50% { opacity: 1; filter: blur(0px); transform: scale(1); } 100% { opacity: 0; filter: blur(10px); transform: scale(1.05); } }
-        .cinematic-intro { animation: cinematicFade 3.5s ease-in-out infinite; }
-
-        .envelope-container { perspective: 1200px; }
-        .envelope-wrapper { position: relative; width: 320px; height: 220px; background: linear-gradient(135deg, #f5f0e6, #e6dac3); border-radius: 8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
-        .envelope-wrapper:hover { transform: translateY(-5px) rotateX(5deg); box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5); }
-        .envelope-flap { position: absolute; top: 0; left: 0; width: 0; height: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 135px solid #e8d8c3; transform-origin: top; z-index: 40; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px 8px 0 0; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
-        .envelope-pocket { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-left: 160px solid #f0e6d6; border-right: 160px solid #f0e6d6; border-bottom: 125px solid #e3d0b8; z-index: 30; border-radius: 0 0 8px 8px; }
-        .envelope-letter { position: absolute; top: 10px; left: 15px; right: 15px; bottom: 10px; background: #fff; border-radius: 8px; z-index: 20; transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #f0e8d9; }
-        .wax-seal { position: absolute; top: 135px; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: radial-gradient(circle, #d4af37 0%, #aa7c11 100%); border-radius: 50%; z-index: 50; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Great Vibes', cursive; font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.4); transition: opacity 0.5s ease, transform 0.5s ease; text-shadow: 1px 1px 2px rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.2); }
-        
-        .is-open .envelope-flap { transform: rotateX(180deg); z-index: 10; }
-        .is-open .wax-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-        .is-open .envelope-letter { transform: translateY(-120px); z-index: 45; }
-
-        @keyframes pulse-ring { 0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(194, 163, 125, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(194, 163, 125, 0); } 100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(194, 163, 125, 0); } }
-        .animate-pulse-ring { animation: pulse-ring 2s infinite; }
-        .record-spin { animation: spin 4s linear infinite; }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
@@ -146,7 +126,6 @@ const UI_HTML = `<!DOCTYPE html>
 <body class="text-gray-800 transition-colors duration-500">
     <div id="root">
         <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background-color:#111111;" class="dark:bg-zinc-950 transition-colors">
-            <h1 class="cinematic-intro" style="font-family:'Playfair Display', serif; color:#c2a37d; font-size:42px; font-style:italic; font-weight:600; letter-spacing: 2px;">Ever After</h1>
             <div style="width: 1px; height: 50px; background: linear-gradient(to bottom, transparent, #c2a37d, transparent); margin-top: 24px; animation: pulseGlow 2s infinite;"></div>
         </div>
     </div>
@@ -219,112 +198,6 @@ const UI_HTML = `<!DOCTYPE html>
             );
         }
 
-        function GuestInviteView({ settings }) {
-            const [isOpened, setIsOpened] = useState(false);
-            const [showEnvelope, setShowEnvelope] = useState(true);
-            const [isPlaying, setIsPlaying] = useState(true);
-            const audioRef = useRef(null);
-
-            const handleOpen = () => {
-                setIsOpened(true);
-                if (audioRef.current) {
-                    audioRef.current.volume = 0.5;
-                    audioRef.current.play().catch(e => console.log("Audio blocked", e));
-                    setIsPlaying(true);
-                }
-                setTimeout(() => setShowEnvelope(false), 2000);
-            };
-
-            const toggleMusic = () => {
-                if (audioRef.current) {
-                    if (isPlaying) { audioRef.current.pause(); setIsPlaying(false); }
-                    else { audioRef.current.play(); setIsPlaying(true); }
-                }
-            };
-
-            const audioElement = settings.music_url ? <audio ref={audioRef} src={settings.music_url} loop /> : null;
-
-            if (showEnvelope) {
-                return (
-                    <div className="w-full max-w-[420px] min-h-screen bg-[#111] flex flex-col items-center justify-center relative mx-auto shadow-2xl overflow-hidden envelope-container">
-                        {audioElement}
-                        <div className="absolute inset-0 z-0 bg-black/60" style={{ backgroundImage: "url(" + (settings.bg_image || '') + ")", backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(8px) brightness(0.6)' }}></div>
-                        
-                        <div className="relative z-20 flex flex-col items-center animate-fade-in">
-                            <h1 className="font-cursive text-5xl text-white/90 mb-12 drop-shadow-lg text-center leading-tight">
-                                {settings.groom_name?.charAt(0)} <span className="text-3xl text-wedding-500">&amp;</span> {settings.bride_name?.charAt(0)}<br/>
-                                <span className="font-sans text-[10px] tracking-[0.4em] uppercase font-bold text-gray-300 mt-4 block">You're Invited</span>
-                            </h1>
-
-                            <div className={"envelope-wrapper " + (isOpened ? "is-open" : "")} onClick={!isOpened ? handleOpen : undefined}>
-                                <div className="envelope-flap"></div>
-                                <div className="envelope-letter">
-                                     <h2 className="font-cursive text-3xl text-wedding-500">{settings.groom_name} & {settings.bride_name}</h2>
-                                     <p className="font-sans text-[8px] uppercase tracking-widest text-gray-400 mt-2 font-bold">{settings.wedding_date}</p>
-                                </div>
-                                <div className="envelope-pocket"></div>
-                                <div className="wax-seal">E</div>
-                            </div>
-                            
-                            <p className={"text-white mt-14 font-sans text-[10px] tracking-[0.3em] uppercase font-bold drop-shadow-md transition-opacity duration-500 " + (isOpened ? "opacity-0" : "opacity-100 animate-pulse")}>Tap the seal to open</p>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="w-full max-w-[420px] min-h-screen bg-gradient-to-b from-[#faf8f5] to-[#f2ebe0] relative overflow-hidden flex flex-col pt-12 pb-10 px-6 box-border mx-auto shadow-2xl border border-white/50 animate-fade-in">
-                    <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/floral-motif.png')", zIndex: 0 }}></div>
-                    {audioElement}
-                    
-                    <div className="relative z-10 flex flex-col h-full items-center text-center">
-                        {settings.music_url && (
-                            <button onClick={toggleMusic} className={"absolute top-0 right-0 w-10 h-10 rounded-full bg-white/70 backdrop-blur-md border border-white/60 flex items-center justify-center shadow-lg text-wedding-600 transition-all z-50 " + (isPlaying ? "record-spin shadow-wedding-500/20" : "opacity-60")}>
-                                <i className={"ph-fill " + (isPlaying ? "ph-music-notes" : "ph-speaker-slash") + " text-lg"}></i>
-                                {isPlaying && <span className="absolute w-full h-full rounded-full border border-wedding-400/50 animate-pulse-ring"></span>}
-                            </button>
-                        )}
-                        
-                        <div className="mt-6 mb-2">
-                            <p className="font-sans text-[9px] tracking-[0.4em] font-bold text-gray-400 uppercase mb-4 opacity-80">We Are Getting Married</p>
-                            <h1 className="font-cursive text-7xl text-wedding-500 drop-shadow-sm leading-none" style={{ transform: 'translateX(-5px)' }}>{settings.groom_name}</h1>
-                            <span className="font-serif italic text-2xl text-gray-300 block my-1">&amp;</span>
-                            <h1 className="font-cursive text-7xl text-wedding-500 drop-shadow-sm leading-none" style={{ transform: 'translateX(5px)' }}>{settings.bride_name}</h1>
-                        </div>
-
-                        {settings.bg_image && (
-                            <div className="w-44 h-44 rounded-full p-[4px] bg-gradient-to-tr from-wedding-500 via-wedding-100 to-wedding-500 shadow-xl my-8 animate-fade-in delay-1 relative">
-                                <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse-glow z-0"></div>
-                                <img src={settings.bg_image} className="w-full h-full rounded-full object-cover border-[3px] border-white relative z-10" />
-                            </div>
-                        )}
-
-                        <div className="text-center mb-8 animate-fade-in delay-1 relative">
-                            <i className="ph-fill ph-quotes text-wedding-100 text-4xl absolute -top-4 -left-2 -z-10"></i>
-                            <p className="font-mm text-[15px] text-gray-700 leading-loose px-4 tracking-wide font-medium">ကျွန်တော်၊ ကျွန်မတို့၏ မင်္ဂလာ<br/>လက်ထပ်ထိမ်းမြားခြင်း အခမ်းအနားသို့<br/>မိတ်ဆွေသင်္ဂဟများအား ရိုသေလေးစားစွာဖြင့်<br/>ဖိတ်ကြားအပ်ပါသည်။</p>
-                        </div>
-
-                        <div className="space-y-4 w-full text-left animate-fade-in delay-2 mt-auto pb-4">
-                            <div className="glass-luxury p-4 rounded-3xl flex items-center gap-4 transition-transform hover:-translate-y-1">
-                                <div className="w-12 h-12 rounded-full bg-wedding-50 flex items-center justify-center text-wedding-500 shrink-0 border border-wedding-100/50 shadow-inner"><i className="ph-fill ph-calendar-blank text-2xl"></i></div>
-                                <div>
-                                    <p className="font-mm text-[10px] font-bold text-gray-400 mb-0.5 tracking-wider uppercase">မင်္ဂလာရက်</p>
-                                    <p className="font-sans font-bold text-gray-800 text-[14px]">{settings.wedding_date}</p>
-                                </div>
-                            </div>
-                            <div className="glass-luxury p-4 rounded-3xl flex items-center gap-4 transition-transform hover:-translate-y-1">
-                                <div className="w-12 h-12 rounded-full bg-wedding-50 flex items-center justify-center text-wedding-500 shrink-0 border border-wedding-100/50 shadow-inner"><i className="ph-fill ph-map-pin text-2xl"></i></div>
-                                <div>
-                                    <p className="font-mm text-[10px] font-bold text-gray-400 mb-0.5 tracking-wider uppercase">နေရာ</p>
-                                    <p className="font-mm font-bold text-gray-800 text-[14px] leading-snug">{settings.venue}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
         function App() {
             const [view, setView] = useState('dashboard');
             const [isAuth, setIsAuth] = useState(false);
@@ -335,15 +208,28 @@ const UI_HTML = `<!DOCTYPE html>
             const [appSettings, setAppSettings] = useState({ theme_color: 'gold', bg_pattern: 'floral', effect_on: 1, recovery_key: '' });
             const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+            const showToast = useCallback((msg, type = 'success') => { 
+                setToast({ msg, type }); 
+                setTimeout(() => setToast(null), type === 'success' ? 4000 : 6000); 
+            }, []);
+
             useEffect(() => {
                 const handleOffline = () => showToast('အင်တာနက်လိုင်း ပြတ်တောက်သွားပါပြီ (Offline)', 'error');
                 const handleOnline = () => showToast('အင်တာနက် ပြန်လည်ရရှိပါပြီ (Online)', 'success');
                 window.addEventListener('offline', handleOffline); 
                 window.addEventListener('online', handleOnline);
                 return () => { window.removeEventListener('offline', handleOffline); window.removeEventListener('online', handleOnline); };
-            }, []);
+            }, [showToast]);
 
             useEffect(() => {
+                if (localStorage.getItem('pwdChanged') === 'true') {
+                    setTimeout(() => {
+                        setToast({ msg: 'အကောင့် လျှို့ဝှက်နံပါတ် အောင်မြင်စွာ ပြောင်းလဲပြီးပါပြီ။ ကျေးဇူးပြု၍ အသစ်ပြန်လည်ဝင်ရောက်ပါ။', type: 'success' });
+                        setTimeout(() => setToast(null), 6000);
+                    }, 300);
+                    localStorage.removeItem('pwdChanged');
+                }
+
                 const initAuthAndSettings = async () => {
                     try {
                         const sRes = await fetch('/api/settings');
@@ -360,9 +246,9 @@ const UI_HTML = `<!DOCTYPE html>
                             setUserRole(res.role || 'admin');
                             setUserName(res.username || '');
                         } else {
-                            if(window.location.hash !== '#view-invite') window.location.hash = '#login';
+                            window.location.hash = '#login';
                         }
-                    } catch (error) { if(window.location.hash !== '#view-invite') window.location.hash = '#login'; }
+                    } catch (error) { window.location.hash = '#login'; }
                     
                     setIsInitialLoad(false);
                 };
@@ -376,8 +262,6 @@ const UI_HTML = `<!DOCTYPE html>
 
                 if (localStorage.getItem('weddingDarkMode') === 'true') { setDarkMode(true); document.documentElement.classList.add('dark'); }
             }, []);
-
-            const showToast = (msg, type = 'success') => { setToast({ msg, type }); setTimeout(() => setToast(null), type === 'success' ? 3500 : 5500); };
             
             const toggleDark = () => {
                 const newDark = !darkMode; setDarkMode(newDark); localStorage.setItem('weddingDarkMode', newDark);
@@ -392,7 +276,6 @@ const UI_HTML = `<!DOCTYPE html>
             const cssVars = ':root { --w-50: ' + themeColors[50] + '; --w-100: ' + themeColors[100] + '; --w-500: ' + themeColors[500] + '; --w-800: ' + themeColors[800] + '; --w-900: ' + themeColors[900] + '; }';
             
             if (isInitialLoad) return null; 
-            if (view === 'view-invite') return <GuestInviteView settings={appSettings} />;
             if (!isAuth && view === 'login') return <React.Fragment><style>{cssVars}</style><Login onLogin={() => { setIsAuth(true); window.location.hash = '#dashboard'; window.location.reload(); }} appSettings={appSettings} /></React.Fragment>;
             if (!isAuth) return <div className="flex h-screen items-center justify-center bg-[#f8f7f5] dark:bg-zinc-950"><div className="w-12 h-12 border-4 border-wedding-100 border-t-wedding-500 rounded-full animate-spin"></div></div>;
 
@@ -446,7 +329,6 @@ const UI_HTML = `<!DOCTYPE html>
                                 {userRole === 'admin' && <a href="#settings" className={"p-2 rounded-lg transition-colors " + (currentView === 'settings' ? 'text-wedding-500 bg-wedding-50 dark:bg-wedding-900/20' : 'text-gray-400')}><i className="ph-fill ph-gear text-xl"></i></a>}
                             </div>
                             <button onClick={toggleDark} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-wedding-500 shadow-sm border border-gray-200/50 dark:border-gray-700/50 transition-all"><i className={"ph-fill text-lg sm:text-xl " + (darkMode ? 'ph-sun' : 'ph-moon')}></i></button>
-                            <a href="#view-invite" target="_blank" className="hidden sm:flex bg-wedding-100 text-wedding-900 px-4 py-2 rounded-xl font-bold text-xs items-center gap-2 shadow-sm hover:bg-wedding-200 transition-colors"><i className="ph-bold ph-envelope-open"></i> Preview Card</a>
                             <button onClick={async () => { await fetch('/api/logout', { method: 'POST' }); setIsAuth(false); window.location.hash = '#login'; window.location.reload(); }} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-500 hover:text-white shadow-sm border border-red-100 dark:border-red-900/30 transition-all"><i className="ph-bold ph-power text-lg sm:text-xl"></i></button>
                         </div>
                     </nav>
@@ -465,9 +347,9 @@ const UI_HTML = `<!DOCTYPE html>
                     </footer>
 
                     {toast && (
-                        <div className={"fixed top-4 left-4 right-4 sm:top-6 sm:left-auto sm:right-8 mx-auto w-auto sm:w-max max-w-[92vw] sm:max-w-md px-5 py-4 rounded-2xl shadow-luxury text-white animate-fade-in z-[100] font-bold flex items-start sm:items-center gap-3 border border-white/20 backdrop-blur-md font-mm " + (toast.type === 'error' ? 'bg-red-500/95' : toast.type === 'warn' ? 'bg-amber-500/95' : 'bg-wedding-800/95')}>
-                            <i className={"ph-fill text-2xl shrink-0 mt-0.5 sm:mt-0 " + (toast.type === 'error' ? 'ph-warning' : toast.type === 'warn' ? 'ph-warning-circle' : 'ph-check-circle')}></i>
-                            <span className="leading-relaxed text-sm sm:text-base break-words">{toast.msg}</span>
+                        <div className={"fixed top-5 left-4 right-4 sm:top-8 sm:left-auto sm:right-8 mx-auto w-auto sm:w-max max-w-[96vw] sm:max-w-md px-6 py-4 rounded-2xl text-white animate-fade-in z-[9999] font-bold flex items-start sm:items-center gap-3.5 border backdrop-blur-xl font-mm shadow-2xl transition-all " + (toast.type === 'error' ? 'bg-red-600/95 dark:bg-red-500/95 border-red-400/50 shadow-red-500/30' : toast.type === 'warn' ? 'bg-amber-500/95 dark:bg-amber-500/95 border-amber-400/50 shadow-amber-500/30' : 'bg-emerald-600/95 dark:bg-emerald-500/95 border-emerald-400/50 shadow-emerald-500/30')}>
+                            <i className={"ph-fill text-3xl shrink-0 mt-0.5 sm:mt-0 drop-shadow-md " + (toast.type === 'error' ? 'ph-warning' : toast.type === 'warn' ? 'ph-warning-circle' : 'ph-check-circle')}></i>
+                            <span className="leading-relaxed text-[14px] sm:text-base break-words tracking-wide text-shadow-sm">{toast.msg}</span>
                         </div>
                     )}
                 </div>
@@ -623,8 +505,9 @@ const UI_HTML = `<!DOCTYPE html>
                         const giftList = counts.gifts || [];
                         const totalGifts = giftList.reduce((sum, g) => {
                             if (!g.gift_amount) return sum;
-                            const amtStr = convertToEnglishDigits(g.gift_amount).replace(/,/g, '');
-                            const amt = parseFloat(amtStr); return sum + (isNaN(amt) ? 0 : amt);
+                            const amtStr = convertToEnglishDigits(g.gift_amount).replace(/[^\\d.]/g, '');
+                            const amt = parseFloat(amtStr); 
+                            return sum + (isNaN(amt) ? 0 : amt);
                         }, 0);
                         const giftItemsCount = giftList.filter(g => g.gift_item && (g.gift_item||'').toString().trim() !== '').length;
 
@@ -700,11 +583,11 @@ const UI_HTML = `<!DOCTYPE html>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 sm:gap-6">
-                        <StatWidget icon="users" title="Total Guests" value={stats.total} themeClass="text-blue-500 bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/30" iconBg="bg-blue-100 dark:bg-blue-900/40" />
-                        <StatWidget icon="envelope-open" title="Invited" value={stats.invited} themeClass="text-amber-500 bg-amber-50/50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/30" iconBg="bg-amber-100 dark:bg-amber-900/40" />
-                        <StatWidget icon="check-circle" title="Attended" value={stats.attended} themeClass="text-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-900/30" iconBg="bg-emerald-100 dark:bg-emerald-900/40" />
-                        <StatWidget icon="pen-nib" title="Written" value={stats.written} themeClass="text-purple-500 bg-purple-50/50 dark:bg-purple-900/10 border-purple-100 dark:border-purple-900/30" iconBg="bg-purple-100 dark:bg-purple-900/40" />
-                        <StatWidget icon="hourglass-high" title="Pending" value={stats.pending} themeClass="text-stone-500 bg-stone-50/50 dark:bg-stone-900/10 border-stone-100 dark:border-stone-900/30" iconBg="bg-stone-100 dark:bg-stone-900/40" />
+                        <StatWidget icon="users" title="စုစုပေါင်း ဧည့်သည်" value={stats.total} themeClass="text-blue-500 bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-900/30" iconBg="bg-blue-100 dark:bg-blue-900/40" />
+                        <StatWidget icon="envelope-open" title="ဖိတ်ကြားထားပြီး" value={stats.invited} themeClass="text-amber-500 bg-amber-50/50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/30" iconBg="bg-amber-100 dark:bg-amber-900/40" />
+                        <StatWidget icon="check-circle" title="ရောက်ရှိ" value={stats.attended} themeClass="text-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-900/30" iconBg="bg-emerald-100 dark:bg-emerald-900/40" />
+                        <StatWidget icon="pen-nib" title="ရေးသားပြီး" value={stats.written} themeClass="text-purple-500 bg-purple-50/50 dark:bg-purple-900/10 border-purple-100 dark:border-purple-900/30" iconBg="bg-purple-100 dark:bg-purple-900/40" />
+                        <StatWidget icon="hourglass-high" title="မရေးရသေး" value={stats.pending} themeClass="text-stone-500 bg-stone-50/50 dark:bg-stone-900/10 border-stone-100 dark:border-stone-900/30" iconBg="bg-stone-100 dark:bg-stone-900/40" />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 no-print">
@@ -754,7 +637,7 @@ const UI_HTML = `<!DOCTYPE html>
                                 <div className="relative">
                                     <div className="flex justify-between items-end mb-4">
                                         <div>
-                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1 font-sans">Invited</span>
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1 font-mm">ဖိတ်ကြားထားပြီး</span>
                                             <span className="text-2xl font-bold font-numbers text-amber-500">{stats.invited} <span className="text-xs text-gray-400">/ {stats.total}</span></span>
                                         </div>
                                         <div className="px-3 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-bold font-numbers shadow-sm">{invitedPercent}%</div>
@@ -767,7 +650,7 @@ const UI_HTML = `<!DOCTYPE html>
                                 <div className="relative">
                                     <div className="flex justify-between items-end mb-4">
                                         <div>
-                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1 font-sans">Attended</span>
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest block mb-1 font-mm">ရောက်ရှိသူ</span>
                                             <span className="text-2xl font-bold font-numbers text-emerald-500">{stats.attended} <span className="text-xs text-gray-400">/ {stats.invited}</span></span>
                                         </div>
                                         <div className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-bold font-numbers shadow-sm">{attendedPercent}%</div>
@@ -832,7 +715,7 @@ const UI_HTML = `<!DOCTYPE html>
                     <div className={"w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-3 transition-transform duration-500 group-hover:scale-110 shadow-sm border border-white/40 " + iconBg}>
                         <i className={"ph-fill ph-" + icon + " text-2xl sm:text-3xl"}></i>
                     </div>
-                    <p className="text-[9px] sm:text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1.5 font-sans">{title}</p>
+                    <p className="text-[9px] sm:text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1.5 font-mm">{title}</p>
                     <p className="text-2xl sm:text-3xl font-bold font-numbers tracking-tight">{value}</p>
                 </div>
             );
@@ -979,7 +862,7 @@ const UI_HTML = `<!DOCTYPE html>
                 e.preventDefault(); setIsDeleting(true);
                 try {
                     const res = await fetch('/api/guests/bulk-delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: selectedIds, password: deletePassword }) });
-                    if (res.ok) { showToast("ဧည့်သည် (" + selectedIds.length + ") ဦးကို စာရင်းမှ ဖျက်ပစ်လိုက်ပါပြီ"); setShowBulkDeleteModal(false); setIsEditMode(false); setSelectedIds([]); setDeletePassword(''); fetchGuests(false, 1); } 
+                    if (res.ok) { showToast("ဧည့်သည် (" + selectedIds.length + ") ဦးကို စာရင်းမှ ဖျက်ပစ်လိုက်ပါပြီ", 'success'); setShowBulkDeleteModal(false); setIsEditMode(false); setSelectedIds([]); setDeletePassword(''); fetchGuests(false, 1); } 
                     else { showToast('Admin Password မှားယွင်းနေပါသည်', 'error'); }
                 } catch (error) { showToast("ကွန်ရက်ချိတ်ဆက်မှု အဆင်မပြေပါ", "error"); } finally { setIsDeleting(false); }
             };
@@ -1029,18 +912,22 @@ const UI_HTML = `<!DOCTYPE html>
 
                     <div className="glass-luxury p-6 rounded-[2rem] flex flex-col gap-4 no-print border border-gray-200/60 dark:border-gray-800/60 shadow-sm">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {/* [FIX]: Search Box တွင် 'X' clear button ထည့်သွင်းထားပါသည် */}
                             <div className="relative w-full">
                                 <i className="ph-bold ph-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
                                 <input type="text" placeholder="Search guests..." className="w-full pl-12 pr-10 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white font-mm" value={search} onChange={e=>{setSearch(e.target.value); setPageCount(1);}} />
                                 {search && (
-                                    <button onClick={() => { setSearch(''); setPageCount(1); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-wedding-500 p-1">
+                                    <button onClick={() => { setSearch(''); setPageCount(1); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-wedding-500 p-1 transition-colors">
                                         <i className="ph-bold ph-x text-base"></i>
                                     </button>
                                 )}
                             </div>
                             <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-mm" value={locationFilter} onChange={e=>{setLocationFilter(e.target.value); setPageCount(1);}}><option>All Locations</option>{locationsList.map(loc => <option key={loc} value={loc}>{loc}</option>)}</select>
-                            <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-sans" value={filter} onChange={e=>{setFilter(e.target.value); setPageCount(1);}}><option>All Status</option><option>Pending</option><option>Written</option><option>Invited</option></select>
+                            <select className="px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 font-bold text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-wedding-500 font-mm" value={filter} onChange={e=>{setFilter(e.target.value); setPageCount(1);}}>
+                                <option value="All Status">အခြေအနေအားလုံး</option>
+                                <option value="Pending">မရေးရသေး</option>
+                                <option value="Written">ရေးသားပြီး</option>
+                                <option value="Invited">ဖိတ်ကြားထားပြီး</option>
+                            </select>
                         </div>
                         <div className="flex bg-gray-100/50 dark:bg-gray-800/50 p-1 rounded-xl w-full flex-wrap sm:flex-nowrap gap-1 border border-gray-200/50 dark:border-gray-700/50">
                             <button onClick={() => {setSideFilter('All'); setPageCount(1);}} className={"flex-1 min-w-[70px] py-2.5 text-[12px] sm:text-sm rounded-lg font-bold transition-all font-mm " + (sideFilter === 'All' ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700')}>အားလုံး</button>
@@ -1117,8 +1004,8 @@ const UI_HTML = `<!DOCTYPE html>
                                                     </div>
                                                 </div>
                                                 <div className={"flex items-center gap-3 justify-end w-full sm:w-auto mt-2 sm:mt-0 " + (isEditMode ? 'pl-9' : 'pl-0') + " sm:pl-0"}>
-                                                    <span className={"px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase whitespace-nowrap shadow-sm border font-sans " + (g.status==='Invited'?'bg-emerald-50 text-emerald-700 border-emerald-200':g.status==='Written'?'bg-purple-50 text-purple-700 border-purple-200':'bg-amber-50 text-amber-700 border-amber-200')}>
-                                                        {g.status}
+                                                    <span className={"px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold whitespace-nowrap shadow-sm border font-mm " + (g.status==='Invited'?'bg-emerald-50 text-emerald-700 border-emerald-200':g.status==='Written'?'bg-purple-50 text-purple-700 border-purple-200':'bg-amber-50 text-amber-700 border-amber-200')}>
+                                                        {g.status === 'Pending' ? 'မရေးရသေး' : g.status === 'Written' ? 'ရေးသားပြီး' : g.status === 'Invited' ? 'ဖိတ်ကြားထားပြီး' : g.status}
                                                     </span>
                                                     <div className="flex gap-2 no-print ml-auto">
                                                         <button onClick={() => { setFormData(g); setModalOpen(true); }} className="w-9 h-9 flex items-center justify-center bg-white dark:bg-gray-800 text-blue-600 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 shadow-sm transition-all hover:-translate-y-0.5" title="Edit Guest"><i className="ph-bold ph-pencil-simple text-lg"></i></button>
@@ -1194,15 +1081,24 @@ const UI_HTML = `<!DOCTYPE html>
                                     )}
 
                                     <div className="grid grid-cols-2 gap-4">
+                                        {/* ဘယ်ဘက်ခြမ်း - ဖိတ်စာ အခြေအနေ */}
                                         <div>
-                                            <label className="block text-[10px] font-bold uppercase mb-1.5 text-gray-400 font-sans">Status</label>
-                                            <select className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white shadow-sm font-sans" value={formData.status} onChange={e=>setFormData(Object.assign({}, formData, { status: e.target.value }))}><option>Pending</option><option>Written</option><option>Invited</option></select>
+                                            <label className="block text-[11px] font-bold mb-1.5 text-gray-400 font-mm">ဖိတ်စာ အခြေအနေ</label>
+                                            <select className="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-wedding-500 font-bold text-gray-900 dark:text-white shadow-sm font-mm" value={formData.status} onChange={e=>setFormData(Object.assign({}, formData, { status: e.target.value }))}>
+                                                <option value="Pending">မရေးရသေး</option>
+                                                <option value="Written">ရေးသားပြီး</option>
+                                                <option value="Invited">ဖိတ်ကြားထားပြီး</option>
+                                            </select>
                                         </div>
-                                        <div className="flex items-end h-full">
-                                            <label className={"w-full min-h-[50px] flex items-center justify-center gap-2 cursor-pointer px-3 rounded-xl border transition-all shadow-sm " + (formData.attended === 1 ? 'bg-emerald-50 border-emerald-300 dark:bg-emerald-900/20' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700')}>
-                                                <input type="checkbox" className="w-5 h-5 accent-emerald-500 rounded cursor-pointer" checked={formData.attended === 1} onChange={(e) => setFormData(Object.assign({}, formData, { attended: e.target.checked ? 1 : 0 }))} />
-                                                <span className={"font-bold text-sm font-mm " + (formData.attended === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500')}>ရောက်ရှိ <span className="font-sans text-[11px] uppercase">(Attended)</span></span>
-                                            </label>
+                                        {/* ညာဘက်ခြမ်း - ပွဲတက်ရောက်မှု */}
+                                        <div>
+                                            <label className="block text-[11px] font-bold mb-1.5 text-gray-400 font-mm">ပွဲတက်ရောက်မှု</label>
+                                            <div className="flex items-end h-[52px]">
+                                                <label className={"w-full h-full flex items-center justify-center gap-2 cursor-pointer px-3 rounded-xl border transition-all shadow-sm " + (formData.attended === 1 ? 'bg-emerald-50 border-emerald-300 dark:bg-emerald-900/20' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700')}>
+                                                    <input type="checkbox" className="w-5 h-5 accent-emerald-500 rounded cursor-pointer" checked={formData.attended === 1} onChange={(e) => setFormData(Object.assign({}, formData, { attended: e.target.checked ? 1 : 0 }))} />
+                                                    <span className={"font-bold text-sm font-mm " + (formData.attended === 1 ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500')}>ရောက်ရှိ <span className="font-sans text-[11px] uppercase">(Attended)</span></span>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -1270,7 +1166,7 @@ const UI_HTML = `<!DOCTYPE html>
                     const res = await fetch('/api/logs/' + id, { method: 'DELETE' });
                     if (res.ok) { 
                         setLogs(prev => prev.filter(l => l.id !== id)); 
-                        showToast('မှတ်တမ်းတစ်ခု ဖျက်ပစ်ပါပြီ'); 
+                        showToast('မှတ်တမ်းတစ်ခု ဖျက်ပစ်ပါပြီ', 'success'); 
                     }
                 } catch(e) { showToast('ဖျက်၍မရပါ', 'error'); }
             };
@@ -1281,7 +1177,7 @@ const UI_HTML = `<!DOCTYPE html>
                         const res = await fetch('/api/logs', { method: 'DELETE' });
                         if (res.ok) { 
                             setLogs([]); 
-                            showToast('မှတ်တမ်းအားလုံး ဖျက်ပစ်ပါပြီ'); 
+                            showToast('မှတ်တမ်းအားလုံး ဖျက်ပစ်ပါပြီ', 'success'); 
                         }
                     } catch(e) { showToast('ဖျက်၍မရပါ', 'error'); }
                 }
@@ -1377,7 +1273,7 @@ const UI_HTML = `<!DOCTYPE html>
                     setIsSavingSettings(false);
                     return;
                 }
-                setAppSettings(settings); showToast('App Settings များကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ'); setIsSavingSettings(false); 
+                setAppSettings(settings); showToast('App Settings များကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ', 'success'); setIsSavingSettings(false); 
                 setShowKeyUpdate(false); 
                 setTimeout(() => window.location.reload(), 800); 
             };
@@ -1385,7 +1281,15 @@ const UI_HTML = `<!DOCTYPE html>
             const handleUpdateCreds = async (e) => {
                 e.preventDefault(); setIsUpdating(true);
                 const res = await fetch('/api/change-credentials', { method: 'POST', body: JSON.stringify({ target: creds.target, newUsername: creds.username, newPassword: creds.password }), headers: { 'Content-Type': 'application/json' } });
-                setIsUpdating(false); if (res.ok) { showToast(creds.target + ' account အချက်အလက်များ ပြောင်းလဲပြီးပါပြီ'); setCreds({ target: 'admin', username: '', password: '' }); } else { showToast('ပြောင်းလဲခြင်း မအောင်မြင်ပါ', 'error'); }
+                setIsUpdating(false); 
+                if (res.ok) { 
+                    localStorage.setItem('pwdChanged', 'true');
+                    await fetch('/api/logout', { method: 'POST' });
+                    window.location.hash = '#login';
+                    window.location.reload();
+                } else { 
+                    showToast('ပြောင်းလဲခြင်း မအောင်မြင်ပါ', 'error'); 
+                }
             };
 
             const handleFileSelect = (e) => {
