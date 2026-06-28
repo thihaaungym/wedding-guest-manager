@@ -9,8 +9,9 @@ const UI_HTML = `<!DOCTYPE html>
     <meta name="theme-color" content="#5c4e3c">
     
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Padauk:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"><\/script>
-    <script src="https://cdn.tailwindcss.com"><\/script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.0.3?v=2026"><\/script>
+    <script src="https://cdn.tailwindcss.com?v=3.4.3"><\/script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -37,85 +38,37 @@ const UI_HTML = `<!DOCTYPE html>
                         'fade-in': 'fadeIn 0.4s ease-out forwards',
                     },
                     keyframes: {
-                        pulseGlow: { 
-                            '0%, 100%': { opacity: 0.2, transform: 'scale(1)' }, 
-                            '50%': { opacity: 0.5, transform: 'scale(1.05)' } 
-                        },
-                        float: { 
-                            '0%, 100%': { transform: 'translateY(0)' }, 
-                            '50%': { transform: 'translateY(-10px)' } 
-                        },
-                        fadeIn: {
-                            '0%': { opacity: 0, transform: 'translateY(-15px)' },
-                            '100%': { opacity: 1, transform: 'translateY(0)' }
-                        }
+                        pulseGlow: { '0%, 100%': { opacity: 0.2, transform: 'scale(1)' }, '50%': { opacity: 0.5, transform: 'scale(1.05)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        fadeIn: { '0%': { opacity: 0, transform: 'translateY(-15px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } }
                     }
                 }
             }
         }
     <\/script>
     
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"><\/script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js?v=2026"><\/script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js?v=2026"><\/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js?v=2026"><\/script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js?v=2026"><\/script>
     
     <style>
-        :root { 
-            --w-50: #faf7f2; 
-            --w-100: #f0e8d9; 
-            --w-500: #c2a37d; 
-            --w-800: #5c4e3c; 
-            --w-900: #3d3428; 
-        }
-        
-        @font-face {
-            font-family: 'MiSans Myanmar';
-            src: local('MiSans Myanmar'), local('MiSans');
-        }
-        
-        body, input, textarea, select, button { 
-            font-family: 'Montserrat', 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif; 
-            line-height: 1.8; 
-        }
-
-        .font-mm {
-            font-family: 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif !important;
-            letter-spacing: 0.2px !important;
-            word-spacing: normal !important;
-        }
+        :root { --w-50: #faf7f2; --w-100: #f0e8d9; --w-500: #c2a37d; --w-800: #5c4e3c; --w-900: #3d3428; }
+        @font-face { font-family: 'MiSans Myanmar'; src: local('MiSans Myanmar'), local('MiSans'); }
+        body, input, textarea, select, button { font-family: 'Montserrat', 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif; line-height: 1.8; }
+        .font-mm { font-family: 'Padauk', 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif !important; letter-spacing: 0.2px !important; word-spacing: normal !important; }
         .font-serif { font-family: 'Playfair Display', serif; }
         .luxury-wedding-font { font-family: 'Playfair Display', serif !important; font-style: italic !important; font-weight: 600 !important; letter-spacing: 0.02em !important; padding: 0 2px; }
         .font-numbers { font-family: 'Montserrat', sans-serif !important; letter-spacing: -0.02em; }
-        
         body { background-color: #f8f7f5; position: relative; min-height: 100vh; overflow-x: hidden; }
         .dark body { background-color: #09090b; color: #f3f4f6; }
-        
         .site-bg-pattern { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04; mix-blend-mode: multiply; }
         .dark .site-bg-pattern { opacity: 0.1; mix-blend-mode: overlay; }
-
-        .glass-luxury { 
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 100%); 
-            backdrop-filter: blur(24px); 
-            border-top: 1px solid rgba(255, 255, 255, 1); 
-            border-left: 1px solid rgba(255, 255, 255, 1);
-            border-right: 1px solid rgba(255, 255, 255, 0.4);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05); 
-        }
-        .dark .glass-luxury { 
-            background: linear-gradient(135deg, rgba(24, 24, 27, 0.8) 0%, rgba(24, 24, 27, 0.6) 100%); 
-            border-top: 1px solid rgba(255, 255, 255, 0.15); 
-            border-left: 1px solid rgba(255, 255, 255, 0.15); 
-            border-right: 1px solid rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); 
-        }
-
+        .glass-luxury { background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 100%); backdrop-filter: blur(24px); border-top: 1px solid rgba(255, 255, 255, 1); border-left: 1px solid rgba(255, 255, 255, 1); border-right: 1px solid rgba(255, 255, 255, 0.4); border-bottom: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05); }
+        .dark .glass-luxury { background: linear-gradient(135deg, rgba(24, 24, 27, 0.8) 0%, rgba(24, 24, 27, 0.6) 100%); border-top: 1px solid rgba(255, 255, 255, 0.15); border-left: 1px solid rgba(255, 255, 255, 0.15); border-right: 1px solid rgba(255, 255, 255, 0.02); border-bottom: 1px solid rgba(255, 255, 255, 0.02); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); }
         @keyframes luxuryFloat { 0% { transform: translateY(110vh) translateX(0px) scale(0.5); opacity: 0; } 10% { opacity: 0.9; } 50% { transform: translateY(50vh) translateX(20px) scale(1.1); } 90% { opacity: 0.9; } 100% { transform: translateY(-10vh) translateX(-20px) scale(1.5); opacity: 0; } }
         .luxury-particle { position: absolute; border-radius: 50%; background-color: var(--w-500); box-shadow: 0 0 15px 4px var(--w-500), inset 0 0 4px 1px rgba(255,255,255,0.5); animation: luxuryFloat linear infinite; opacity: 0; pointer-events: none; }
         .dark .luxury-particle { background-color: var(--w-100); box-shadow: 0 0 15px 4px var(--w-500); }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
@@ -127,8 +80,29 @@ const UI_HTML = `<!DOCTYPE html>
     <div id="root">
         <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background-color:#111111;" class="dark:bg-zinc-950 transition-colors">
             <div style="width: 1px; height: 50px; background: linear-gradient(to bottom, transparent, #c2a37d, transparent); margin-top: 24px; animation: pulseGlow 2s infinite;"></div>
+            
+            <p id="fallback-msg" style="display:none; color: #c2a37d; margin-top: 24px; font-family: 'Padauk', sans-serif; font-size: 13px; text-align: center; padding: 0 20px; font-weight: bold;">
+                စနစ် ဖိုင်များ ဒေါင်းလုဒ်ဆွဲနေပါသည်။<br/>ကြာမြင့်နေပါက အင်တာနက် (သို့) VPN ကို စစ်ဆေးပေးပါ...
+            </p>
+            <p id="error-log" style="color:#ff4d4f; font-family: 'Padauk', sans-serif; font-size:12px; margin-top:20px; text-align:center; padding:0 20px; font-weight:bold;"></p>
         </div>
     </div>
+    
+    <script>
+        // Check for Service Worker (PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(()=>{}); });
+        }
+
+        setTimeout(function() { 
+            if(document.getElementById('fallback-msg') && !document.querySelector('nav')) { document.getElementById('fallback-msg').style.display = 'block'; }
+        }, 5000);
+
+        window.onerror = function(msg, url, line) {
+            var el = document.getElementById('error-log');
+            if(el) { el.style.display = 'block'; el.innerHTML += 'System Error (' + line + '): ' + msg + '<br/>(ကျေးဇူးပြု၍ Refresh တစ်ကြိမ် ထပ်လုပ်ပေးပါ)'; }
+        };
+    </script>
 
     <script type="text/babel">
         const { useState, useEffect, useMemo, useRef, useCallback } = React;
@@ -214,7 +188,7 @@ const UI_HTML = `<!DOCTYPE html>
             }, []);
 
             useEffect(() => {
-                const handleOffline = () => showToast('အင်တာနက်လိုင်း ပြတ်တောက်သွားပါပြီ (Offline)', 'error');
+                const handleOffline = () => showToast('အင်တာနက်လိုင်း ပြတ်တောက်သွားပါပြီ (Offline View)', 'warn');
                 const handleOnline = () => showToast('အင်တာနက် ပြန်လည်ရရှိပါပြီ (Online)', 'success');
                 window.addEventListener('offline', handleOffline); 
                 window.addEventListener('online', handleOnline);
@@ -375,7 +349,17 @@ const UI_HTML = `<!DOCTYPE html>
                 e.preventDefault(); setErrorMsg(''); setSuccessMsg(''); setIsLoading(true);
                 try {
                     const res = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ username, password }), headers: { 'Content-Type': 'application/json' }});
-                    setIsLoading(false); if (res.ok) onLogin(); else setErrorMsg('Username သို့မဟုတ် Password မှားယွင်းနေပါသည်');
+                    setIsLoading(false); 
+                    if (res.ok) {
+                        onLogin(); 
+                    } else {
+                        try {
+                            const data = await res.json();
+                            setErrorMsg(data.error || 'Username သို့မဟုတ် Password မှားယွင်းနေပါသည်');
+                        } catch(err) {
+                            setErrorMsg('Username သို့မဟုတ် Password မှားယွင်းနေပါသည်');
+                        }
+                    }
                 } catch(e) { setIsLoading(false); setErrorMsg('Network ချိတ်ဆက်မှု အဆင်မပြေပါ'); }
             };
 
@@ -505,7 +489,7 @@ const UI_HTML = `<!DOCTYPE html>
                         const giftList = counts.gifts || [];
                         const totalGifts = giftList.reduce((sum, g) => {
                             if (!g.gift_amount) return sum;
-                            const amtStr = convertToEnglishDigits(g.gift_amount).replace(/[^\\d.]/g, '');
+                            const amtStr = convertToEnglishDigits(g.gift_amount).replace(/[^0-9.]/g, '');
                             const amt = parseFloat(amtStr); 
                             return sum + (isNaN(amt) ? 0 : amt);
                         }, 0);
@@ -521,7 +505,7 @@ const UI_HTML = `<!DOCTYPE html>
                 } catch (e) {}
             }, []);
 
-            useEffect(() => { loadData(); apiCall('/api/settings').then(data => setSettings(data.settings || {})); const interval = setInterval(() => { loadData(); }, 60000); return () => clearInterval(interval); }, [loadData]);
+            useEffect(() => { loadData(); apiCall('/api/settings').then(data => setSettings(data.settings || {})); const interval = setInterval(() => { loadData(); }, 30000); return () => clearInterval(interval); }, [loadData]);
 
             const total = stats.total || 1; 
             const invitedPercent = Math.min(Math.round((stats.invited / total) * 100) || 0, 100);
@@ -727,7 +711,7 @@ const UI_HTML = `<!DOCTYPE html>
             const [isEditMode, setIsEditMode] = useState(false); const [selectedIds, setSelectedIds] = useState([]); const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false); const [deletePassword, setDeletePassword] = useState(''); const [isDeleting, setIsDeleting] = useState(false); const [isSaving, setIsSaving] = useState(false); const [pageCount, setPageCount] = useState(1); 
             const [hasMore, setHasMore] = useState(false);
             const [locationsList, setLocationsList] = useState([]);
-            
+            const observerTarget = useRef(null);
             const [showDeletePwd, setShowDeletePwd] = useState(false);
 
             useEffect(() => {
@@ -753,6 +737,15 @@ const UI_HTML = `<!DOCTYPE html>
 
             useEffect(() => { setPageCount(1); fetchGuests(true, 1); }, [debouncedSearch, locationFilter, filter, sideFilter]);
             useEffect(() => { if (pageCount > 1) fetchGuests(false, pageCount); }, [pageCount]);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(
+                    entries => { if (entries[0].isIntersecting && hasMore && !loading) setPageCount(p => p + 1); },
+                    { threshold: 0.1 }
+                );
+                if (observerTarget.current) observer.observe(observerTarget.current);
+                return () => observer.disconnect();
+            }, [hasMore, loading]);
 
             const formatDateTime = (isoString) => {
                 if (!isoString) return '-'; const date = new Date(isoString); return date.toLocaleString('en-US', { timeZone: 'Asia/Yangon', hour12: true, year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -952,7 +945,23 @@ const UI_HTML = `<!DOCTYPE html>
                     )}
 
                     {loading && guests.length === 0 && debouncedSearch === '' ? (
-                        <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-20 bg-gray-200/50 dark:bg-gray-800/50 rounded-2xl animate-pulse"></div>)}</div>
+                        <div className="space-y-4">
+                            {[1, 2, 3, 4, 5].map(i => (
+                                <div key={i} className="glass-luxury rounded-2xl p-5 flex justify-between items-center animate-pulse">
+                                    <div className="flex gap-4 items-center w-full">
+                                        <div className="w-5 h-5 rounded bg-gray-200 dark:bg-gray-700 shrink-0"></div>
+                                        <div className="space-y-2 w-full">
+                                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2 shrink-0">
+                                        <div className="w-16 h-6 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                        <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     ) : Object.keys(grouped).length === 0 ? (
                         <div className="text-center py-20 glass-luxury rounded-[2rem]">
                             <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
@@ -1018,10 +1027,9 @@ const UI_HTML = `<!DOCTYPE html>
                                 </div>
                             ))}
                             {hasMore && (
-                                <div className="text-center pt-4 pb-8 no-print">
-                                    <button onClick={() => setPageCount(p => p + 1)} className="glass-luxury px-8 py-3 rounded-full font-bold text-gray-800 dark:text-gray-200 hover:-translate-y-1 transition-all flex items-center gap-2 mx-auto text-sm font-mm">
-                                        <i className="ph-bold ph-caret-down text-wedding-500 text-lg"></i> နောက်ထပ် ဧည့်သည်များ ပြရန်
-                                    </button>
+                                <div ref={observerTarget} className="text-center pt-8 pb-12 no-print flex justify-center items-center gap-3">
+                                    <i className="ph-bold ph-spinner animate-spin text-wedding-500 text-2xl"></i>
+                                    <span className="text-gray-500 font-bold font-mm text-sm">နောက်ထပ် ဧည့်သည်များ ဆွဲတင်နေပါသည်...</span>
                                 </div>
                             )}
                         </div>
@@ -1578,11 +1586,17 @@ const normalizeTextForDB = (str) => {
     return s;
 };
 
+// [SPEED FIX] Global Cache Memory (30s)
+let globalStatsCache = { data: null, timestamp: 0 };
+// [SECURITY FIX] In-Memory Map for Rate Limiting Login
+const loginAttempts = new Map();
+
 export default {
 	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
 		const path = url.pathname;
 		const method = request.method;
+        const clientIP = request.headers.get('cf-connecting-ip') || 'unknown';
 
         if (path === '/api/setup') {
             const msg = await runMigrations(env);
@@ -1606,8 +1620,26 @@ export default {
 			}), { headers: { 'Content-Type': 'application/json' }});
 		}
 
+        // [OFFLINE PWA FIX] Service Worker
 		if (path === '/sw.js') {
-			return new Response("self.addEventListener('install', (e) => { self.skipWaiting(); }); self.addEventListener('fetch', (e) => { });", { headers: { 'Content-Type': 'application/javascript' }});
+            const sw = `
+            const CACHE_NAME = 'wedding-app-v3';
+            self.addEventListener('install', e => { self.skipWaiting(); });
+            self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => k !== CACHE_NAME ? caches.delete(k) : null)))); });
+            self.addEventListener('fetch', e => {
+                if (e.request.url.includes('/api/')) return;
+                e.respondWith(
+                    caches.match(e.request).then(res => {
+                        return res || fetch(e.request).then(fetchRes => {
+                            return caches.open(CACHE_NAME).then(c => {
+                                if (e.request.method === 'GET' && e.request.url.startsWith('http')) c.put(e.request, fetchRes.clone());
+                                return fetchRes;
+                            });
+                        });
+                    }).catch(() => new Response('Offline Mode Active', { status: 200, headers: { 'Content-Type': 'text/plain' } }))
+                );
+            });`;
+			return new Response(sw, { headers: { 'Content-Type': 'application/javascript' }});
 		}
 
 		if (path === '/') return new Response(UI_HTML, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
@@ -1660,13 +1692,21 @@ export default {
             return new Response('Not found', { status: 404 });
 		}
 
+        // [SECURITY FIX] Add Rate Limiting for Login
 		if (path === '/api/login' && method === 'POST') {
+            const now = Date.now();
+            const attempt = loginAttempts.get(clientIP) || { count: 0, time: now };
+            if (attempt.count >= 5 && now - attempt.time < 15 * 60 * 1000) {
+                return Response.json({ error: 'အကြိမ်ရေများစွာ မှားယွင်းနေပါသည်။ ၁၅ မိနစ်ခန့်စောင့်ပြီးမှ ပြန်လည်ဝင်ရောက်ပါ။' }, { status: 429 });
+            }
+
             try { await env.DB.prepare("DELETE FROM sessions WHERE datetime(created_at) < datetime('now', '-1 day')").run(); } catch(e) {}
 			const { username, password } = await request.json();
 			const hashedInput = await hashPassword(password);
 			const user = await env.DB.prepare('SELECT * FROM users WHERE username = ? AND password_hash = ?').bind(username, hashedInput).first();
 
 			if (user) {
+                loginAttempts.delete(clientIP); // Reset attempts on success
                 const sessionId = crypto.randomUUID();
                 await env.DB.prepare('INSERT INTO sessions (session_id, username, role, created_at) VALUES (?, ?, ?, ?)')
                     .bind(sessionId, user.username, user.role || 'admin', new Date().toISOString()).run();
@@ -1674,8 +1714,10 @@ export default {
 				return new Response(JSON.stringify({ success: true }), {
 					headers: { 'Content-Type': 'application/json', 'Set-Cookie': "session_id=" + sessionId + "; HttpOnly; Secure; SameSite=Strict; Max-Age=86400; Path=/" }
 				});
-			}
-			return new Response('Unauthorized', { status: 401 });
+			} else {
+                loginAttempts.set(clientIP, { count: attempt.count + 1, time: now });
+			    return Response.json({ error: 'Username သို့မဟုတ် Password မှားယွင်းနေပါသည်' }, { status: 401 });
+            }
 		}
 
         if (path === '/api/reset-password' && method === 'POST') {
@@ -1707,11 +1749,17 @@ export default {
 			return new Response('Logged out', { headers: { 'Set-Cookie': 'session_id=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/' } });
 		}
 
+        // [SPEED FIX] Use Cache for Stats Endpoint
         if (path === '/api/stats' && method === 'GET') {
+            const now = Date.now();
+            if (globalStatsCache.data && (now - globalStatsCache.timestamp < 30000)) {
+                return Response.json({ stats: globalStatsCache.data }); // Return cache if < 30s
+            }
             const counts = await env.DB.prepare("SELECT COUNT(*) as total, SUM(CASE WHEN status='Pending' THEN 1 ELSE 0 END) as pending, SUM(CASE WHEN status='Written' THEN 1 ELSE 0 END) as written, SUM(CASE WHEN status='Invited' THEN 1 ELSE 0 END) as invited, SUM(CASE WHEN attended=1 THEN 1 ELSE 0 END) as attended, SUM(CASE WHEN side='Groom' THEN 1 ELSE 0 END) as groomSide, SUM(CASE WHEN side='Bride' THEN 1 ELSE 0 END) as brideSide, SUM(CASE WHEN side='Both' THEN 1 ELSE 0 END) as bothSide FROM guests").first();
             const gifts = await env.DB.prepare("SELECT gift_amount, gift_item FROM guests WHERE (gift_amount != '' AND gift_amount IS NOT NULL) OR (gift_item != '' AND gift_item IS NOT NULL)").all();
             
-            return Response.json({ stats: Object.assign({}, counts, { gifts: gifts.results }) });
+            globalStatsCache = { data: Object.assign({}, counts, { gifts: gifts.results }), timestamp: now };
+            return Response.json({ stats: globalStatsCache.data });
         }
 
 		if (path === '/api/guests' && method === 'GET') {
@@ -1772,19 +1820,13 @@ export default {
 
 		if (path === '/api/guests' && method === 'POST') {
             const data = await request.json();
-            
             const allGuests = await env.DB.prepare("SELECT id, name, address, side FROM guests").all();
             const normName = normalizeTextForDB(data.name);
             const normAddr = normalizeTextForDB(data.address);
             
-            const dup = allGuests.results.find(g => 
-                normalizeTextForDB(g.name) === normName && 
-                normalizeTextForDB(g.address) === normAddr
-            );
+            const dup = allGuests.results.find(g => normalizeTextForDB(g.name) === normName && normalizeTextForDB(g.address) === normAddr);
 
-            if (dup) {
-                return Response.json({ success: false, error: 'Duplicate entry', side: dup.side }, { status: 400 });
-            }
+            if (dup) return Response.json({ success: false, error: 'Duplicate entry', side: dup.side }, { status: 400 });
 
             try {
                 const payloadName = toTitleCaseDB(data.name);
@@ -1793,6 +1835,8 @@ export default {
                 await env.DB.prepare('INSERT INTO guests (name, address, note, status, side, attended, gift_amount, gift_item, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
                     .bind(payloadName, payloadAddr, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString()).run();
                 await logAction(env, currentUsername, 'ADD', "Added " + payloadName + " (" + payloadAddr + ")");
+                
+                globalStatsCache.timestamp = 0; // Clear Cache
                 return Response.json({ success: true });
             } catch (e) {
                 return Response.json({ success: false, error: 'Duplicate entry' }, { status: 400 });
@@ -1810,6 +1854,7 @@ export default {
                 const placeholders = ids.map(() => '?').join(',');
                 await env.DB.prepare("DELETE FROM guests WHERE id IN (" + placeholders + ")").bind(...ids).run();
                 await logAction(env, currentUsername, 'BULK_DELETE', "Deleted " + ids.length + " guests securely");
+                globalStatsCache.timestamp = 0; // Clear Cache
             }
             return Response.json({ success: true });
         }
@@ -1846,6 +1891,7 @@ export default {
                 await env.DB.batch(batch);
             }
             await logAction(env, currentUsername, 'IMPORT', "Imported " + validGuests.length + " guests via Excel");
+            globalStatsCache.timestamp = 0; // Clear Cache
             return Response.json({ success: true, count: validGuests.length });
         }
 
@@ -1857,15 +1903,9 @@ export default {
             const normName = normalizeTextForDB(data.name);
             const normAddr = normalizeTextForDB(data.address);
             
-            const dup = allGuests.results.find(g => 
-                g.id.toString() !== id.toString() &&
-                normalizeTextForDB(g.name) === normName && 
-                normalizeTextForDB(g.address) === normAddr
-            );
+            const dup = allGuests.results.find(g => g.id.toString() !== id.toString() && normalizeTextForDB(g.name) === normName && normalizeTextForDB(g.address) === normAddr);
 
-            if (dup) {
-                return Response.json({ success: false, error: 'Duplicate entry', side: dup.side }, { status: 400 });
-            }
+            if (dup) return Response.json({ success: false, error: 'Duplicate entry', side: dup.side }, { status: 400 });
 
             const payloadName = toTitleCaseDB(data.name);
             const payloadAddr = toTitleCaseDB(data.address);
@@ -1873,6 +1913,7 @@ export default {
 			await env.DB.prepare('UPDATE guests SET name = ?, address = ?, note = ?, status = ?, side = ?, attended = ?, gift_amount = ?, gift_item = ?, updated_at = ? WHERE id = ?')
 				.bind(payloadName, payloadAddr, data.note || '', data.status, data.side, data.attended || 0, data.gift_amount || '', data.gift_item || '', new Date().toISOString(), id).run();
 			await logAction(env, currentUsername, 'UPDATE', "Updated " + payloadName);
+            globalStatsCache.timestamp = 0; // Clear Cache
             return Response.json({ success: true });
 		}
 
@@ -1881,6 +1922,7 @@ export default {
 			const id = path.split('/').pop();
 			await env.DB.prepare('DELETE FROM guests WHERE id = ?').bind(id).run();
             await logAction(env, currentUsername, 'DELETE', "Deleted guest ID: " + id);
+            globalStatsCache.timestamp = 0; // Clear Cache
 			return Response.json({ success: true });
 		}
 
